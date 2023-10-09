@@ -40,7 +40,7 @@ fun main() = application {
         Column(modifier = Modifier.fillMaxSize()) {
             // Custom title toolbar
             WindowDraggableArea(modifier = Modifier.fillMaxWidth()) {
-                AppTitleBar(windowState) {
+                AppTitleBar(viewModel, windowState) {
                     exitApplication()
                 }
             }

@@ -1,11 +1,10 @@
 package core.compose.component
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.CursorDropdownMenu
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -14,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerButton
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -26,20 +26,71 @@ import androidx.compose.ui.window.WindowScope
 import androidx.compose.ui.window.WindowState
 import core.compose.utils.WindowDraggableArea
 import core.log.Timber
+import viewmodel.MainViewModel
 import java.awt.Toolkit
 
 
 val toolbarDefaultColor = Color(75, 75, 75)
 val toolbarFocusedColor = Color(80, 80, 80)
 
+@OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
-fun Logo() {
-    Image(
-        modifier = Modifier.padding(start = 20.dp),
-        painter = painterResource(resourcePath = "images/ic_lab.png"),
-        contentDescription = "logo_icon"
-    )
+fun LogoAndMenu(viewModel: MainViewModel) {
+    Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
+        Image(
+            modifier = Modifier.padding(start = 20.dp),
+            painter = painterResource(resourcePath = "images/ic_lab.png"),
+            contentDescription = "logo_icon"
+        )
+
+        repeat(viewModel.menuOptions.size) { index ->
+            var expanded by remember { mutableStateOf(false) }
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .onClick(
+                        matcher = PointerMatcher.mouse(PointerButton.Primary), // add onClick for every required PointerButton
+                        keyboardModifiers = { true }, // e.g { isCtrlPressed }; Remove it to ignore keyboardModifiers
+                        onClick = {
+                            expanded = true
+
+                        }
+                    )
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = viewModel.menuOptions.elementAt(index).first,
+                    style = TextStyle(fontSize = 18.sp)
+                )
+            }
+
+            // tmp fix for https://github.com/JetBrains/compose-jb/issues/2012
+            var renderCount by remember { mutableStateOf(0) }
+            listOf(renderCount, renderCount - 1).forEach { renderId ->
+                val isActive = renderId == renderCount
+                key(renderId) {
+                    CursorDropdownMenu(
+                        expanded = expanded && isActive,
+                        onDismissRequest = {
+                            if (isActive) {
+                                renderCount += 1
+                                expanded = false
+                            }
+                        },
+                    ) {
+                        repeat(viewModel.menuOptions.elementAt(index).second.size) {
+                            DropdownMenuItem(
+                                text = { Text(viewModel.menuOptions.elementAt(index).second.elementAt(it)) },
+                                onClick = {
+                                    expanded = false
+                                })
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 
@@ -152,6 +203,7 @@ fun WindowActions(
 @Preview
 @Composable
 fun WindowScope.AppTitleBar(
+    viewModel: MainViewModel,
     windowState: WindowState,
     onClose: () -> Unit
 ) {
@@ -164,7 +216,7 @@ fun WindowScope.AppTitleBar(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Logo()
+            LogoAndMenu(viewModel = viewModel)
             SearchBar(modifier = Modifier.weight(1.25f))
             WindowActions(
                 windowScope = this@AppTitleBar,

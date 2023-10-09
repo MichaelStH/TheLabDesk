@@ -6,6 +6,24 @@ import androidx.compose.runtime.setValue
 
 class MainViewModel {
 
+    var menuOptions: Set<Pair<String, Set<String>>> = buildSet {
+        add(
+            Pair(
+                "File",
+                buildSet {
+                    add("New Window..")
+                    add("Exit")
+                })
+        )
+        add(
+            Pair(
+                "Help",
+                buildSet {
+                    add("About")
+                })
+        )
+    }
+
     var text by mutableStateOf("Hello, World!")
         private set
     var search by mutableStateOf("")
