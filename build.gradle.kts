@@ -31,7 +31,9 @@ dependencies {
     implementation("com.ToxicBakery.logging:arbor-jvm:$arbor_version")
 }
 
-
+tasks.wrapper {
+    this.gradleVersion = "8.4"
+}
 
 compose.desktop {
     application {
