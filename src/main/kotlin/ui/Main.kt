@@ -1,3 +1,6 @@
+package ui
+
+import TheLabDeskApp
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
@@ -9,9 +12,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import core.log.Timber
 
 @Composable
 @Preview
@@ -30,6 +33,11 @@ fun App() {
 }
 
 fun main() = application {
+    
+    // Init Timber Logging
+    TheLabDeskApp.initArbor()
+    Timber.d("main() | applicationScope")
+
     Window(onCloseRequest = ::exitApplication) {
         // Custom title toolbar
 
