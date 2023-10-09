@@ -1,21 +1,50 @@
 package core.compose.utils
 
+import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.loadImageBitmap
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowScope
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.request.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.xml.sax.InputSource
 import java.awt.MouseInfo
 import java.awt.Point
 import java.awt.Window
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.awt.event.MouseMotionAdapter
+import java.io.ByteArrayInputStream
+import java.io.File
+import java.io.IOException
+import java.net.URL
 
+
+//////////////////////////////////////////////////
+// Toolbar
+//////////////////////////////////////////////////
 /**
  * WindowDraggableArea is a component that allows you to drag the window using the mouse.
  *
@@ -69,4 +98,120 @@ private class DragHandler(private val window: Window) {
     }
 
     private fun Point.toComposeOffset(): IntOffset = IntOffset(x, y)
+}
+
+
+//////////////////////////////////////////////////
+// Image
+//////////////////////////////////////////////////
+@Composable
+@Preview
+fun AsyncBitmapImageFromFile(modifier: Modifier, filename: String) = AsyncImage(
+    load = { loadImageBitmapFromFile(File("sample.png")) },
+    painterFor = { remember { BitmapPainter(it) } },
+    contentDescription = "Sample",
+    modifier = Modifier.width(200.dp)
+)
+
+@Composable
+@Preview
+fun AsyncBitmapImageFromNetwork(url: String) = AsyncImage(
+    load = { loadImageBitmap(url) },
+    painterFor = { remember { BitmapPainter(it) } },
+    contentDescription = "Sample",
+    modifier = Modifier.width(200.dp)
+)
+
+@Composable
+@Preview
+fun AsyncBitmapImageFromNetwork(modifier: Modifier, url: String) = AsyncImage(
+    load = { loadImageBitmap(url) },
+    painterFor = { remember { BitmapPainter(it) } },
+    contentDescription = "Sample",
+    modifier = Modifier.then(modifier)
+)
+
+@Composable
+@Preview
+fun AsyncSvgImage(url: String, density: Density) = AsyncImage(
+    load = { loadSvgPainter("https://github.com/JetBrains/compose-jb/raw/master/artwork/idea-logo.svg", density) },
+    painterFor = { it },
+    contentDescription = "Idea logo",
+    contentScale = ContentScale.FillWidth,
+    modifier = Modifier.width(200.dp)
+)
+
+@Composable
+@Preview
+fun AsyncImageVectorImage(xmlFileName: String, density: Density) = AsyncImage(
+    load = { loadXmlImageVector(File("compose-logo.xml"), density) },
+    painterFor = { rememberVectorPainter(it) },
+    contentDescription = "Compose logo",
+    contentScale = ContentScale.FillWidth,
+    modifier = Modifier.width(200.dp)
+)
+
+@Composable
+fun <T> AsyncImage(
+    load: suspend () -> T,
+    painterFor: @Composable (T) -> Painter,
+    contentDescription: String,
+    modifier: Modifier = Modifier,
+    contentScale: ContentScale = ContentScale.Fit,
+) {
+    val image: T? by produceState<T?>(null) {
+        value = withContext(Dispatchers.IO) {
+            try {
+                load()
+            } catch (e: IOException) {
+                // instead of printing to console, you can also write this to log,
+                // or show some error placeholder
+                e.printStackTrace()
+                null
+            }
+        }
+    }
+
+    if (image != null) {
+        Image(
+            painter = painterFor(image!!),
+            contentDescription = contentDescription,
+            contentScale = contentScale,
+            modifier = modifier
+        )
+    }
+}
+
+/* Loading from file with java.io API */
+fun loadImageBitmapFromFile(file: File): ImageBitmap =
+    file.inputStream().buffered().use(::loadImageBitmap)
+
+fun loadSvgPainter(file: File, density: Density): Painter =
+    file.inputStream().buffered().use { androidx.compose.ui.res.loadSvgPainter(it, density) }
+
+fun loadXmlImageVector(file: File, density: Density): ImageVector =
+    file.inputStream().buffered().use { androidx.compose.ui.res.loadXmlImageVector(InputSource(it), density) }
+
+/* Loading from network with java.net API */
+fun loadImageBitmapFromJavaNetwork(url: String): ImageBitmap =
+    URL(url).openStream().buffered().use(::loadImageBitmap)
+
+fun loadSvgPainterFromJavaNetwork(url: String, density: Density): Painter =
+    URL(url).openStream().buffered().use { androidx.compose.ui.res.loadSvgPainter(it, density) }
+
+fun loadXmlImageVectorFromJavaNetwork(url: String, density: Density): ImageVector =
+    URL(url).openStream().buffered().use { androidx.compose.ui.res.loadXmlImageVector(InputSource(it), density) }
+
+/* Loading from network with Ktor client API (https://ktor.io/docs/client.html). */
+suspend fun loadImageBitmap(url: String): ImageBitmap =
+    urlStream(url).use(::loadImageBitmap)
+
+suspend fun loadSvgPainter(url: String, density: Density): Painter =
+    urlStream(url).use { androidx.compose.ui.res.loadSvgPainter(it, density) }
+
+suspend fun loadXmlImageVector(url: String, density: Density): ImageVector =
+    urlStream(url).use { androidx.compose.ui.res.loadXmlImageVector(InputSource(it), density) }
+
+private suspend fun urlStream(url: String) = HttpClient(CIO).use {
+    ByteArrayInputStream(it.get(url).body())
 }
