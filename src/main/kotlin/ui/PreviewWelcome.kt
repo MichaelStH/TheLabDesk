@@ -39,6 +39,20 @@ fun WelcomeContent() {
         ) {
             Box(modifier = Modifier.fillMaxWidth()) {
 
+                // Gradient
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.horizontalGradient(
+                                colors = listOf(
+                                    Color.Black, Color.Black, Color.Black, Color.DarkGray, Color.Transparent
+                                )
+                            )
+                        )
+                        .align(Alignment.CenterStart)
+                )
+
                 // Background Image
                 Column(
                     modifier = Modifier.fillMaxHeight().align(Alignment.CenterEnd).padding(end = 100.dp),
@@ -62,7 +76,7 @@ fun WelcomeContent() {
                 // Gradient
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxSize()
                         .background(
                             Brush.horizontalGradient(
                                 colors = listOf(
@@ -77,14 +91,15 @@ fun WelcomeContent() {
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 100.dp)
+                        .padding(start = 50.dp)
                         .align(Alignment.CenterStart),
                     text = "Welcome to TheLab Desk",
                     style = TextStyle(
                         fontWeight = FontWeight.W600,
                         fontSize = 32.sp,
                         letterSpacing = 1.4.sp,
-                        textAlign = TextAlign.Start
+                        textAlign = TextAlign.Start,
+                        color = Color.LightGray
                     ),
                 )
             }

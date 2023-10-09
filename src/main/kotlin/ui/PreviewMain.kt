@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import core.compose.component.ScrollableWindowContent
 import core.compose.utils.AsyncBitmapImageFromNetwork
 import utils.Constants
 import viewmodel.MainViewModel
@@ -27,45 +26,42 @@ import viewmodel.MainViewModel
 @Composable
 @Preview
 fun App(viewModel: MainViewModel) {
+    val state = rememberLazyListState()
+
     MaterialTheme {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(end = 12.dp),
+            state = state
+        ) {
 
-        val state = rememberLazyListState()
+            item {
+                WelcomeContent()
+            }
 
-        ScrollableWindowContent {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(end = 12.dp),
-                state = state
-            ) {
-
-                item {
-                    WelcomeContent()
-                }
-
-                item {
-                    BoxWithConstraints(modifier = Modifier.fillMaxWidth(), Alignment.Center) {
-                        Card(
-                            modifier = Modifier.width(this.maxWidth / 1.5f).heightIn(0.dp, 300.dp).padding(20.dp),
-                            shape = RoundedCornerShape(35.dp)
-                        ) {
-                            AsyncBitmapImageFromNetwork(
-                                modifier = Modifier.fillMaxWidth(),
-                                url = Constants.IMAGE_URL
-                            )
-                        }
-                    }
-                }
-
-                item {
-                    Button(
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = {
-                            viewModel.updateText("Hello, Desktop!")
-                        }
+            item {
+                BoxWithConstraints(modifier = Modifier.fillMaxWidth(), Alignment.Center) {
+                    Card(
+                        modifier = Modifier.width(this.maxWidth / 1.5f).heightIn(0.dp, 300.dp).padding(20.dp),
+                        shape = RoundedCornerShape(35.dp)
                     ) {
-                        Text(text = viewModel.text)
+                        AsyncBitmapImageFromNetwork(
+                            modifier = Modifier.fillMaxWidth(),
+                            url = Constants.IMAGE_URL
+                        )
                     }
+                }
+            }
+
+            item {
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        viewModel.updateText("Hello, Desktop!")
+                    }
+                ) {
+                    Text(text = viewModel.text)
                 }
             }
         }

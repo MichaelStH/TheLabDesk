@@ -4,7 +4,6 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,12 +32,14 @@ fun ScrollableWindowContent(content: @Composable () -> Unit) {
             content()
 
             VerticalScrollbar(
-                modifier = Modifier.align(Alignment.CenterEnd)
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
                     .fillMaxHeight(),
                 adapter = rememberScrollbarAdapter(stateVertical)
             )
             HorizontalScrollbar(
-                modifier = Modifier.align(Alignment.BottomStart)
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
                     .fillMaxWidth()
                     .padding(end = 12.dp),
                 adapter = rememberScrollbarAdapter(stateHorizontal)
