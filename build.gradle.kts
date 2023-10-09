@@ -21,10 +21,17 @@ dependencies {
     // With compose.desktop.common you will also lose @Preview functionality
     implementation(compose.desktop.currentOs)
 
+    // Ktor
     val ktor_version: String by project
     implementation("io.ktor:ktor-client-core:$ktor_version")
     implementation("io.ktor:ktor-client-cio:$ktor_version")
+
+    // Logging : Arbor
+    val arbor_version: String by project
+    implementation("com.ToxicBakery.logging:arbor-jvm:$arbor_version")
 }
+
+
 
 compose.desktop {
     application {
