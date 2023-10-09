@@ -20,6 +20,16 @@ dependencies {
     // (in a separate module for demo project and in testMain).
     // With compose.desktop.common you will also lose @Preview functionality
     implementation(compose.desktop.currentOs)
+    implementation(compose.animation)
+    implementation(compose.animationGraphics)
+    implementation(compose.material)
+    implementation(compose.material3)
+    implementation(compose.materialIconsExtended)
+    implementation(compose.foundation)
+    implementation(compose.html.core)
+    implementation(compose.preview)
+    implementation(compose.ui)
+    implementation(compose.uiTooling)
 
     // Ktor
     val ktor_version: String by project
