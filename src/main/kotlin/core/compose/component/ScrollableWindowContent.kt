@@ -5,7 +5,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import core.compose.utils.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,12 +19,13 @@ import androidx.compose.ui.unit.dp
 //////////////////////////////////////////////////
 @Composable
 @Preview
-fun ScrollableWindowContent(content: @Composable () -> Unit) {
+fun ScrollableWindowContent(modifier: Modifier, content: @Composable () -> Unit) {
     MaterialTheme {
         Box(
             modifier = Modifier.fillMaxSize()
                 .background(color = Color(180, 180, 180))
                 .padding(10.dp)
+                .then(modifier)
         ) {
             val stateVertical = rememberScrollState(0)
             val stateHorizontal = rememberScrollState(0)
@@ -85,7 +86,7 @@ fun ScrollableWindowContent(lazyListState: LazyListState, content: @Composable (
 @Composable
 private fun ScrollableWindowContent() {
     MaterialTheme {
-        ScrollableWindowContent {
+        ScrollableWindowContent(modifier = Modifier) {
             Column { Text("Text test in preview scrollable") }
         }
     }

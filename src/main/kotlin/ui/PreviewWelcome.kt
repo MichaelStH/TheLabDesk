@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import core.compose.utils.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import core.compose.theme.samsungSangFamily
 
 
 //////////////////////////////////////////////////
@@ -95,6 +96,7 @@ fun WelcomeContent() {
                         .align(Alignment.CenterStart),
                     text = "Welcome to TheLab Desk",
                     style = TextStyle(
+                        fontFamily = samsungSangFamily,
                         fontWeight = FontWeight.W600,
                         fontSize = 32.sp,
                         letterSpacing = 1.4.sp,

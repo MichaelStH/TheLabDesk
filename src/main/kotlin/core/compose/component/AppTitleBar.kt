@@ -9,6 +9,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
+import core.compose.utils.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,7 +40,7 @@ val toolbarFocusedColor = Color(80, 80, 80)
 fun LogoAndMenu(viewModel: MainViewModel) {
     Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
         Image(
-            modifier = Modifier.padding(start = 20.dp),
+            modifier = Modifier.size(64.dp).padding(start = 20.dp),
             painter = painterResource(resourcePath = "images/ic_lab.png"),
             contentDescription = "logo_icon"
         )
@@ -81,10 +82,12 @@ fun LogoAndMenu(viewModel: MainViewModel) {
                     ) {
                         repeat(viewModel.menuOptions.elementAt(index).second.size) {
                             DropdownMenuItem(
-                                text = { Text(viewModel.menuOptions.elementAt(index).second.elementAt(it)) },
+                                text = { Text(viewModel.menuOptions.elementAt(index).second.elementAt(it).first) },
                                 onClick = {
+                                    viewModel.menuOptions.elementAt(index).second.elementAt(it).second.invoke()
                                     expanded = false
-                                })
+                                }
+                            )
                         }
                     }
                 }
