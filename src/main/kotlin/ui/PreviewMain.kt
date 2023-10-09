@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import core.compose.theme.TheLabDeskTheme
 import core.compose.utils.AsyncBitmapImageFromNetwork
 import core.compose.utils.Text
 import utils.Constants
@@ -28,7 +29,7 @@ import viewmodel.MainViewModel
 fun App(viewModel: MainViewModel) {
     val state = rememberLazyListState()
 
-    MaterialTheme {
+    TheLabDeskTheme {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()

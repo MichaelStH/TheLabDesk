@@ -7,6 +7,9 @@ import core.log.Timber
 
 class MainViewModel {
 
+    var isDarkMode by mutableStateOf(false)
+        private set
+
     var menuOptions: Set<Pair<String, Set<Pair<String, () -> Unit>>>> = buildSet {
         add(
             Pair(
@@ -43,6 +46,10 @@ class MainViewModel {
         private set
     var shouldExitApp by mutableStateOf(false)
         private set
+
+    fun updateDarkMode(isDark: Boolean) {
+        this.isDarkMode = isDark
+    }
 
     fun updateText(newValue: String) {
         this.text = newValue

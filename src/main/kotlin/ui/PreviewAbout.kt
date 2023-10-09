@@ -14,6 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import core.compose.theme.TheLabDeskTheme
 import viewmodel.MainViewModel
 
 
@@ -25,7 +26,7 @@ import viewmodel.MainViewModel
 @Composable
 fun About(viewModel: MainViewModel) {
 
-    MaterialTheme {
+    TheLabDeskTheme {
 
         Card(colors = CardDefaults.cardColors(containerColor = Color.LightGray), shape = RoundedCornerShape(35.dp)) {
             Column(

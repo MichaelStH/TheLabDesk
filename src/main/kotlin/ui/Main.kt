@@ -32,6 +32,7 @@ fun main() = application {
 
     val windowState: WindowState = rememberWindowState(width = 850.dp, height = 600.dp)
     val viewModel: MainViewModel = MainViewModel()
+    val isDarkTheme = viewModel.isDarkMode
 
     var isOpen by remember { mutableStateOf(true) }
 
@@ -69,7 +70,7 @@ fun main() = application {
     ) {
         window.minimumSize = Dimension(800, 600)
 
-        TheLabDeskTheme {
+        TheLabDeskTheme(isDarkTheme) {
             Column(modifier = Modifier.fillMaxSize()) {
                 // Custom title toolbar
                 WindowDraggableArea(modifier = Modifier.fillMaxWidth()) {
