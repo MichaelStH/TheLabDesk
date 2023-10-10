@@ -21,6 +21,7 @@ import core.compose.component.TheLabDeskIcon
 import core.compose.theme.TheLabDeskTheme
 import core.compose.utils.WindowDraggableArea
 import core.log.Timber
+import core.utils.OSManager
 import viewmodel.MainViewModel
 import java.awt.Dimension
 
@@ -29,6 +30,8 @@ fun main() = application {
     // Init Timber Logging
     TheLabDeskApp.initArbor()
     Timber.d("main() | applicationScope")
+
+    Timber.d("Application is running on: ${OSManager.getOperatingSystem()} with locale: ${OSManager.getSystemLocale()}")
 
     val windowState: WindowState = rememberWindowState(width = 850.dp, height = 600.dp)
     val viewModel: MainViewModel = MainViewModel()
@@ -98,7 +101,6 @@ fun main() = application {
                     }
                 }
             }
-
         }
     }
 }

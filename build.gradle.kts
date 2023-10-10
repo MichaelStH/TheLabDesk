@@ -24,19 +24,21 @@ dependencies {
     implementation(compose.preview)
     implementation(compose.ui)
     implementation(compose.uiTooling)
+    implementation(libs.compose.full)
 
     // Ktor
-    val ktor_version: String by project
-    implementation("io.ktor:ktor-client-core:$ktor_version")
-    implementation("io.ktor:ktor-client-cio:$ktor_version")
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.cio)
 
     // Logging : Arbor
-    val arbor_version: String by project
-    implementation("com.ToxicBakery.logging:arbor-jvm:$arbor_version")
+    implementation(libs.arbor)
 }
 
 tasks.wrapper {
     this.gradleVersion = "8.4"
+    // You can either download the binary-only version of Gradle (BIN) or
+    // the full version (with sources and documentation) of Gradle (ALL)
+    distributionType = Wrapper.DistributionType.ALL
 }
 
 compose.desktop {
