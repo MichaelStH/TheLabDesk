@@ -1,4 +1,4 @@
-package ui
+package ui.main
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,6 +12,9 @@ import androidx.compose.ui.unit.dp
 import core.compose.theme.TheLabDeskTheme
 import data.local.model.compose.NavigationUiState
 import di.AppModule
+import ui.home.Home
+import ui.SettingsContent
+import ui.news.News
 import viewmodel.MainViewModel
 
 

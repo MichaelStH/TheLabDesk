@@ -1,4 +1,4 @@
-package ui
+package ui.news
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import core.compose.theme.TheLabDeskTheme
 import data.local.model.compose.NewsUiState
 import di.AppModule
-import ui.news.NewsDataItem
 import viewmodel.MainViewModel
 
 @OptIn(ExperimentalFoundationApi::class)

@@ -1,4 +1,4 @@
-package ui
+package ui.splashscreen
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
@@ -60,13 +60,13 @@ fun SplashScreen(viewModel: MainViewModel) {
 
     LaunchedEffect(Unit) {
         progress = 0.2f
-        delay(1_500)
+        delay(1_100)
         progress = 0.4f
         delay(700)
         progress = 0.52f
         delay(350)
         progress = 0.734f
-        delay(2000)
+        delay(1_500)
         progress = 1f
         delay(750)
 

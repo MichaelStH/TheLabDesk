@@ -25,15 +25,12 @@ import core.compose.utils.WindowDraggableArea
 import core.log.Timber
 import core.utils.DisplayManager
 import core.utils.SystemManager
-import data.IRepository
-import data.RepositoryImpl
 import data.local.bean.WindowTypes
-import data.remote.ApiImpl
 import di.AppModule
 import ui.About
-import ui.App
+import ui.main.App
 import ui.Exit
-import ui.SplashScreen
+import ui.splashscreen.SplashScreen
 import viewmodel.MainViewModel
 import java.awt.Dimension
 

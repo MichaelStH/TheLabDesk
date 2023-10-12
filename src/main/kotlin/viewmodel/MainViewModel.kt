@@ -9,10 +9,9 @@ import data.IRepository
 import data.local.bean.WindowTypes
 import data.local.model.compose.NavigationUiState
 import data.local.model.compose.NewsUiState
-import data.remote.dto.NewsDto
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.runBlocking
 
 class MainViewModel(private val repository: IRepository) {
 
@@ -137,22 +136,48 @@ class MainViewModel(private val repository: IRepository) {
     private var _newsUiState: MutableStateFlow<NewsUiState> = MutableStateFlow(NewsUiState.Loading)
     val newsUiState: StateFlow<NewsUiState> = _newsUiState
 
+    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        Timber.e("Error caught: ${throwable.message}")
+        throwable.message
+            ?.let { NewsUiState.Error(it) }
+            ?.let { errorState -> updateNewsUiState(errorState) }
+    }
+
     fun updateNewsUiState(newState: NewsUiState) {
         this._newsUiState.value = newState
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     fun fetchNews() {
         Timber.d("fetchNews()")
 
-        val list: List<NewsDto>? = runBlocking {
+        GlobalScope.launch(Dispatchers.IO) {
+            val list = runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
+                repository.getNews()
+            }
+
+            Timber.d("result: $list")
+
+            if (list.isNotEmpty()) {
+                withContext(Dispatchers.Default) {
+                    updateNewsUiState(NewsUiState.Success(list))
+                }
+            }
+        }
+
+
+        /*val list: List<NewsDto>? = runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
             runCatching {
                 repository.getNews()
             }
                 .onFailure { throwable ->
                     Timber.e("runCatching | onFailure | ${throwable.message}")
-                    throwable.message
-                        ?.let { NewsUiState.Error(it) }
-                        ?.let { errorState -> updateNewsUiState(errorState) }
+
+                    withContext(Dispatchers.Main) {
+                        throwable.message
+                            ?.let { NewsUiState.Error(it) }
+                            ?.let { errorState -> updateNewsUiState(errorState) }
+                    }
                 }
                 .onSuccess {
                     Timber.d("runCatching | onSuccess | done")
@@ -164,6 +189,6 @@ class MainViewModel(private val repository: IRepository) {
 
         if (!list.isNullOrEmpty()) {
             updateNewsUiState(NewsUiState.Success(list))
-        }
+        }*/
     }
 }

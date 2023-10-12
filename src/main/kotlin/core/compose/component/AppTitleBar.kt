@@ -2,6 +2,8 @@ package core.compose.component
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.CursorDropdownMenu
@@ -9,7 +11,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import core.compose.utils.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +26,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowScope
 import androidx.compose.ui.window.WindowState
+import core.compose.theme.md_theme_dark_primaryContainer
+import core.compose.utils.Text
 import core.compose.utils.WindowDraggableArea
 import core.log.Timber
 import viewmodel.MainViewModel
@@ -38,7 +41,7 @@ val toolbarFocusedColor = Color(80, 80, 80)
 @Preview
 @Composable
 fun LogoAndMenu(viewModel: MainViewModel) {
-    Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
         Image(
             modifier = Modifier.size(64.dp).padding(start = 20.dp),
             painter = painterResource(resourcePath = "images/ic_lab.png"),
@@ -62,7 +65,7 @@ fun LogoAndMenu(viewModel: MainViewModel) {
                 Text(
                     modifier = Modifier.align(Alignment.Center),
                     text = viewModel.menuOptions.elementAt(index).first,
-                    style = TextStyle(fontSize = 18.sp)
+                    style = TextStyle(fontSize = 18.sp, color = Color.LightGray)
                 )
             }
 
@@ -161,22 +164,29 @@ fun WindowActions(
     },
     onClose: () -> Unit
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isHovered by interactionSource.collectIsHoveredAsState()
+
     val mode = remember { mutableStateOf(state.placement) }
     val size = remember { mutableStateOf(windowScope.window.size) }
     val position = remember { mutableStateOf(state.position) }
 
     Row(
         modifier = Modifier.fillMaxHeight(),
-        horizontalArrangement = Arrangement.spacedBy(space = 4.dp, alignment = Alignment.End),
-        verticalAlignment = Alignment.CenterVertically
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.Top
     ) {
-        Icon(
-            modifier = Modifier.size(30.dp).clickable(onClick = onMinimize),
-            imageVector = Icons.Filled.Minimize,
-            contentDescription = "minimize"
-        )
-        Icon(
-            modifier = Modifier.size(30.dp).clickable {
+        Box(modifier = Modifier.size(40.dp).clickable(onClick = onMinimize), contentAlignment = Alignment.Center) {
+            Icon(
+                modifier = Modifier.fillMaxSize().padding(8.dp),
+                imageVector = Icons.Filled.Minimize,
+                contentDescription = "minimize",
+                tint = Color.LightGray
+            )
+        }
+
+        Box(
+            modifier = Modifier.size(40.dp).clickable {
                 Timber.d("Click on Maximize icon")
                 mode.value = if (mode.value == WindowPlacement.Floating) {
                     size.value = windowScope.window.size
@@ -192,14 +202,31 @@ fun WindowActions(
                     WindowPlacement.Floating
                 }
             },
-            imageVector = if (state.placement != WindowPlacement.Fullscreen) Icons.Filled.Fullscreen else Icons.Filled.FullscreenExit,
-            contentDescription = "maximize"
-        )
-        Icon(
-            modifier = Modifier.size(30.dp).clickable(onClick = onClose),
-            imageVector = Icons.Filled.Close,
-            contentDescription = "close_icon"
-        )
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                modifier = Modifier.fillMaxSize().padding(8.dp),
+                imageVector = if (state.placement != WindowPlacement.Fullscreen) Icons.Filled.Fullscreen else Icons.Filled.FullscreenExit,
+                contentDescription = "maximize",
+                tint = Color.LightGray
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clickable(onClick = onClose)
+                .hoverable(interactionSource)
+                .background(color = if (!isHovered) Color.Transparent else md_theme_dark_primaryContainer),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                modifier = Modifier.fillMaxSize().padding(8.dp),
+                imageVector = Icons.Filled.Close,
+                contentDescription = "close_icon",
+                tint = Color.LightGray
+            )
+        }
     }
 }
 

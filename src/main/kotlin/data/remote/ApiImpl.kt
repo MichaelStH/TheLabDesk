@@ -6,6 +6,7 @@ import data.remote.dto.NewsDto
 import kotlinx.coroutines.delay
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import java.io.IOException
 
 class ApiImpl : IApi {
 
@@ -14,6 +15,7 @@ class ApiImpl : IApi {
         ignoreUnknownKeys = true
     }
 
+    @Throws(IOException::class)
     override suspend fun getNews(): List<NewsDto> {
         val newsJson = useResource(resourcePath = "json/news.json") {
             json.encodeToString(String(it.readAllBytes()))
@@ -29,8 +31,6 @@ class ApiImpl : IApi {
         delay(500)
 
         val news = json.decodeFromString<List<NewsDto>>(processedNewsJson)
-        val processedNews = news.mapIndexed { index, item -> NewsDto(index, item) }
-
-        return processedNews
+        return news.mapIndexed { index, item -> NewsDto(index, item) }
     }
 }

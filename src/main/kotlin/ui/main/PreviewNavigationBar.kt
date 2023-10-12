@@ -1,4 +1,4 @@
-package ui
+package ui.main
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Arrangement
@@ -45,8 +45,11 @@ fun NavigationBar(viewModel: MainViewModel) {
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     itemsIndexed(items = viewModel.navigationOptions) { index, item ->
+
+                        // Create a composable function which will take list of NavigationUiState
+                        // and a callback to call when any selection is tapped by user on UI
                         if (item.navigationItemType == NavigationItemType.DEFAULT) {
-                            NavigationBarItem(viewModel, index, item)
+                            NavigationBarItem(item, viewModel::updateNavigationItemSelected)
                         }
                     }
                 }
@@ -55,13 +58,10 @@ fun NavigationBar(viewModel: MainViewModel) {
 
             item {
                 if (null != viewModel.navigationOptions.find { it.navigationItemType == NavigationItemType.SETTINGS }) {
-                    NavigationBarItem(
-                        viewModel,
-                        viewModel.navigationOptions.indexOf(viewModel.navigationOptions.find { it.navigationItemType == NavigationItemType.SETTINGS }!!),
+                    val settingsItem =
                         viewModel.navigationOptions.find { it.navigationItemType == NavigationItemType.SETTINGS }!!
-                    )
+                    NavigationBarItem(settingsItem, viewModel::updateNavigationItemSelected)
                 }
-
             }
         }
     }

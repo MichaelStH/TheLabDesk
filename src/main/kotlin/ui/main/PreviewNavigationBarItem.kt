@@ -1,4 +1,4 @@
-package ui
+package ui.main
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import core.compose.theme.TheLabDeskTheme
+import core.compose.theme.md_theme_dark_primaryContainer
 import data.local.model.compose.NavigationUiState
 import di.AppModule
 import viewmodel.MainViewModel
@@ -26,13 +27,13 @@ import viewmodel.MainViewModel
 //////////////////////////////////////////////////
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NavigationBarItem(viewModel: MainViewModel, index: Int, item: NavigationUiState) {
+fun NavigationBarItem(item: NavigationUiState, onNavigationClicked: (NavigationUiState) -> Unit) {
     val shape = RoundedCornerShape(14.dp)
     TheLabDeskTheme {
         Card(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-            onClick = { viewModel.updateNavigationItemSelected(item) },
-            colors = CardDefaults.cardColors(containerColor = if (item.selected) Color.LightGray else Color.Transparent),
+            onClick = { onNavigationClicked(item) },
+            colors = CardDefaults.cardColors(containerColor = if (item.selected) md_theme_dark_primaryContainer else Color.Transparent),
             shape = shape
         ) {
             Column(
@@ -63,6 +64,9 @@ fun NavigationBarItem(viewModel: MainViewModel, index: Int, item: NavigationUiSt
 private fun PreviewNavigationBarItem() {
     val viewModel: MainViewModel = MainViewModel(AppModule.injectDependencies())
     MaterialTheme {
-        NavigationBarItem(viewModel = viewModel, index = 2, item = NavigationUiState.Settings)
+        NavigationBarItem(
+            item = NavigationUiState.Settings,
+            viewModel::updateNavigationItemSelected
+        )
     }
 }
