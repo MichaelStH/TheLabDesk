@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import core.compose.theme.TheLabDeskTheme
@@ -38,6 +39,19 @@ fun TheLabDeskLogo(modifier: Modifier) {
         }
     }
 }
+@Composable
+fun TheLabDeskLogo(modifier: Modifier, contentScale: ContentScale) {
+    TheLabDeskTheme {
+        Box(modifier = Modifier, contentAlignment = Alignment.Center) {
+            Image(
+                modifier = Modifier.then(modifier),
+                painter = painterResource(resourcePath = "images/ic_lab.png"),
+                contentDescription = "logo_icon",
+                contentScale = contentScale
+            )
+        }
+    }
+}
 
 
 @Preview
@@ -45,13 +59,7 @@ fun TheLabDeskLogo(modifier: Modifier) {
 private fun PreviewTheLabDeskLogo() {
     TheLabDeskTheme {
         TheLabDeskLogo()
-    }
-}
-
-@Preview
-@Composable
-private fun PreviewTheLabDeskLogoModifier() {
-    TheLabDeskTheme {
         TheLabDeskLogo(modifier = Modifier.size(300.dp))
+        TheLabDeskLogo(modifier = Modifier.size(300.dp), contentScale = ContentScale.Crop)
     }
 }

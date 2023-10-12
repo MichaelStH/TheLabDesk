@@ -8,10 +8,10 @@ import core.log.Timber
 import data.IRepository
 import data.local.bean.WindowTypes
 import data.local.model.compose.NavigationUiState
+import data.local.model.compose.NewsUiState
 import data.remote.dto.NewsDto
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class MainViewModel(private val repository: IRepository) {
@@ -131,27 +131,39 @@ class MainViewModel(private val repository: IRepository) {
     }
 
 
+    ////////////////////////////////////////////
+    // News
+    ////////////////////////////////////////////
+    private var _newsUiState: MutableStateFlow<NewsUiState> = MutableStateFlow(NewsUiState.Loading)
+    val newsUiState: StateFlow<NewsUiState> = _newsUiState
+
+    fun updateNewsUiState(newState: NewsUiState) {
+        this._newsUiState.value = newState
+    }
+
     fun fetchNews() {
         Timber.d("fetchNews()")
 
-        var list: List<NewsDto>? = null
-
-        runBlocking {
-            launch {
-                list = runCatching {
-                    repository.getNews()
-                }
-                    .onFailure {
-                        Timber.e("runCatching | onFailure | ${it.message}")
-                    }
-                    .onSuccess {
-                        Timber.d("runCatching | onFailure | done")
-                    }
-                    .getOrNull()
-
+        val list: List<NewsDto>? = runBlocking {
+            runCatching {
+                repository.getNews()
             }
+                .onFailure { throwable ->
+                    Timber.e("runCatching | onFailure | ${throwable.message}")
+                    throwable.message
+                        ?.let { NewsUiState.Error(it) }
+                        ?.let { errorState -> updateNewsUiState(errorState) }
+                }
+                .onSuccess {
+                    Timber.d("runCatching | onSuccess | done")
+                }
+                .getOrNull()
         }
 
         Timber.d("result: $list")
+
+        if (!list.isNullOrEmpty()) {
+            updateNewsUiState(NewsUiState.Success(list))
+        }
     }
 }

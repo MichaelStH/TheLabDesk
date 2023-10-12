@@ -11,6 +11,7 @@ version = "1.0-SNAPSHOT"
 
 dependencies {
 
+    implementation(platform(libs.kotlin.bom))
     kotlin("reflect")
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.serialization.json)

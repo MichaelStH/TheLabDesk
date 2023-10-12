@@ -28,6 +28,9 @@ class ApiImpl : IApi {
 
         delay(500)
 
-        return json.decodeFromString<List<NewsDto>>(processedNewsJson)
+        val news = json.decodeFromString<List<NewsDto>>(processedNewsJson)
+        val processedNews = news.mapIndexed { index, item -> NewsDto(index, item) }
+
+        return processedNews
     }
 }
