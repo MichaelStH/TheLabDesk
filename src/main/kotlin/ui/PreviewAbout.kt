@@ -27,7 +27,6 @@ import viewmodel.MainViewModel
 fun About(viewModel: MainViewModel) {
 
     TheLabDeskTheme {
-
         Card(colors = CardDefaults.cardColors(containerColor = Color.LightGray), shape = RoundedCornerShape(35.dp)) {
             Column(
                 modifier = Modifier.background(Color.LightGray).padding(20.dp),
@@ -64,7 +63,7 @@ fun About(viewModel: MainViewModel) {
 private fun About() {
     val viewModel = MainViewModel()
 
-    MaterialTheme {
+    TheLabDeskTheme {
         About(viewModel)
     }
 }

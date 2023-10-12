@@ -3,6 +3,7 @@ package ui
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import core.compose.theme.TheLabDeskTheme
 import viewmodel.MainViewModel
 
 
@@ -13,7 +14,7 @@ import viewmodel.MainViewModel
 //////////////////////////////////////////////////
 @Composable
 fun SettingsContent(viewModel: MainViewModel) {
-    MaterialTheme {
+    TheLabDeskTheme {
 
     }
 }
@@ -27,7 +28,7 @@ fun SettingsContent(viewModel: MainViewModel) {
 @Composable
 private fun PreviewSettingsContent() {
     val viewModel: MainViewModel = MainViewModel()
-    MaterialTheme {
+    TheLabDeskTheme {
         SettingsContent(viewModel = viewModel)
     }
 }

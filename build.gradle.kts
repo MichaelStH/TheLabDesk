@@ -9,6 +9,9 @@ group = "com.riders"
 version = "1.0-SNAPSHOT"
 
 dependencies {
+
+    kotlin("reflect")
+
     // Note, if you develop a library, you should use compose.desktop.common.
     // compose.desktop.currentOs should be used in launcher-sourceSet
     // (in a separate module for demo project and in testMain).
@@ -43,7 +46,7 @@ tasks.wrapper {
 
 compose.desktop {
     application {
-        mainClass = "ui.MainKt"
+        mainClass = "TheLabDeskApp.kt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)

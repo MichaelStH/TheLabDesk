@@ -3,8 +3,12 @@ package viewmodel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import core.log.Timber
 import data.local.bean.WindowTypes
+import data.local.model.compose.NavigationUiState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class MainViewModel {
 
@@ -16,6 +20,14 @@ class MainViewModel {
 
     var isDarkMode by mutableStateOf(false)
         private set
+
+    private val _navigationOptions = NavigationUiState.values().toMutableStateList()
+    val navigationOptions: List<NavigationUiState>
+        get() = _navigationOptions
+
+    private var _currentNavigationUiState: MutableStateFlow<NavigationUiState> =
+        MutableStateFlow(NavigationUiState.Home)
+    val currentNavigationUiState: StateFlow<NavigationUiState> = _currentNavigationUiState
 
     var menuOptions: Set<Pair<String, Set<Pair<String, () -> Unit>>>> = buildSet {
         add(
@@ -71,6 +83,20 @@ class MainViewModel {
         this.isDarkMode = isDark
     }
 
+    fun updateNavigationItemSelected(selectedOption: NavigationUiState) {
+        _navigationOptions.forEach { it.selected = false }
+        _navigationOptions.find { it == selectedOption }?.selected = true
+
+        _navigationOptions.find { it == selectedOption }?.let {
+            Timber.d("update selected item: ${it.toString()}, ${it.selected}, ${it.navigationItemType}")
+            updateCurrentNavigationUiState(it)
+        }
+    }
+
+    fun updateCurrentNavigationUiState(newState: NavigationUiState) {
+        this._currentNavigationUiState.value = newState
+    }
+
     fun updateText(newValue: String) {
         this.text = newValue
     }
@@ -93,5 +119,7 @@ class MainViewModel {
 
     init {
         Timber.d("Init ViewModel")
+
+        updateNavigationItemSelected(NavigationUiState.Home)
     }
 }

@@ -74,7 +74,7 @@ fun Exit(viewModel: MainViewModel) {
 @Composable
 private fun PreviewExit() {
     val viewModel: MainViewModel = MainViewModel()
-    MaterialTheme {
+    TheLabDeskTheme {
         Exit(viewModel = viewModel)
     }
 }

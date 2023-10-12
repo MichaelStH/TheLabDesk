@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import core.compose.theme.TheLabDeskTheme
 import core.compose.theme.samsungSangFamily
 
 
@@ -32,7 +33,7 @@ import core.compose.theme.samsungSangFamily
 @Preview
 @Composable
 fun WelcomeContent() {
-    MaterialTheme {
+    TheLabDeskTheme {
         Card(
             modifier = Modifier.fillMaxWidth().heightIn(0.dp, 300.dp).padding(20.dp),
 //                colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E)),

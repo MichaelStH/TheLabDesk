@@ -2,20 +2,11 @@ package ui
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import core.compose.theme.TheLabDeskTheme
-import core.compose.utils.AsyncBitmapImageFromNetwork
-import core.compose.utils.Text
-import utils.Constants
 import viewmodel.MainViewModel
 
 
@@ -27,42 +18,19 @@ import viewmodel.MainViewModel
 @Composable
 @Preview
 fun App(viewModel: MainViewModel) {
-    val state = rememberLazyListState()
-
     TheLabDeskTheme {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(end = 12.dp),
-            state = state
-        ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
 
-            item {
-                WelcomeContent()
-            }
-
-            item {
-                BoxWithConstraints(modifier = Modifier.fillMaxWidth(), Alignment.Center) {
-                    Card(
-                        modifier = Modifier.width(this.maxWidth / 1.5f).heightIn(0.dp, 300.dp).padding(20.dp),
-                        shape = RoundedCornerShape(35.dp)
-                    ) {
-                        AsyncBitmapImageFromNetwork(
-                            modifier = Modifier.fillMaxWidth(),
-                            url = Constants.IMAGE_URL
-                        )
-                    }
+                Box(modifier = Modifier.width(100.dp).fillMaxHeight(), contentAlignment = Alignment.Center){
+                    NavigationBar(viewModel)
                 }
-            }
-
-            item {
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = {
-                        viewModel.updateText("Hello, Desktop!")
-                    }
-                ) {
-                    Text(text = viewModel.text)
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart){
+                    NavigationContent(viewModel)
                 }
             }
         }
@@ -79,7 +47,7 @@ fun App(viewModel: MainViewModel) {
 @Composable
 private fun PreviewApp() {
     val viewModel: MainViewModel = MainViewModel()
-    MaterialTheme {
+    TheLabDeskTheme {
         App(viewModel = viewModel)
     }
 }

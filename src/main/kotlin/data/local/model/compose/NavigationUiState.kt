@@ -16,4 +16,10 @@ sealed class NavigationUiState(
     data object News : NavigationUiState(Icons.Filled.Newspaper, false, NavigationItemType.DEFAULT)
     data object Settings : NavigationUiState(Icons.Filled.Settings, false, NavigationItemType.SETTINGS)
 
+    companion object {
+        fun values(): List<NavigationUiState> = listOf(Home, News, Settings)
+
+        fun valuesIndexed(): List<NavigationUiState> =
+            NavigationUiState::class.sealedSubclasses.mapIndexed { _, kClass -> kClass.objectInstance as NavigationUiState }
+    }
 }
