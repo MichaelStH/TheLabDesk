@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import core.compose.theme.TheLabDeskTheme
 import core.compose.utils.AsyncBitmapImageFromNetwork
+import di.AppModule
 import utils.Constants
 import viewmodel.MainViewModel
 
@@ -79,7 +80,7 @@ fun Home(viewModel: MainViewModel) {
 @Preview
 @Composable
 private fun PreviewHome() {
-    val viewModel: MainViewModel = MainViewModel()
+    val viewModel: MainViewModel = MainViewModel(AppModule.injectDependencies())
     TheLabDeskTheme {
         Home(viewModel = viewModel)
     }

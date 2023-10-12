@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import core.compose.theme.TheLabDeskTheme
 import data.local.bean.NavigationItemType
+import di.AppModule
 import viewmodel.MainViewModel
 
 
@@ -74,7 +75,7 @@ fun NavigationBar(viewModel: MainViewModel) {
 @Preview
 @Composable
 private fun PreviewNavigationBar() {
-    val viewModel: MainViewModel = MainViewModel()
+    val viewModel: MainViewModel = MainViewModel(AppModule.injectDependencies())
     TheLabDeskTheme {
         NavigationBar(viewModel = viewModel)
     }

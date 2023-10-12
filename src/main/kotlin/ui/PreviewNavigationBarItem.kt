@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import core.compose.theme.TheLabDeskTheme
 import data.local.model.compose.NavigationUiState
+import di.AppModule
 import viewmodel.MainViewModel
 
 
@@ -60,7 +61,7 @@ fun NavigationBarItem(viewModel: MainViewModel, index: Int, item: NavigationUiSt
 @Preview
 @Composable
 private fun PreviewNavigationBarItem() {
-    val viewModel: MainViewModel = MainViewModel()
+    val viewModel: MainViewModel = MainViewModel(AppModule.injectDependencies())
     MaterialTheme {
         NavigationBarItem(viewModel = viewModel, index = 2, item = NavigationUiState.Settings)
     }

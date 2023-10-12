@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import core.compose.theme.TheLabDeskTheme
 import data.local.model.compose.NavigationUiState
+import di.AppModule
 import viewmodel.MainViewModel
 
 
@@ -29,7 +30,12 @@ fun NavigationContent(viewModel: MainViewModel) {
                 is NavigationUiState.Home -> {
                     Home(viewModel)
                 }
-                is NavigationUiState.News -> {}
+
+                is NavigationUiState.News -> {
+                    viewModel.fetchNews()
+                    News(viewModel)
+                }
+
                 is NavigationUiState.Settings -> {
                     SettingsContent(viewModel)
                 }
@@ -46,7 +52,7 @@ fun NavigationContent(viewModel: MainViewModel) {
 @Preview
 @Composable
 private fun PreviewNavigationContent() {
-    val viewModel: MainViewModel = MainViewModel()
+    val viewModel: MainViewModel = MainViewModel(AppModule.injectDependencies())
     TheLabDeskTheme {
         NavigationContent(viewModel = viewModel)
     }

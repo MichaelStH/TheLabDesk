@@ -1,6 +1,7 @@
 package core.utils
 
 import core.log.Timber
+import utils.Constants
 import java.util.*
 
 object SystemManager {
@@ -32,4 +33,6 @@ object SystemManager {
                     ""
         )
     }
+
+    fun isWindows11(): Boolean = getOperatingSystem().equals(Constants.WINDOWS_11, true)
 }

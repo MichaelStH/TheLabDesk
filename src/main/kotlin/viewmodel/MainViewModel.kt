@@ -5,12 +5,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import core.log.Timber
+import data.IRepository
 import data.local.bean.WindowTypes
 import data.local.model.compose.NavigationUiState
+import data.remote.dto.NewsDto
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
-class MainViewModel {
+class MainViewModel(private val repository: IRepository) {
 
     var windowType by mutableStateOf(WindowTypes.SPLASHSCREEN)
         private set
@@ -87,9 +91,12 @@ class MainViewModel {
         _navigationOptions.forEach { it.selected = false }
         _navigationOptions.find { it == selectedOption }?.selected = true
 
-        _navigationOptions.find { it == selectedOption }?.let {
-            Timber.d("update selected item: ${it.toString()}, ${it.selected}, ${it.navigationItemType}")
-            updateCurrentNavigationUiState(it)
+        _navigationOptions.find { it == selectedOption }?.let { navigationItem ->
+            Timber.d("update selected item: ${navigationItem.toString()}, ${navigationItem.selected}, ${navigationItem.navigationItemType}")
+            updateCurrentNavigationUiState(navigationItem)
+            _navigationOptions.forEach { element ->
+                Timber.d("list updated: ${element.toString()}, ${element.selected}, ${element.navigationItemType}")
+            }
         }
     }
 
@@ -121,5 +128,30 @@ class MainViewModel {
         Timber.d("Init ViewModel")
 
         updateNavigationItemSelected(NavigationUiState.Home)
+    }
+
+
+    fun fetchNews() {
+        Timber.d("fetchNews()")
+
+        var list: List<NewsDto>? = null
+
+        runBlocking {
+            launch {
+                list = runCatching {
+                    repository.getNews()
+                }
+                    .onFailure {
+                        Timber.e("runCatching | onFailure | ${it.message}")
+                    }
+                    .onSuccess {
+                        Timber.d("runCatching | onFailure | done")
+                    }
+                    .getOrNull()
+
+            }
+        }
+
+        Timber.d("result: $list")
     }
 }

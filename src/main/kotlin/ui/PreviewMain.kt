@@ -7,6 +7,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import core.compose.theme.TheLabDeskTheme
+import di.AppModule
 import viewmodel.MainViewModel
 
 
@@ -46,7 +47,7 @@ fun App(viewModel: MainViewModel) {
 @Preview
 @Composable
 private fun PreviewApp() {
-    val viewModel: MainViewModel = MainViewModel()
+    val viewModel: MainViewModel = MainViewModel(AppModule.injectDependencies())
     TheLabDeskTheme {
         App(viewModel = viewModel)
     }

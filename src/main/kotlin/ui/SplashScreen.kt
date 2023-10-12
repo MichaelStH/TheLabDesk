@@ -18,6 +18,7 @@ import core.compose.component.CardWithAnimatedBorder
 import core.compose.component.TheLabDeskLogo
 import core.compose.theme.TheLabDeskTheme
 import core.compose.theme.samsungSangFamily
+import di.AppModule
 import kotlinx.coroutines.delay
 import viewmodel.MainViewModel
 
@@ -82,7 +83,7 @@ fun SplashScreen(viewModel: MainViewModel) {
 @Preview
 @Composable
 private fun PreviewSplashScreen() {
-    val viewModel: MainViewModel = MainViewModel()
+    val viewModel: MainViewModel = MainViewModel(AppModule.injectDependencies())
     TheLabDeskTheme {
         SplashScreen(viewModel)
     }

@@ -15,6 +15,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import core.compose.theme.TheLabDeskTheme
+import di.AppModule
 import viewmodel.MainViewModel
 
 
@@ -61,7 +62,7 @@ fun About(viewModel: MainViewModel) {
 @Preview
 @Composable
 private fun About() {
-    val viewModel = MainViewModel()
+    val viewModel = MainViewModel(AppModule.injectDependencies())
 
     TheLabDeskTheme {
         About(viewModel)

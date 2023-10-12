@@ -4,6 +4,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,7 +25,11 @@ import core.compose.utils.WindowDraggableArea
 import core.log.Timber
 import core.utils.DisplayManager
 import core.utils.SystemManager
+import data.IRepository
+import data.RepositoryImpl
 import data.local.bean.WindowTypes
+import data.remote.ApiImpl
+import di.AppModule
 import ui.About
 import ui.App
 import ui.Exit
@@ -33,6 +39,11 @@ import java.awt.Dimension
 
 
 object TheLabDeskApp {
+
+    @Synchronized
+    fun init() {
+
+    }
 
     /**
      * Source https://github.com/ToxicBakery/Arbor
@@ -56,6 +67,7 @@ fun initTimber() {
     SystemManager.getSystemInfo()
 }
 
+
 //////////////////////////////////////////
 //
 // APP
@@ -64,7 +76,8 @@ fun initTimber() {
 fun main() {
     initTimber()
 
-    val viewModel: MainViewModel = MainViewModel()
+    val viewModel: MainViewModel = MainViewModel(AppModule.injectDependencies())
+
 
     val isDarkTheme = viewModel.isDarkMode
 
@@ -137,33 +150,68 @@ fun main() {
                             // windowState.position = WindowPosition(x = (screenWidth / 6).dp, y = (screenHeight / 6).dp)
                             windowState.size = DpSize(width = 1200.dp, height = 800.dp)
 
-                            Column(modifier = Modifier.fillMaxSize()) {
-                                // Custom title toolbar
-                                WindowDraggableArea(modifier = Modifier.fillMaxWidth()) {
-                                    AppTitleBar(
-                                        viewModel = viewModel,
-                                        windowState = windowState
+                            if (!SystemManager.isWindows11()) {
+                                Column(modifier = Modifier.fillMaxSize()) {
+                                    // Custom title toolbar
+                                    WindowDraggableArea(modifier = Modifier.fillMaxWidth()) {
+                                        AppTitleBar(
+                                            viewModel = viewModel,
+                                            windowState = windowState
+                                        ) {
+                                            exitApplication()
+                                        }
+                                    }
+
+                                    Box(
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentAlignment = Alignment.Center
                                     ) {
-                                        exitApplication()
+                                        ScrollableWindowContent(
+                                            modifier = Modifier.blur(radius = if (viewModel.shouldShowAboutDialog || viewModel.shouldExitAppConfirmationDialog) 25.dp else 0.dp)
+                                        ) {
+                                            // App Content
+                                            App(viewModel)
+                                        }
+                                        if (viewModel.shouldShowAboutDialog) {
+                                            About(viewModel)
+                                        }
+
+                                        if (viewModel.shouldExitAppConfirmationDialog) {
+                                            Exit(viewModel)
+                                        }
                                     }
                                 }
+                            } else {
+                                Card(shape = RoundedCornerShape(12.dp)) {
+                                    Column(modifier = Modifier.fillMaxSize()) {
+                                        // Custom title toolbar
+                                        WindowDraggableArea(modifier = Modifier.fillMaxWidth()) {
+                                            AppTitleBar(
+                                                viewModel = viewModel,
+                                                windowState = windowState
+                                            ) {
+                                                exitApplication()
+                                            }
+                                        }
 
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    ScrollableWindowContent(
-                                        modifier = Modifier.blur(radius = if (viewModel.shouldShowAboutDialog || viewModel.shouldExitAppConfirmationDialog) 25.dp else 0.dp)
-                                    ) {
-                                        // App Content
-                                        App(viewModel)
-                                    }
-                                    if (viewModel.shouldShowAboutDialog) {
-                                        About(viewModel)
-                                    }
+                                        Box(
+                                            modifier = Modifier.fillMaxSize(),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            ScrollableWindowContent(
+                                                modifier = Modifier.blur(radius = if (viewModel.shouldShowAboutDialog || viewModel.shouldExitAppConfirmationDialog) 25.dp else 0.dp)
+                                            ) {
+                                                // App Content
+                                                App(viewModel)
+                                            }
+                                            if (viewModel.shouldShowAboutDialog) {
+                                                About(viewModel)
+                                            }
 
-                                    if (viewModel.shouldExitAppConfirmationDialog) {
-                                        Exit(viewModel)
+                                            if (viewModel.shouldExitAppConfirmationDialog) {
+                                                Exit(viewModel)
+                                            }
+                                        }
                                     }
                                 }
                             }
