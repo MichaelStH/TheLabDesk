@@ -1,10 +1,12 @@
 package ui
 
 import TheLabDeskApp
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -12,7 +14,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import core.compose.component.AppTitleBar
@@ -21,83 +25,139 @@ import core.compose.component.TheLabDeskIcon
 import core.compose.theme.TheLabDeskTheme
 import core.compose.utils.WindowDraggableArea
 import core.log.Timber
-import core.utils.OSManager
+import core.utils.DisplayManager
+import core.utils.SystemManager
+import data.local.bean.WindowTypes
 import viewmodel.MainViewModel
 import java.awt.Dimension
 
-fun main() = application {
-
+//////////////////////////////////////////
+//
+// CLASS METHODS
+//
+//////////////////////////////////////////
+fun initTimber() {
     // Init Timber Logging
     TheLabDeskApp.initArbor()
     Timber.d("main() | applicationScope")
 
-    Timber.d("Application is running on: ${OSManager.getOperatingSystem()} with locale: ${OSManager.getSystemLocale()}")
+    SystemManager.getSystemInfo()
+}
 
-    val windowState: WindowState = rememberWindowState(width = 850.dp, height = 600.dp)
+//////////////////////////////////////////
+//
+// APP
+//
+//////////////////////////////////////////
+
+
+fun main() {
+    initTimber()
+
     val viewModel: MainViewModel = MainViewModel()
+
     val isDarkTheme = viewModel.isDarkMode
 
-    var isOpen by remember { mutableStateOf(true) }
+    application {
+        val windowSize: Dimension = DisplayManager.getScreenDimension()
+        val screenWidth: Int = windowSize.width
+        val screenHeight: Int = windowSize.height
 
-    if (isOpen) {
-        val trayState = rememberTrayState()
-        val notification = rememberNotification("Notification", "Message from MyApp!")
+        Timber.d("java.awt.Toolkit.getDefaultToolkit().screenSize | width: ${screenWidth}, height: $screenHeight")
 
-        Tray(
-            state = trayState,
-            icon = TheLabDeskIcon,
-            menu = {
-                Item(
-                    "Send notification",
-                    onClick = {
-                        trayState.sendNotification(notification)
-                    }
-                )
-                Item(
-                    "Exit",
-                    onClick = {
-                        isOpen = false
-                    }
-                )
-            }
+        val windowState: WindowState = rememberWindowState(
+            width = 500.dp,
+            height = 350.dp
         )
-    }
 
-    Window(
-        state = windowState,
-        icon = painterResource("images/ic_lab.png"),
-        undecorated = true,
-        //transparent = true,
-        resizable = true,
-        onCloseRequest = ::exitApplication
-    ) {
-        window.minimumSize = Dimension(800, 600)
+        var isOpen by remember { mutableStateOf(true) }
 
-        TheLabDeskTheme(isDarkTheme) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                // Custom title toolbar
-                WindowDraggableArea(modifier = Modifier.fillMaxWidth()) {
-                    AppTitleBar(viewModel, windowState) {
-                        exitApplication()
-                    }
+        if (isOpen) {
+            val trayState = rememberTrayState()
+            val notification = rememberNotification("Notification", "Message from MyApp!")
+
+            Tray(
+                state = trayState,
+                icon = TheLabDeskIcon,
+                menu = {
+                    Item(
+                        "Send notification",
+                        onClick = {
+                            trayState.sendNotification(notification)
+                        }
+                    )
+                    Item(
+                        "Exit",
+                        onClick = {
+                            isOpen = false
+                        }
+                    )
                 }
+            )
+        }
 
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    ScrollableWindowContent(
-                        modifier = Modifier.blur(radius = if (viewModel.shouldShowAboutDialog || viewModel.shouldExitAppConfirmationDialog) 25.dp else 0.dp)
-                    ) {
-                        // App Content
-                        App(viewModel)
-                    }
-                    if (viewModel.shouldShowAboutDialog) {
-                        About(viewModel)
-                    }
+        Window(
+            state = windowState,
+            icon = painterResource("images/ic_lab.png"),
+            undecorated = true,
+            transparent = true,
+            resizable = viewModel.windowType != WindowTypes.SPLASHSCREEN,
+            onCloseRequest = ::exitApplication
+        ) {
+            TheLabDeskTheme(isDarkTheme) {
+                Box(modifier = Modifier.background(Color.Transparent)) {
+                    AnimatedContent(
+                        targetState = viewModel.isLoadingFinished,
+                        transitionSpec = { fadeIn() togetherWith fadeOut() }
+                    ) { target ->
+                        if (!target) {
+                            windowState.position = WindowPosition(x = (screenWidth / 3).dp, y = (screenHeight / 3).dp)
+                            windowState.size = DpSize(width = 400.dp, height = 200.dp)
 
-                    if (viewModel.shouldExitAppConfirmationDialog) {
-                        Exit(viewModel)
+                            BoxWithConstraints(
+                                modifier = Modifier
+                                    .size(width = screenWidth.dp, height = screenHeight.dp)
+                                    .background(Color.Transparent),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Timber.d("Window size | width: ${this.maxWidth}, height: ${this.maxHeight}")
+                                SplashScreen(viewModel)
+                            }
+                        } else {
+                            windowState.position = WindowPosition(x = (screenWidth / 6).dp, y = (screenHeight / 6).dp)
+                            windowState.size = DpSize(width = 1200.dp, height = 800.dp)
+
+                            Column(modifier = Modifier.fillMaxSize()) {
+                                // Custom title toolbar
+                                WindowDraggableArea(modifier = Modifier.fillMaxWidth()) {
+                                    AppTitleBar(
+                                        viewModel = viewModel,
+                                        windowState = windowState
+                                    ) {
+                                        exitApplication()
+                                    }
+                                }
+
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    ScrollableWindowContent(
+                                        modifier = Modifier.blur(radius = if (viewModel.shouldShowAboutDialog || viewModel.shouldExitAppConfirmationDialog) 25.dp else 0.dp)
+                                    ) {
+                                        // App Content
+                                        App(viewModel)
+                                    }
+                                    if (viewModel.shouldShowAboutDialog) {
+                                        About(viewModel)
+                                    }
+
+                                    if (viewModel.shouldExitAppConfirmationDialog) {
+                                        Exit(viewModel)
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }

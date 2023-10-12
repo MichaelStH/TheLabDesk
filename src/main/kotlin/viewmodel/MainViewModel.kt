@@ -4,8 +4,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import core.log.Timber
+import data.local.bean.WindowTypes
 
 class MainViewModel {
+
+    var windowType by mutableStateOf(WindowTypes.SPLASHSCREEN)
+        private set
+
+    var isLoadingFinished by mutableStateOf(false)
+        private set
 
     var isDarkMode by mutableStateOf(false)
         private set
@@ -46,6 +53,19 @@ class MainViewModel {
         private set
     var shouldExitApp by mutableStateOf(false)
         private set
+
+    fun updateWindowType(newType: WindowTypes) {
+        this.windowType = newType
+    }
+
+    fun updateIsLoading(loadingFinished: Boolean) {
+        this.isLoadingFinished = loadingFinished
+
+        if (loadingFinished) {
+            Timber.d("Loading finished")
+            updateWindowType(WindowTypes.MAIN)
+        }
+    }
 
     fun updateDarkMode(isDark: Boolean) {
         this.isDarkMode = isDark
