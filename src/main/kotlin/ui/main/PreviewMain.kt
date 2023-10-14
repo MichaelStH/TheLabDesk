@@ -19,7 +19,7 @@ import viewmodel.MainViewModel
 @Composable
 @Preview
 fun App(viewModel: MainViewModel) {
-    TheLabDeskTheme {
+    TheLabDeskTheme(viewModel.isDarkMode) {
         Column(modifier = Modifier.fillMaxSize()) {
             Row(
                 modifier = Modifier.fillMaxSize(),

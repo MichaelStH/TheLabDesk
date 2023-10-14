@@ -27,7 +27,7 @@ import viewmodel.MainViewModel
 fun NavigationContent(viewModel: MainViewModel) {
     val currentNavigation by viewModel.currentNavigationUiState.collectAsState()
 
-    TheLabDeskTheme {
+    TheLabDeskTheme(viewModel.isDarkMode) {
         Card(colors = CardDefaults.cardColors(containerColor = Color.LightGray), shape = RoundedCornerShape(35.dp)) {
             when (currentNavigation) {
                 is NavigationUiState.Home -> {

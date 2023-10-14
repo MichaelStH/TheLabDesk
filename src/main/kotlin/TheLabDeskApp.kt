@@ -75,9 +75,6 @@ fun main() {
 
     val viewModel: MainViewModel = MainViewModel(AppModule.injectDependencies())
 
-
-    val isDarkTheme = viewModel.isDarkMode
-
     application {
         val windowSize: Dimension = DisplayManager.getScreenDimension()
         val screenWidth: Int = windowSize.width
@@ -124,7 +121,7 @@ fun main() {
             resizable = viewModel.windowType != WindowTypes.SPLASHSCREEN,
             onCloseRequest = ::exitApplication
         ) {
-            TheLabDeskTheme(isDarkTheme) {
+            TheLabDeskTheme(viewModel.isDarkMode) {
                 Box(modifier = Modifier.background(Color.Transparent)) {
                     AnimatedContent(
                         targetState = viewModel.isLoadingFinished,

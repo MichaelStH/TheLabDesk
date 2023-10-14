@@ -27,7 +27,7 @@ import viewmodel.MainViewModel
 fun NavigationBar(viewModel: MainViewModel) {
     val state = rememberLazyListState()
 
-    TheLabDeskTheme {
+    TheLabDeskTheme(viewModel.isDarkMode) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -76,7 +76,8 @@ fun NavigationBar(viewModel: MainViewModel) {
 @Composable
 private fun PreviewNavigationBar() {
     val viewModel: MainViewModel = MainViewModel(AppModule.injectDependencies())
-    TheLabDeskTheme {
+    viewModel.updateDarkMode(true)
+    TheLabDeskTheme(true) {
         NavigationBar(viewModel = viewModel)
     }
 }
