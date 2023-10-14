@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import core.compose.theme.TheLabDeskTheme
+import core.compose.theme.Typography
 import core.compose.theme.md_theme_dark_primaryContainer
 import data.local.model.compose.NavigationUiState
 import di.AppModule
@@ -42,12 +43,16 @@ fun NavigationBarItem(item: NavigationUiState, onNavigationClicked: (NavigationU
                 verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
             ) {
                 Icon(
-                    modifier = Modifier.size(60.dp).padding(8.dp), imageVector = item.icon, contentDescription = null
+                    modifier = Modifier.size(30.dp),
+                    imageVector = item.icon,
+                    contentDescription = null,
+                    tint = if (item.selected) Color.White else Color.LightGray
                 )
 
                 Text(
                     text = item.javaClass.simpleName,
-                    style = MaterialTheme.typography.bodyMedium
+                    style = if (item.selected) Typography.titleMedium else Typography.bodyMedium,
+                    color = if (item.selected) Color.White else Color.LightGray
                 )
             }
         }

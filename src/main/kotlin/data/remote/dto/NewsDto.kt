@@ -1,8 +1,10 @@
 package data.remote.dto
 
+import androidx.compose.runtime.Stable
 import kotlinx.serialization.SerialName
 import java.io.Serializable
 
+@Stable
 @kotlinx.serialization.Serializable
 data class NewsDto(
     @SerialName("title")

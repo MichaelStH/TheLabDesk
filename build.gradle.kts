@@ -39,6 +39,13 @@ dependencies {
 
     // Logging : Arbor
     implementation(libs.arbor)
+
+    /*
+     * https://dev.to/tkuenneth/automatically-switch-to-dark-mode-and-back-in-compose-for-desktop-303l
+     * As you can see, the color mode is stored in the Windows Registry and the macOS Defaults database.
+     * To access both in Java or Kotlin I have written a tiny open source library called Native Parameter Store Acess.
+     */
+    implementation("com.github.tkuenneth:nativeparameterstoreaccess:0.1.2")
 }
 
 tasks.wrapper {

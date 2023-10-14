@@ -5,6 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import core.log.Timber
 
 private val LightColorScheme = lightColorScheme(
     primary = md_theme_light_primary,
@@ -71,6 +72,23 @@ private val DarkColorScheme = darkColorScheme(
     scrim = md_theme_dark_scrim,*/
 )
 
+/*fun isSystemInDarkTheme(): Boolean {
+    Timber.d("isSystemInDarkTheme()")
+    return when {
+        OSUtils.IS_WINDOWS -> {
+            val result = WindowsRegistry.getWindowsRegistryEntry(
+                "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+                "AppsUseLightTheme")
+            result == 0x0
+        }
+        OSUtils.IS_OSX -> {
+            val result = MacOSDefaults.getDefaultsEntry("AppleInterfaceStyle")
+            result == "Dark"
+        }
+        else -> false
+    }
+}*/
+
 @Composable
 fun TheLabDeskTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -79,6 +97,8 @@ fun TheLabDeskTheme(
     content: @Composable () -> Unit
 ) {
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+
+    Timber.d("recomposition: darkTheme: $darkTheme")
 
     MaterialTheme(
         colorScheme = colorScheme,

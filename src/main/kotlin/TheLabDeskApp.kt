@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,12 +22,15 @@ import core.compose.component.AppTitleBar
 import core.compose.component.ScrollableWindowContent
 import core.compose.component.TheLabDeskIcon
 import core.compose.theme.TheLabDeskTheme
+import core.compose.theme.md_theme_dark_background
+import core.compose.theme.md_theme_light_background
 import core.compose.utils.WindowDraggableArea
 import core.log.Timber
 import core.utils.DisplayManager
 import core.utils.SystemManager
 import data.local.bean.WindowTypes
 import di.AppModule
+import kotlinx.coroutines.DelicateCoroutinesApi
 import ui.About
 import ui.Exit
 import ui.main.App
@@ -37,8 +41,8 @@ import java.awt.Dimension
 
 object TheLabDeskApp {
 
-    @Synchronized
     fun init() {
+        Timber.d("init()")
 
     }
 
@@ -70,15 +74,25 @@ fun initTimber() {
 // APP
 //
 //////////////////////////////////////////
+@OptIn(DelicateCoroutinesApi::class)
 fun main() {
     initTimber()
 
     val viewModel: MainViewModel = MainViewModel(AppModule.injectDependencies())
 
+    /*GlobalScope.launch {
+        while (isActive) {
+            val newMode = isSystemInDarkTheme()
+            if (viewModel.isDarkMode != newMode) {
+                viewModel.updateDarkMode( newMode)
+            }
+            delay(1000)
+        }
+    }*/
+
     application {
-        val windowSize: Dimension = DisplayManager.getScreenDimension()
-        val screenWidth: Int = windowSize.width
-        val screenHeight: Int = windowSize.height
+        val screenWidth: Int = DisplayManager.getScreenWidth()
+        val screenHeight: Int = DisplayManager.getScreenHeight()
 
         Timber.d("java.awt.Toolkit.getDefaultToolkit().screenSize | width: ${screenWidth}, height: $screenHeight")
 
@@ -145,39 +159,12 @@ fun main() {
                             windowState.position = WindowPosition(x = (screenWidth / 6).dp, y = (screenHeight / 6).dp)
                             windowState.size = DpSize(width = 1200.dp, height = 800.dp)
 
-                            if (!SystemManager.isWindows11()) {
-                                Column(modifier = Modifier.fillMaxSize()) {
-                                    // Custom title toolbar
-                                    WindowDraggableArea(modifier = Modifier.fillMaxWidth()) {
-                                        AppTitleBar(
-                                            viewModel = viewModel,
-                                            windowState = windowState
-                                        ) {
-                                            exitApplication()
-                                        }
-                                    }
-
-                                    Box(
-                                        modifier = Modifier.fillMaxSize(),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        ScrollableWindowContent(
-                                            modifier = Modifier.blur(radius = if (viewModel.shouldShowAboutDialog || viewModel.shouldExitAppConfirmationDialog) 25.dp else 0.dp)
-                                        ) {
-                                            // App Content
-                                            App(viewModel)
-                                        }
-                                        if (viewModel.shouldShowAboutDialog) {
-                                            About(viewModel)
-                                        }
-
-                                        if (viewModel.shouldExitAppConfirmationDialog) {
-                                            Exit(viewModel)
-                                        }
-                                    }
-                                }
-                            } else {
-                                Card(shape = RoundedCornerShape(12.dp)) {
+                            // A surface container using the 'background' color from the theme
+                            Surface(
+                                modifier = Modifier.fillMaxSize(),
+                                color = if (!androidx.compose.foundation.isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background
+                            ) {
+                                if (!SystemManager.isWindows11()) {
                                     Column(modifier = Modifier.fillMaxSize()) {
                                         // Custom title toolbar
                                         WindowDraggableArea(modifier = Modifier.fillMaxWidth()) {
@@ -205,6 +192,39 @@ fun main() {
 
                                             if (viewModel.shouldExitAppConfirmationDialog) {
                                                 Exit(viewModel)
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    Card(shape = RoundedCornerShape(12.dp)) {
+                                        Column(modifier = Modifier.fillMaxSize()) {
+                                            // Custom title toolbar
+                                            WindowDraggableArea(modifier = Modifier.fillMaxWidth()) {
+                                                AppTitleBar(
+                                                    viewModel = viewModel,
+                                                    windowState = windowState
+                                                ) {
+                                                    exitApplication()
+                                                }
+                                            }
+
+                                            Box(
+                                                modifier = Modifier.fillMaxSize(),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                ScrollableWindowContent(
+                                                    modifier = Modifier.blur(radius = if (viewModel.shouldShowAboutDialog || viewModel.shouldExitAppConfirmationDialog) 25.dp else 0.dp)
+                                                ) {
+                                                    // App Content
+                                                    App(viewModel)
+                                                }
+                                                if (viewModel.shouldShowAboutDialog) {
+                                                    About(viewModel)
+                                                }
+
+                                                if (viewModel.shouldExitAppConfirmationDialog) {
+                                                    Exit(viewModel)
+                                                }
                                             }
                                         }
                                     }

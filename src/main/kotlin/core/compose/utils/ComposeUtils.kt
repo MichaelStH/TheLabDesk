@@ -87,7 +87,7 @@ fun WindowScope.WindowDraggableArea(
 
 private class DragHandler(private val window: Window) {
     private var location = window.location.toComposeOffset()
-    private var pointStart = MouseInfo.getPointerInfo().location.toComposeOffset()
+    private var pointStart:IntOffset? = if(null == MouseInfo.getPointerInfo()) null else MouseInfo.getPointerInfo().location.toComposeOffset()
 
     private val dragListener = object : MouseMotionAdapter() {
         override fun mouseDragged(event: MouseEvent) = drag()
@@ -107,9 +107,11 @@ private class DragHandler(private val window: Window) {
     }
 
     private fun drag() {
-        val point = MouseInfo.getPointerInfo().location.toComposeOffset()
-        val location = location + (point - pointStart)
-        window.setLocation(location.x, location.y)
+        if(null != pointStart) {
+            val point = MouseInfo.getPointerInfo().location.toComposeOffset()
+            val location = location + (point - pointStart!!)
+            window.setLocation(location.x, location.y)
+        }
     }
 
     private fun Point.toComposeOffset(): IntOffset = IntOffset(x, y)
