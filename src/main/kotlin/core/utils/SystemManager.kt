@@ -26,10 +26,10 @@ object SystemManager {
 
         Timber.d(
             "Application is running on:" + "\n" +
-                    "name: ${getOperatingSystem()}" + "\n" +
-                    "version: ${getVersion()}" + "\n" +
-                    "architecture: ${getArchitecture()}" + "\n" +
-                    "locale: ${getSystemLocale()}" + "\n" +
+                    "       name: ${getOperatingSystem()}" + "\n" +
+                    "       version: ${getVersion()}" + "\n" +
+                    "       architecture: ${getArchitecture()}" + "\n" +
+                    "       locale: ${getSystemLocale()}" + "\n" +
                     ""
         )
     }

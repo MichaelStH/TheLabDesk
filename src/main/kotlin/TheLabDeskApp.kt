@@ -28,8 +28,8 @@ import core.utils.SystemManager
 import data.local.bean.WindowTypes
 import di.AppModule
 import ui.About
-import ui.main.App
 import ui.Exit
+import ui.main.App
 import ui.splashscreen.SplashScreen
 import viewmodel.MainViewModel
 import java.awt.Dimension
@@ -141,7 +141,8 @@ fun main() {
                                 SplashScreen(viewModel)
                             }
                         } else {
-                            // windowState.position = WindowPosition(x = (screenWidth / 6).dp, y = (screenHeight / 6).dp)
+                            window.minimumSize = Dimension(1000, 800)
+                            windowState.position = WindowPosition(x = (screenWidth / 6).dp, y = (screenHeight / 6).dp)
                             windowState.size = DpSize(width = 1200.dp, height = 800.dp)
 
                             if (!SystemManager.isWindows11()) {
