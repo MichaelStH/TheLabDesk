@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,9 +21,8 @@ import com.toxicbakery.logging.Seedling
 import core.compose.component.AppTitleBar
 import core.compose.component.ScrollableWindowContent
 import core.compose.component.TheLabDeskIcon
+import core.compose.component.TheLabDeskSurface
 import core.compose.theme.TheLabDeskTheme
-import core.compose.theme.md_theme_dark_background
-import core.compose.theme.md_theme_light_background
 import core.compose.utils.WindowDraggableArea
 import core.log.Timber
 import core.utils.DisplayManager
@@ -161,13 +159,13 @@ fun main() {
                             windowState.size = DpSize(width = 1200.dp, height = 800.dp)
 
                             // A surface container using the 'background' color from the theme
-                            Surface(
+                            TheLabDeskSurface(
                                 modifier = Modifier.fillMaxSize().clip(
                                     shape = if (!SystemManager.isWindows11()) RoundedCornerShape(0.dp) else RoundedCornerShape(
                                         12.dp
                                     )
-                                ),
-                                color = if (!androidx.compose.foundation.isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background
+                                )/*,
+                                color = if (!viewModel.isDarkMode) md_theme_light_background else md_theme_dark_background*/
                             ) {
                                 if (!SystemManager.isWindows11()) {
                                     Column(modifier = Modifier.fillMaxSize()) {

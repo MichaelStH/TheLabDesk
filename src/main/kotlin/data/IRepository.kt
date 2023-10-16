@@ -2,5 +2,5 @@ package data
 
 import data.remote.IApi
 
-interface IRepository: IApi {
+interface IRepository : IApi {
 }

@@ -1,5 +1,7 @@
 package core.utils
 
+import com.github.tkuenneth.nativeparameterstoreaccess.MacOSDefaults
+import com.github.tkuenneth.nativeparameterstoreaccess.WindowsRegistry
 import core.log.Timber
 import utils.Constants
 import java.util.*
@@ -39,4 +41,24 @@ object SystemManager {
     fun isWindows(): Boolean = System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win")
     fun isWindows11(): Boolean = getOperatingSystem().equals(Constants.WINDOWS_11, true)
     fun isMacOs(): Boolean = System.getProperty("os.name").lowercase(Locale.getDefault()).contains("mac")
+
+    fun isSystemInDarkTheme(): Boolean {
+        Timber.d("isSystemInDarkTheme()")
+        return when {
+            SystemManager.isWindows() -> {
+                val result = WindowsRegistry.getWindowsRegistryEntry(
+                    "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+                    "AppsUseLightTheme"
+                )
+                result == 0x0
+            }
+
+            SystemManager.isMacOs() -> {
+                val result = MacOSDefaults.getDefaultsEntry("AppleInterfaceStyle")
+                result == "Dark"
+            }
+
+            else -> false
+        }
+    }
 }

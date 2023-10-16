@@ -27,10 +27,10 @@ fun App(viewModel: MainViewModel) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                Box(modifier = Modifier.width(100.dp).fillMaxHeight(), contentAlignment = Alignment.Center){
+                Box(modifier = Modifier.width(100.dp).fillMaxHeight(), contentAlignment = Alignment.Center) {
                     NavigationBar(viewModel)
                 }
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart){
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
                     NavigationContent(viewModel)
                 }
             }

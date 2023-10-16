@@ -1,5 +1,10 @@
 package core.compose.theme
 
+import androidx.compose.animation.Animatable
+import androidx.compose.animation.core.tween
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 
 // Default Theme
@@ -97,3 +102,12 @@ val ShimmerColorShades = listOf(
     Color.LightGray.copy(0.2f),
     Color.LightGray.copy(0.9f)
 )
+
+
+@Composable
+fun animateColor(fromColor: Color, targetColor: Color) {
+    val color = remember { Animatable(fromColor) }
+    LaunchedEffect(Unit) {
+        color.animateTo(targetColor, animationSpec = tween(1000))
+    }
+}

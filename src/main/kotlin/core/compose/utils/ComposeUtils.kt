@@ -1,5 +1,6 @@
 package core.compose.utils
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -9,10 +10,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -87,7 +86,8 @@ fun WindowScope.WindowDraggableArea(
 
 private class DragHandler(private val window: Window) {
     private var location = window.location.toComposeOffset()
-    private var pointStart:IntOffset? = if(null == MouseInfo.getPointerInfo()) null else MouseInfo.getPointerInfo().location.toComposeOffset()
+    private var pointStart: IntOffset? =
+        if (null == MouseInfo.getPointerInfo()) null else MouseInfo.getPointerInfo().location.toComposeOffset()
 
     private val dragListener = object : MouseMotionAdapter() {
         override fun mouseDragged(event: MouseEvent) = drag()
@@ -107,7 +107,7 @@ private class DragHandler(private val window: Window) {
     }
 
     private fun drag() {
-        if(null != pointStart) {
+        if (null != pointStart) {
             val point = MouseInfo.getPointerInfo().location.toComposeOffset()
             val location = location + (point - pointStart!!)
             window.setLocation(location.x, location.y)
@@ -285,4 +285,12 @@ fun Text(
         maxLines,
         minLines
     )
+}
+
+
+// Switch
+@Composable
+fun animateAlignmentAsState(targetBiasValue: Float): State<BiasAlignment> {
+    val bias by animateFloatAsState(targetBiasValue)
+    return derivedStateOf { BiasAlignment(horizontalBias = bias, verticalBias = 0f) }
 }

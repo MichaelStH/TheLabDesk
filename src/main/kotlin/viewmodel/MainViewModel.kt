@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
+import core.compose.theme.isDarkTheme
 import core.log.Timber
 import data.IRepository
 import data.local.bean.WindowTypes
@@ -84,6 +85,7 @@ class MainViewModel(private val repository: IRepository) {
 
     fun updateDarkMode(isDark: Boolean) {
         this.isDarkMode = isDark
+        isDarkTheme = isDark
     }
 
     fun updateNavigationItemSelected(selectedOption: NavigationUiState) {

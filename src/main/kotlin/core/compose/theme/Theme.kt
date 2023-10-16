@@ -1,14 +1,17 @@
 package core.compose.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.Colors
+import androidx.compose.material.darkColors
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import com.github.tkuenneth.nativeparameterstoreaccess.MacOSDefaults
-import com.github.tkuenneth.nativeparameterstoreaccess.WindowsRegistry
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import core.log.Timber
-import core.utils.SystemManager
 
 private val LightColorScheme = lightColorScheme(
     primary = md_theme_light_primary,
@@ -75,35 +78,53 @@ private val DarkColorScheme = darkColorScheme(
     scrim = md_theme_dark_scrim,*/
 )
 
-fun isSystemInDarkTheme(): Boolean {
-    Timber.d("isSystemInDarkTheme()")
-    return when {
-        SystemManager.isWindows() -> {
-            val result = WindowsRegistry.getWindowsRegistryEntry(
-                "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
-                "AppsUseLightTheme"
-            )
-            result == 0x0
-        }
-
-        SystemManager.isMacOs() -> {
-            val result = MacOSDefaults.getDefaultsEntry("AppleInterfaceStyle")
-            result == "Dark"
-        }
-
-        else -> false
-    }
+fun getColorScheme(colorScheme: ColorScheme): ColorScheme {
+    return ColorScheme(
+        colorScheme.primary,
+        colorScheme.onPrimary,
+        colorScheme.primaryContainer,
+        colorScheme.onPrimaryContainer,
+        colorScheme.inversePrimary,
+        colorScheme.secondary,
+        colorScheme.onSecondary,
+        colorScheme.secondaryContainer,
+        colorScheme.onSecondaryContainer,
+        colorScheme.tertiary,
+        colorScheme.onTertiary,
+        colorScheme.tertiaryContainer,
+        colorScheme.onTertiaryContainer,
+        colorScheme.background,
+        colorScheme.onBackground,
+        colorScheme.surface,
+        colorScheme.onSurface,
+        colorScheme.surfaceVariant,
+        colorScheme.onSurfaceVariant,
+        colorScheme.surfaceTint,
+        colorScheme.inverseSurface,
+        colorScheme.inverseOnSurface,
+        colorScheme.error,
+        colorScheme.onError,
+        colorScheme.errorContainer,
+        colorScheme.onErrorContainer,
+        colorScheme.outline,
+        colorScheme.outlineVariant,
+        colorScheme.scrim
+    )
 }
+
+
+var isDarkTheme: Boolean by mutableStateOf(false)
+fun isSystemInDarkTheme(): Boolean = isDarkTheme
 
 @Composable
 fun TheLabDeskTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
+    colors: Colors = darkColors(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
-
     Timber.d("recomposition: darkTheme: $darkTheme")
 
     MaterialTheme(

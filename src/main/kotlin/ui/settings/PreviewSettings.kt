@@ -1,18 +1,15 @@
 package ui.settings
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Switch
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import core.compose.component.TheLabDeskSwitch
+import core.compose.component.TheLabDeskText
 import core.compose.theme.TheLabDeskTheme
 import core.log.Timber
 import di.AppModule
@@ -30,19 +27,34 @@ fun SettingsContent(viewModel: MainViewModel) {
 
     val state = rememberLazyListState()
 
-    TheLabDeskTheme(viewModel.isDarkMode) {
-        LazyColumn(modifier = Modifier.fillMaxSize().padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp), state = state) {
+    TheLabDeskTheme {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize().padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            state = state
+        ) {
             item {
                 Row(
                     modifier = Modifier.fillMaxSize(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = if(viewModel.isDarkMode) "Unable dark mode" else "Enable dark mode")
-                    Switch(checked = viewModel.isDarkMode, onCheckedChange = viewModel::updateDarkMode)
+                    TheLabDeskText(
+                        modifier = Modifier,
+                        text = if (viewModel.isDarkMode) "Disable dark mode" else "Enable dark mode"
+                    )
+                    Column(
+                        modifier = Modifier,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        TheLabDeskSwitch(viewModel)
+                    }
+                    //Switch(checked = viewModel.isDarkMode, onCheckedChange = viewModel::updateDarkMode)
                 }
             }
         }
+
     }
 }
 
@@ -55,6 +67,7 @@ fun SettingsContent(viewModel: MainViewModel) {
 @Composable
 private fun PreviewSettingsContent() {
     val viewModel: MainViewModel = MainViewModel(AppModule.injectDependencies())
+    viewModel.updateDarkMode(true)
     TheLabDeskTheme {
         SettingsContent(viewModel = viewModel)
     }
