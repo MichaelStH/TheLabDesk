@@ -5,6 +5,7 @@ import utils.Constants
 import java.util.*
 
 object SystemManager {
+
     fun getOperatingSystem(): String {
         return System.getProperty("os.name")
     }
@@ -34,5 +35,8 @@ object SystemManager {
         )
     }
 
+
+    fun isWindows(): Boolean = System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win")
     fun isWindows11(): Boolean = getOperatingSystem().equals(Constants.WINDOWS_11, true)
+    fun isMacOs(): Boolean = System.getProperty("os.name").lowercase(Locale.getDefault()).contains("mac")
 }

@@ -3,7 +3,6 @@ package core.compose.component
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -13,7 +12,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import core.compose.theme.TheLabDeskTheme
 
-@Composable
+/*@Composable
 fun TheLabDeskLogo() {
     TheLabDeskTheme {
         Box(modifier = Modifier, contentAlignment = Alignment.Center) {
@@ -38,9 +37,9 @@ fun TheLabDeskLogo(modifier: Modifier) {
             )
         }
     }
-}
+}*/
 @Composable
-fun TheLabDeskLogo(modifier: Modifier, contentScale: ContentScale) {
+fun TheLabDeskLogo(modifier: Modifier = Modifier.size(64.dp), contentScale: ContentScale = ContentScale.Fit) {
     TheLabDeskTheme {
         Box(modifier = Modifier, contentAlignment = Alignment.Center) {
             Image(

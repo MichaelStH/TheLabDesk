@@ -27,7 +27,6 @@ import viewmodel.MainViewModel
 // COMPOSE
 //
 //////////////////////////////////////////////////
-@Preview
 @Composable
 fun SplashScreen(viewModel: MainViewModel) {
     var progress by remember { mutableFloatStateOf(0f) }
@@ -59,16 +58,10 @@ fun SplashScreen(viewModel: MainViewModel) {
     }
 
     LaunchedEffect(Unit) {
-        progress = 0.2f
-        delay(1_100)
-        progress = 0.4f
-        delay(700)
-        progress = 0.52f
-        delay(350)
-        progress = 0.734f
-        delay(1_500)
-        progress = 1f
-        delay(750)
+        while (progress < 1f) {
+            progress += .01f
+            delay(25)
+        }
 
         viewModel.updateIsLoading(true)
     }

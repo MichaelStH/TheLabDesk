@@ -56,7 +56,7 @@ fun CardWithAnimatedBorder(
         if (borderColors.isNotEmpty()) Brush.sweepGradient(borderColors)
         else Brush.sweepGradient(listOf(Color.Gray, Color.White))
 
-    Surface(modifier = modifier/*.clickable { onCardClick() }*/, shape = RoundedCornerShape(20.dp)) {
+    Surface(modifier = modifier, shape = RoundedCornerShape(20.dp)) {
         Surface(
             modifier =
             Modifier.clipToBounds().fillMaxWidth().padding(1.dp).drawWithContent {

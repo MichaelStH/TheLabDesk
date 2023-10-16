@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
@@ -84,9 +85,9 @@ fun main() {
         while (isActive) {
             val newMode = isSystemInDarkTheme()
             if (viewModel.isDarkMode != newMode) {
-                viewModel.updateDarkMode( newMode)
+                viewModel.updateDarkMode(newMode)
             }
-            delay(1000)
+            delay(1_000)
         }
     }*/
 
@@ -161,7 +162,11 @@ fun main() {
 
                             // A surface container using the 'background' color from the theme
                             Surface(
-                                modifier = Modifier.fillMaxSize(),
+                                modifier = Modifier.fillMaxSize().clip(
+                                    shape = if (!SystemManager.isWindows11()) RoundedCornerShape(0.dp) else RoundedCornerShape(
+                                        12.dp
+                                    )
+                                ),
                                 color = if (!androidx.compose.foundation.isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background
                             ) {
                                 if (!SystemManager.isWindows11()) {
