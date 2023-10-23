@@ -9,6 +9,14 @@ plugins {
 group = "com.riders"
 version = "1.0-SNAPSHOT"
 
+kotlin {
+    sourceSets.all {
+        languageSettings {
+            languageVersion = "2.0"
+        }
+    }
+}
+
 dependencies {
 
     implementation(platform(libs.kotlin.bom))
@@ -36,6 +44,9 @@ dependencies {
     // Ktor
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.cio)
+
+    // Types
+    implementation(libs.kotools.types)
 
     // Logging : Arbor
     implementation(libs.arbor)
