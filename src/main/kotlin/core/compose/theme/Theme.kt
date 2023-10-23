@@ -5,6 +5,7 @@ import androidx.compose.material.Colors
 import androidx.compose.material.darkColors
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -78,6 +79,7 @@ private val DarkColorScheme = darkColorScheme(
     scrim = md_theme_dark_scrim,*/
 )
 
+
 fun getColorScheme(colorScheme: ColorScheme): ColorScheme {
     return ColorScheme(
         colorScheme.primary,
@@ -112,6 +114,13 @@ fun getColorScheme(colorScheme: ColorScheme): ColorScheme {
     )
 }
 
+val defaultTheme: Pair<ColorScheme,ColorScheme> = Pair(LightColorScheme, DarkColorScheme)
+
+var currentTheme by mutableStateOf(defaultTheme)
+
+fun updateCurrentTheme(newTheme:Pair<ColorScheme,ColorScheme>){
+    currentTheme = newTheme
+}
 
 var isDarkTheme: Boolean by mutableStateOf(false)
 fun isSystemInDarkTheme(): Boolean = isDarkTheme
@@ -124,7 +133,7 @@ fun TheLabDeskTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    val colorScheme = if (darkTheme) currentTheme.second else currentTheme.first
     Timber.d("recomposition: darkTheme: $darkTheme")
 
     MaterialTheme(

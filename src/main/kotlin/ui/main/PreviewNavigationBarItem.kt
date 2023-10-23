@@ -15,7 +15,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import core.compose.theme.TheLabDeskTheme
 import core.compose.theme.Typography
-import core.compose.theme.md_theme_dark_primaryContainer
+import core.compose.theme.currentTheme
+import core.compose.theme.isSystemInDarkTheme
+import core.compose.utils.getColorScheme
 import data.local.model.compose.NavigationUiState
 import di.AppModule
 import viewmodel.MainViewModel
@@ -34,7 +36,7 @@ fun NavigationBarItem(item: NavigationUiState, onNavigationClicked: (NavigationU
         Card(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
             onClick = { onNavigationClicked(item) },
-            colors = CardDefaults.cardColors(containerColor = if (item.selected) md_theme_dark_primaryContainer else Color.Transparent),
+            colors = CardDefaults.cardColors(containerColor = Color.Transparent),
             shape = shape
         ) {
             Column(
@@ -46,7 +48,9 @@ fun NavigationBarItem(item: NavigationUiState, onNavigationClicked: (NavigationU
                     modifier = Modifier.size(30.dp),
                     imageVector = item.icon,
                     contentDescription = null,
-                    tint = if (item.selected) Color.White else Color.LightGray
+                    tint = if (item.selected && !isSystemInDarkTheme()) currentTheme.first.getColorScheme().primaryContainer
+                    else if (item.selected && isSystemInDarkTheme()) currentTheme.second.getColorScheme().primaryContainer
+                    else Color.LightGray
                 )
 
                 Text(

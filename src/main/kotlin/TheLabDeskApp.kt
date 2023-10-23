@@ -73,11 +73,10 @@ fun initTimber() {
 // APP
 //
 //////////////////////////////////////////
-@OptIn(DelicateCoroutinesApi::class)
 fun main() {
     initTimber()
 
-    val viewModel: MainViewModel = MainViewModel(AppModule.injectDependencies())
+    val viewModel = MainViewModel(AppModule.injectDependencies())
 
     /*GlobalScope.launch {
         while (isActive) {

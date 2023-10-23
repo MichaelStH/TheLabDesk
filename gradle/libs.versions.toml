@@ -4,6 +4,8 @@
 #################
 
 [versions]
+# Arbor
+arbor = "1.40.86"
 # Kotlin
 kotlin = "1.9.10"
 kotlinxCoroutines = "1.7.2"
@@ -12,14 +14,15 @@ kotlinxSerializationJson = "1.5.1"
 compose = "1.5.3"
 # Ktor
 ktor = "2.3.4"
+types = "4.0.0"
 # Zxing
 zxing = "3.5.2"
-# Arbor
-arbor = "1.40.86"
 
 
 [libraries]
 # placeholder : lib-name = { group = "", name = "", version.ref = "" }
+# Arbor
+arbor = { group = "com.ToxicBakery.logging", name = "arbor-jvm", version.ref = "arbor" }
 # Compose
 compose-full = { group = "org.jetbrains.compose", name = "compose-full", version.ref = "compose" }
 # Kotlin
@@ -30,8 +33,7 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 # Ktor
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
 ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
+kotools-types = { group = "io.github.kotools", name = "types", version.ref = "types" }
 # zxing
 zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxing" }
 zxing-javase = { group = "com.google.zxing", name = "javase", version.ref = "zxing" }
-# Arbor
-arbor = { group = "com.ToxicBakery.logging", name = "arbor-jvm", version.ref = "arbor" }
