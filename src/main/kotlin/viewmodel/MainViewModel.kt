@@ -8,6 +8,7 @@ import core.compose.theme.isDarkTheme
 import core.log.Timber
 import data.IRepository
 import data.local.bean.WindowTypes
+import data.local.model.compose.MoviesUiState
 import data.local.model.compose.NavigationUiState
 import data.local.model.compose.NewsUiState
 import kotlinx.coroutines.*
@@ -32,6 +33,10 @@ class MainViewModel(private val repository: IRepository) {
     private var _currentNavigationUiState: MutableStateFlow<NavigationUiState> =
         MutableStateFlow(NavigationUiState.Home)
     val currentNavigationUiState: StateFlow<NavigationUiState> = _currentNavigationUiState
+
+
+    private var _movieUiState: MutableStateFlow<MoviesUiState> = MutableStateFlow(MoviesUiState.None)
+    val movieUiState: StateFlow<MoviesUiState> = _movieUiState
 
     var menuOptions: Set<Pair<String, Set<Pair<String, () -> Unit>>>> = buildSet {
         add(
@@ -103,6 +108,10 @@ class MainViewModel(private val repository: IRepository) {
 
     fun updateCurrentNavigationUiState(newState: NavigationUiState) {
         this._currentNavigationUiState.value = newState
+    }
+
+    fun updateMoviesUiState(newState: MoviesUiState) {
+        this._movieUiState.value = newState
     }
 
     fun updateText(newValue: String) {
@@ -192,5 +201,25 @@ class MainViewModel(private val repository: IRepository) {
         if (!list.isNullOrEmpty()) {
             updateNewsUiState(NewsUiState.Success(list))
         }*/
+    }
+
+
+    @OptIn(DelicateCoroutinesApi::class)
+    fun fetchMovies() {
+        Timber.d("fetchMovies()")
+
+        GlobalScope.launch(Dispatchers.IO) {
+            val list = runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
+                repository.getMovies()
+            }
+
+            Timber.d("result: ${list.results.size}")
+
+            if (list.results.isNotEmpty()) {
+                withContext(Dispatchers.Default) {
+                    updateMoviesUiState(MoviesUiState.Success(list))
+                }
+            }
+        }
     }
 }

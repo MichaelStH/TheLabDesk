@@ -23,6 +23,8 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.loadImageBitmap
+import androidx.compose.ui.res.loadSvgPainter
+import androidx.compose.ui.res.loadXmlImageVector
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -204,30 +206,29 @@ fun loadImageBitmapFromFile(file: File): ImageBitmap =
     file.inputStream().buffered().use(::loadImageBitmap)
 
 fun loadSvgPainter(file: File, density: Density): Painter =
-    file.inputStream().buffered().use { androidx.compose.ui.res.loadSvgPainter(it, density) }
+    file.inputStream().buffered().use { loadSvgPainter(it, density) }
 
 fun loadXmlImageVector(file: File, density: Density): ImageVector =
-    file.inputStream().buffered().use { androidx.compose.ui.res.loadXmlImageVector(InputSource(it), density) }
+    file.inputStream().buffered().use { loadXmlImageVector(InputSource(it), density) }
 
 /* Loading from network with java.net API */
 fun loadImageBitmapFromJavaNetwork(url: String): ImageBitmap =
     URL(url).openStream().buffered().use(::loadImageBitmap)
 
 fun loadSvgPainterFromJavaNetwork(url: String, density: Density): Painter =
-    URL(url).openStream().buffered().use { androidx.compose.ui.res.loadSvgPainter(it, density) }
+    URL(url).openStream().buffered().use { loadSvgPainter(it, density) }
 
 fun loadXmlImageVectorFromJavaNetwork(url: String, density: Density): ImageVector =
-    URL(url).openStream().buffered().use { androidx.compose.ui.res.loadXmlImageVector(InputSource(it), density) }
+    URL(url).openStream().buffered().use { loadXmlImageVector(InputSource(it), density) }
 
 /* Loading from network with Ktor client API (https://ktor.io/docs/client.html). */
-suspend fun loadImageBitmap(url: String): ImageBitmap =
-    urlStream(url).use(::loadImageBitmap)
+suspend fun loadImageBitmap(url: String): ImageBitmap = urlStream(url).use(::loadImageBitmap)
 
 suspend fun loadSvgPainter(url: String, density: Density): Painter =
-    urlStream(url).use { androidx.compose.ui.res.loadSvgPainter(it, density) }
+    urlStream(url).use { loadSvgPainter(it, density) }
 
 suspend fun loadXmlImageVector(url: String, density: Density): ImageVector =
-    urlStream(url).use { androidx.compose.ui.res.loadXmlImageVector(InputSource(it), density) }
+    urlStream(url).use { loadXmlImageVector(InputSource(it), density) }
 
 private suspend fun urlStream(url: String) = HttpClient(CIO).use {
     ByteArrayInputStream(it.get(url).body())

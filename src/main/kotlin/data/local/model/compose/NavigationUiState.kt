@@ -2,6 +2,7 @@ package data.local.model.compose
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material.icons.filled.Newspaper
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.getValue
@@ -22,10 +23,11 @@ sealed class NavigationUiState(
 
     data object Home : NavigationUiState(Icons.Filled.Home, false, NavigationItemType.DEFAULT)
     data object News : NavigationUiState(Icons.Filled.Newspaper, false, NavigationItemType.DEFAULT)
+    data object Theaters : NavigationUiState(Icons.Filled.Movie, false, NavigationItemType.DEFAULT)
     data object Settings : NavigationUiState(Icons.Filled.Settings, false, NavigationItemType.SETTINGS)
 
     companion object {
-        fun values(): List<NavigationUiState> = listOf(Home, News, Settings)
+        fun values(): List<NavigationUiState> = listOf(Home, News,Theaters, Settings)
 
         fun valuesIndexed(): List<NavigationUiState> =
             NavigationUiState::class.sealedSubclasses.mapIndexed { _, kClass -> kClass.objectInstance as NavigationUiState }

@@ -99,13 +99,13 @@ fun TheLabDeskSwitch(
 
     // gap between switch and the text
     // Spacer(modifier = Modifier.height(height = 16.dp))
-    Box(modifier = Modifier.size(width), contentAlignment = Alignment.Center) {
+    /*Box(modifier = Modifier.size(width), contentAlignment = Alignment.Center) {
         Text(
             modifier = Modifier.matchParentSize(),
             text = if (viewModel.isDarkMode) "ON" else "OFF",
             color = Color.Black
         )
-    }
+    }*/
 }
 
 @Preview
@@ -114,7 +114,7 @@ private fun PreviewTheLabDeskSwitch() {
     val viewModel: MainViewModel = MainViewModel(AppModule.injectDependencies())
     viewModel.updateDarkMode(true)
     TheLabDeskTheme {
-        Column {
+        TheLabDeskSurface(modifier = Modifier) {
             TheLabDeskSwitch(viewModel)
         }
     }

@@ -31,22 +31,20 @@ fun NavigationBar(viewModel: MainViewModel) {
 
     TheLabDeskTheme(viewModel.isDarkMode) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize().background(Color.DarkGray)
+            modifier = Modifier.fillMaxSize().background(Color.Transparent),
             // Optional, for accessibility purpose,
             // .selectableGroup()
-            ,
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween,
             state = state
         ) {
             item {
                 LazyColumn(
-                    modifier = Modifier.fillMaxWidth().heightIn(0.dp, 300.dp),
+                    modifier = Modifier.fillMaxWidth().heightIn(0.dp, 400.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    itemsIndexed(items = viewModel.navigationOptions) { index, item ->
-
+                    itemsIndexed(items = viewModel.navigationOptions) { _, item ->
                         // Create a composable function which will take list of NavigationUiState
                         // and a callback to call when any selection is tapped by user on UI
                         if (item.navigationItemType == NavigationItemType.DEFAULT) {
