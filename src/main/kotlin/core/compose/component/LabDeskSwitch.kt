@@ -41,12 +41,7 @@ fun TheLabDeskSwitch(
 ) {
 
     // this is to disable the ripple effect
-    val interactionSource = remember {
-        MutableInteractionSource()
-    }
-
-    // state of the switch
-//    var switchOn by remember { mutableStateOf(true) }
+    val interactionSource = remember { MutableInteractionSource() }
 
     // for moving the thumb
     val alignment by animateAlignmentAsState(if (viewModel.isDarkMode) 1f else -1f)
@@ -64,7 +59,6 @@ fun TheLabDeskSwitch(
                 indication = null,
                 interactionSource = interactionSource
             ) {
-//                switchState = !switchState
                 viewModel.updateDarkMode(!viewModel.isDarkMode)
             },
         contentAlignment = Alignment.Center
@@ -96,22 +90,12 @@ fun TheLabDeskSwitch(
             )
         }
     }
-
-    // gap between switch and the text
-    // Spacer(modifier = Modifier.height(height = 16.dp))
-    /*Box(modifier = Modifier.size(width), contentAlignment = Alignment.Center) {
-        Text(
-            modifier = Modifier.matchParentSize(),
-            text = if (viewModel.isDarkMode) "ON" else "OFF",
-            color = Color.Black
-        )
-    }*/
 }
 
 @Preview
 @Composable
 private fun PreviewTheLabDeskSwitch() {
-    val viewModel: MainViewModel = MainViewModel(AppModule.injectDependencies())
+    val viewModel = MainViewModel(AppModule.injectDependencies())
     viewModel.updateDarkMode(true)
     TheLabDeskTheme {
         TheLabDeskSurface(modifier = Modifier) {

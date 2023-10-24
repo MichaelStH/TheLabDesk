@@ -26,7 +26,7 @@ fun TheLabDeskSurface(modifier: Modifier, content: @Composable () -> Unit) {
         Surface(
             modifier = modifier,
             color = if (!isSystemInDarkTheme()) md_theme_light_background else md_theme_dark_background
-            //color = color.value
+//            color = color.value
         ) { content() }
     }
 }
