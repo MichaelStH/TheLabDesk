@@ -1,25 +1,30 @@
 package ui.theaters
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.items
-import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.foundation.lazy.staggeredgrid.*
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import core.compose.component.TheLabDeskCard
 import core.compose.component.TheLabDeskText
 import core.compose.theme.TheLabDeskTheme
+import core.compose.theme.Typography
 import core.compose.utils.AsyncBitmapImageFromNetwork
+import core.compose.utils.AsyncBitmapImageFromNetworkWithModifier
 import core.log.Timber
 import data.local.model.compose.MoviesUiState
+import data.remote.dto.tmdb.MovieDto
 import di.AppModule
 import utils.Constants
 import viewmodel.MainViewModel
@@ -31,9 +36,60 @@ import viewmodel.MainViewModel
 //
 //////////////////////////////////////////////////
 @Composable
-fun Header(viewModel: MainViewModel) {
-    TheLabDeskTheme(viewModel.isDarkMode) {
+fun Header(viewModel: MainViewModel, movie: MovieDto) {
+    val backdropUrl =
+        "${Constants.BASE_URL_TMDB_IMAGE_W_500_ENDPOINT}${movie.backdropPath}"
+    val poster =
+        "${Constants.BASE_URL_TMDB_IMAGE_W_500_ENDPOINT}${movie.poster}"
 
+    Timber.d("Header | $backdropUrl")
+    Timber.d("Header | $poster")
+
+    TheLabDeskTheme(viewModel.isDarkMode) {
+        TheLabDeskCard(modifier = Modifier.fillMaxWidth().heightIn(0.dp, 300.dp)) {
+            BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+                // Image
+                AsyncBitmapImageFromNetworkWithModifier(
+                    modifier = Modifier.width(this.maxWidth / 3).height(this.maxHeight).align(Alignment.CenterEnd),
+                    url = backdropUrl
+                )
+
+                // Gradient
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.horizontalGradient(
+                                colors = listOf(
+                                    Color.Black,
+                                    Color.Black,
+                                    Color.Black,
+                                    Color.Transparent
+                                )
+                            )
+                        )
+                        .align(Alignment.CenterStart)
+                )
+
+
+                Column(
+                    modifier = Modifier.align(Alignment.CenterStart).padding(start = 20.dp)
+                ) {
+                    Text(
+                        modifier = Modifier,
+                        text = "Trending right now",
+                        style = Typography.bodyMedium
+                    )
+
+                    Text(
+                        modifier = Modifier,
+                        text = movie.originalTitle,
+                        style = Typography.titleLarge,
+                        fontSize = 32.sp
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -101,6 +157,14 @@ fun Theaters(viewModel: MainViewModel) {
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                             verticalItemSpacing = 12.dp
                         ) {
+                            item(
+                                // Replace "maxCurrentLineSpan" with the number of spans this item should take.
+                                // Use "maxCurrentLineSpan" if you want to take full width.
+                                span = StaggeredGridItemSpan.FullLine
+                            ) {
+                                Header(viewModel, (movieUiState as MoviesUiState.Success).response.results.first())
+                            }
+
                             items(items = (movieUiState as MoviesUiState.Success).response.results) {
 
                                 val backdropUrl =

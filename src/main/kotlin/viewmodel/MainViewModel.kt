@@ -14,6 +14,7 @@ import data.local.model.compose.NewsUiState
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import java.util.*
 
 class MainViewModel(private val repository: IRepository) {
 
@@ -180,32 +181,6 @@ class MainViewModel(private val repository: IRepository) {
                 }
             }
         }
-
-
-        /*val list: List<NewsDto>? = runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-            runCatching {
-                repository.getNews()
-            }
-                .onFailure { throwable ->
-                    Timber.e("runCatching | onFailure | ${throwable.message}")
-
-                    withContext(Dispatchers.Main) {
-                        throwable.message
-                            ?.let { NewsUiState.Error(it) }
-                            ?.let { errorState -> updateNewsUiState(errorState) }
-                    }
-                }
-                .onSuccess {
-                    Timber.d("runCatching | onSuccess | done")
-                }
-                .getOrNull()
-        }
-
-        Timber.d("result: $list")
-
-        if (!list.isNullOrEmpty()) {
-            updateNewsUiState(NewsUiState.Success(list))
-        }*/
     }
 
 
@@ -225,6 +200,17 @@ class MainViewModel(private val repository: IRepository) {
                     updateMoviesUiState(MoviesUiState.Success(list))
                 }
             }
+        }
+    }
+
+    /** Get Time in order to force dark mode or not */
+    fun getTime() {
+        val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+        Timber.d("getTime() | hour: ${hour.toString()}")
+
+        if (hour !in 8..17) {
+            Timber.d("hour NOT in range should force dark mode")
+            updateDarkMode(true)
         }
     }
 }

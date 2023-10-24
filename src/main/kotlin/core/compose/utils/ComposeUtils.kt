@@ -143,6 +143,16 @@ fun AsyncBitmapImageFromNetwork(url: String) = AsyncImage(
 
 @Composable
 @Preview
+fun AsyncBitmapImageFromNetworkWithModifier(modifier: Modifier, url: String) = AsyncImage(
+    load = { loadImageBitmap(url) },
+    painterFor = { remember { BitmapPainter(it) } },
+    contentDescription = "Sample",
+    modifier = modifier,
+    contentScale = ContentScale.FillHeight
+)
+
+@Composable
+@Preview
 fun AsyncBitmapImageFromNetwork(modifier: Modifier, url: String) = AsyncImage(
     load = { loadImageBitmap(url) },
     painterFor = { remember { BitmapPainter(it) } },

@@ -35,7 +35,6 @@ fun WelcomeContent() {
     TheLabDeskTheme {
         Card(
             modifier = Modifier.fillMaxWidth().heightIn(0.dp, 300.dp).padding(20.dp),
-//                colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E)),
             shape = RoundedCornerShape(22.dp)
         ) {
             Box(modifier = Modifier.fillMaxWidth()) {

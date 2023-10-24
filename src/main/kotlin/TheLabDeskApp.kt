@@ -5,7 +5,6 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,10 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import com.toxicbakery.logging.Arbor
 import com.toxicbakery.logging.Seedling
-import core.compose.component.AppTitleBar
-import core.compose.component.ScrollableWindowContent
-import core.compose.component.TheLabDeskIcon
-import core.compose.component.TheLabDeskSurface
+import core.compose.component.*
 import core.compose.theme.TheLabDeskTheme
 import core.compose.utils.WindowDraggableArea
 import core.log.Timber
@@ -29,7 +25,6 @@ import core.utils.DisplayManager
 import core.utils.SystemManager
 import data.local.bean.WindowTypes
 import di.AppModule
-import kotlinx.coroutines.DelicateCoroutinesApi
 import ui.About
 import ui.Exit
 import ui.main.App
@@ -77,6 +72,7 @@ fun main() {
     initTimber()
 
     val viewModel = MainViewModel(AppModule.injectDependencies())
+    viewModel.getTime()
 
     /*GlobalScope.launch {
         while (isActive) {
@@ -198,7 +194,7 @@ fun main() {
                                         }
                                     }
                                 } else {
-                                    Card(shape = RoundedCornerShape(12.dp)) {
+//                                    TheLabDeskCard(modifier = Modifier.fillMaxSize(), shape = RoundedCornerShape(12.dp)) {
                                         Column(modifier = Modifier.fillMaxSize()) {
                                             // Custom title toolbar
                                             WindowDraggableArea(modifier = Modifier.fillMaxWidth()) {
@@ -230,7 +226,7 @@ fun main() {
                                             }
                                         }
                                     }
-                                }
+//                                }
                             }
                         }
                     }

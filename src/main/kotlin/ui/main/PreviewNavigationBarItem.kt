@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import core.compose.theme.TheLabDeskTheme
 import core.compose.theme.Typography
 import core.compose.theme.currentTheme
@@ -51,7 +52,7 @@ fun NavigationBarItem(
             ) {
                 Box(
                     modifier = Modifier
-                        .width(2.dp)
+                        .width(4.dp)
                         .height(animatedHeight.value)
                         .background(color = if (!isSystemInDarkTheme()) currentTheme.first.getColorScheme().primaryContainer else currentTheme.second.getColorScheme().primaryContainer)
                 )
@@ -74,13 +75,16 @@ fun NavigationBarItem(
                         contentDescription = null,
                         tint = if (item.selected && !isSystemInDarkTheme()) currentTheme.first.getColorScheme().primaryContainer
                         else if (item.selected && isSystemInDarkTheme()) currentTheme.second.getColorScheme().primaryContainer
-                        else Color.LightGray
+                        else {
+                            if (!isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
+                        }
                     )
 
                     Text(
                         text = item.javaClass.simpleName,
                         style = if (item.selected) Typography.titleMedium else Typography.bodyMedium,
-                        color = if (item.selected) Color.White else Color.LightGray
+                        color = if (item.selected) Color.White else Color.LightGray,
+                        fontSize = if (item.selected) 12.sp else 10.sp
                     )
                 }
             }

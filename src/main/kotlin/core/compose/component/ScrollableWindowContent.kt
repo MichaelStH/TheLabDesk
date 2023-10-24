@@ -23,7 +23,7 @@ fun ScrollableWindowContent(modifier: Modifier, content: @Composable () -> Unit)
     MaterialTheme {
         Box(
             modifier = Modifier.fillMaxSize()
-                .background(color = Color(180, 180, 180))
+                //.background(color = Color(180, 180, 180))
                 // .padding(10.dp)
                 .then(modifier)
         ) {
