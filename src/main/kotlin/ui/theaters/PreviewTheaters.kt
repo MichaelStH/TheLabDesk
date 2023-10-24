@@ -76,6 +76,8 @@ fun Theaters(viewModel: MainViewModel) {
     val movieUiState by viewModel.movieUiState.collectAsState()
     var bitmap: ImageBitmap? = null
 
+    val netflixLogoURL = "https://image.tmdb.org/t/p/w500/wwemzKWzjKYJFfCeiB57q3r4Bcm.svg"
+
     TheLabDeskTheme(viewModel.isDarkMode) {
         Column(
             modifier = Modifier.fillMaxSize().padding(10.dp),
@@ -101,8 +103,10 @@ fun Theaters(viewModel: MainViewModel) {
                         ) {
                             items(items = (movieUiState as MoviesUiState.Success).response.results) {
 
-                                val backdropUrl = "${Constants.BASE_URL_TMDB_ENDPOINT}/movie/${it.id}/images${it.backdropPath}"
-                                val poster = "${Constants.BASE_URL_TMDB_ENDPOINT}/movie/${it.id}/images${it.poster}"
+                                val backdropUrl =
+                                    "${Constants.BASE_URL_TMDB_IMAGE_W_500_ENDPOINT}${it.backdropPath}"
+                                val poster =
+                                    "${Constants.BASE_URL_TMDB_IMAGE_W_500_ENDPOINT}${it.poster}"
 
                                 Timber.d(backdropUrl)
                                 Timber.d(poster)
@@ -110,7 +114,7 @@ fun Theaters(viewModel: MainViewModel) {
                                 TheLabDeskCard(modifier = Modifier) {
                                     Column(modifier = Modifier) {
                                         AsyncBitmapImageFromNetwork(
-                                            modifier = Modifier,
+                                            modifier = Modifier.widthIn(0.dp, 300.dp).heightIn(0.dp, 150.dp),
                                             url = backdropUrl
                                         )
                                     }
