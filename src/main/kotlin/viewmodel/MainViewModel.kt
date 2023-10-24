@@ -64,6 +64,8 @@ class MainViewModel(private val repository: IRepository) {
         )
     }
 
+    var currentIndex by mutableStateOf(0)
+    var previousIndex by mutableStateOf(0)
     var text by mutableStateOf("Hello, World!")
         private set
     var search by mutableStateOf("")
@@ -98,11 +100,14 @@ class MainViewModel(private val repository: IRepository) {
         _navigationOptions.find { it == selectedOption }?.selected = true
 
         _navigationOptions.find { it == selectedOption }?.let { navigationItem ->
+            currentIndex = NavigationUiState.getIndexOf(navigationItem)
             Timber.d("update selected item: ${navigationItem.toString()}, ${navigationItem.selected}, ${navigationItem.navigationItemType}")
             updateCurrentNavigationUiState(navigationItem)
+
             _navigationOptions.forEach { element ->
                 Timber.d("list updated: ${element.toString()}, ${element.selected}, ${element.navigationItemType}")
             }
+            previousIndex = currentIndex
         }
     }
 

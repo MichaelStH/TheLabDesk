@@ -27,7 +27,19 @@ sealed class NavigationUiState(
     data object Settings : NavigationUiState(Icons.Filled.Settings, false, NavigationItemType.SETTINGS)
 
     companion object {
-        fun values(): List<NavigationUiState> = listOf(Home, News,Theaters, Settings)
+        fun getIndexOf(item: NavigationUiState): Int = values().indexOf(item)
+        fun find(state: NavigationUiState) =
+            NavigationUiState::class.sealedSubclasses
+                .map { it.objectInstance as NavigationUiState }
+                .firstOrNull { it == state }
+                .let {
+                    when (it) {
+                        null -> Home
+                        else -> it
+                    }
+                }
+
+        fun values(): List<NavigationUiState> = listOf(Home, News, Theaters, Settings)
 
         fun valuesIndexed(): List<NavigationUiState> =
             NavigationUiState::class.sealedSubclasses.mapIndexed { _, kClass -> kClass.objectInstance as NavigationUiState }
