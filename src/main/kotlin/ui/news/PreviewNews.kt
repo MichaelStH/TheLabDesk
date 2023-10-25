@@ -18,11 +18,11 @@ import androidx.compose.ui.unit.dp
 import core.compose.theme.TheLabDeskTheme
 import data.local.model.compose.NewsUiState
 import di.AppModule
-import viewmodel.MainViewModel
+import ui.main.MainViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun News(viewModel: MainViewModel) {
+fun News(viewModel: NewsViewModel) {
     val state = rememberLazyListState()
 
     val newsUiState by viewModel.newsUiState.collectAsState()
@@ -58,6 +58,6 @@ fun News(viewModel: MainViewModel) {
 @Composable
 private fun PreviewNews() {
     TheLabDeskTheme {
-        News(MainViewModel(AppModule.injectDependencies()))
+        News(NewsViewModel(AppModule.injectDependencies()))
     }
 }

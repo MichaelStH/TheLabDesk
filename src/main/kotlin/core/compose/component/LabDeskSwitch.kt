@@ -21,10 +21,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import core.compose.theme.TheLabDeskTheme
-import core.compose.utils.Text
 import core.compose.utils.animateAlignmentAsState
 import di.AppModule
-import viewmodel.MainViewModel
+import ui.main.MainViewModel
 
 @Composable
 fun TheLabDeskSwitch(

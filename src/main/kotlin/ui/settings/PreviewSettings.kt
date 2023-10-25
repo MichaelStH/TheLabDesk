@@ -16,7 +16,7 @@ import core.compose.component.TheLabDeskText
 import core.compose.theme.TheLabDeskTheme
 import core.log.Timber
 import di.AppModule
-import viewmodel.MainViewModel
+import ui.main.MainViewModel
 
 
 //////////////////////////////////////////////////

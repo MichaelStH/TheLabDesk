@@ -8,7 +8,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import core.compose.theme.TheLabDeskTheme
 import di.AppModule
-import viewmodel.MainViewModel
+import ui.home.HomeViewModel
+import ui.news.NewsViewModel
+import ui.theaters.TheatersViewModel
 
 
 //////////////////////////////////////////////////
@@ -18,7 +20,12 @@ import viewmodel.MainViewModel
 //////////////////////////////////////////////////
 @Composable
 @Preview
-fun App(viewModel: MainViewModel) {
+fun App(
+    viewModel: MainViewModel,
+    homeViewModel: HomeViewModel,
+    newsViewModel: NewsViewModel,
+    theatersViewModel: TheatersViewModel
+) {
     TheLabDeskTheme(viewModel.isDarkMode) {
         Column(modifier = Modifier.fillMaxSize()) {
             Row(
@@ -31,7 +38,7 @@ fun App(viewModel: MainViewModel) {
                     NavigationBar(viewModel)
                 }
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
-                    NavigationContent(viewModel)
+                    NavigationContent(viewModel, homeViewModel, newsViewModel, theatersViewModel)
                 }
             }
         }
@@ -47,8 +54,12 @@ fun App(viewModel: MainViewModel) {
 @Preview
 @Composable
 private fun PreviewApp() {
-    val viewModel: MainViewModel = MainViewModel(AppModule.injectDependencies())
+    val viewModel = MainViewModel(AppModule.injectDependencies())
+    val homeViewModel = HomeViewModel()
+    val newsViewModel = NewsViewModel(AppModule.injectDependencies())
+    val theatersViewModel = TheatersViewModel(AppModule.injectDependencies())
+
     TheLabDeskTheme {
-        App(viewModel = viewModel)
+        App(viewModel, homeViewModel, newsViewModel, theatersViewModel)
     }
 }

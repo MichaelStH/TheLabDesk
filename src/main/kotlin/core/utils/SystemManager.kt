@@ -4,6 +4,7 @@ import com.github.tkuenneth.nativeparameterstoreaccess.MacOSDefaults
 import com.github.tkuenneth.nativeparameterstoreaccess.WindowsRegistry
 import core.log.Timber
 import utils.Constants
+import java.io.File
 import java.util.*
 
 object SystemManager {
@@ -24,6 +25,16 @@ object SystemManager {
         return Locale.getDefault().displayLanguage
     }
 
+    fun getUserDirectory(): String {
+        return if (getOperatingSystem().contains("win", true)) {
+            System.getProperty("user.home") + File.separator + "Documents" + File.separator
+        } else if (getOperatingSystem().contains("mac")) {
+            System.getProperty("user.home")
+        } else {
+            System.getProperty("user.home")
+        }
+    }
+
     fun getSystemInfo() {
         Timber.d("getSystemInfo()")
 
@@ -33,6 +44,7 @@ object SystemManager {
                     "       version: ${getVersion()}" + "\n" +
                     "       architecture: ${getArchitecture()}" + "\n" +
                     "       locale: ${getSystemLocale()}" + "\n" +
+                    "       user home path: ${getUserDirectory()}" + "\n" +
                     ""
         )
     }

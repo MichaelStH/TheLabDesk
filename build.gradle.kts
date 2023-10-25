@@ -1,4 +1,5 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import java.util.Properties
 
 plugins {
     kotlin("jvm")
@@ -19,6 +20,7 @@ kotlin {
 
 dependencies {
 
+    // Kotlin
     implementation(platform(libs.kotlin.bom))
     kotlin("reflect")
     implementation(libs.kotlinx.coroutines.core)
@@ -48,8 +50,23 @@ dependencies {
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.client.serialization.kotlinx.json)
 
+
+    // https://mvnrepository.com/artifact/jakarta.json/jakarta.json-api
+    implementation("jakarta.json:jakarta.json-api:2.1.2")
+    // https://mvnrepository.com/artifact/org.json/json
+    implementation("org.json:json:20231013")
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
+    implementation("com.fasterxml.jackson.core:jackson-core:2.15.3")
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-xml
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.3")
+
+
     // Types
     implementation(libs.kotools.types)
+
+    // Zxing
+    implementation(libs.zxing.core)
+    implementation(libs.zxing.javase)
 
     // Logging : Arbor
     implementation(libs.arbor)
@@ -70,6 +87,7 @@ tasks.wrapper {
 }
 
 compose.desktop {
+
     application {
         mainClass = "TheLabDeskApp.kt"
 
@@ -78,5 +96,11 @@ compose.desktop {
             packageName = "LabDesk"
             packageVersion = "1.0.0"
         }
+    }
+}
+
+fun readProperties(propertiesFile: File) = Properties().apply {
+    propertiesFile.inputStream().use { fis ->
+        load(fis)
     }
 }

@@ -1,5 +1,6 @@
 package data.remote.dto
 
-data class Config(
-    val isDarkMode: Boolean
-)
+import java.io.Serializable
+
+@kotlinx.serialization.Serializable
+data class Config(val isDarkMode: Boolean): Serializable

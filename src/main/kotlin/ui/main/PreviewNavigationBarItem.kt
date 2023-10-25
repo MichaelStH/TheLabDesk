@@ -21,7 +21,6 @@ import core.compose.theme.isSystemInDarkTheme
 import core.compose.utils.getColorScheme
 import data.local.model.compose.NavigationUiState
 import di.AppModule
-import viewmodel.MainViewModel
 
 
 //////////////////////////////////////////////////

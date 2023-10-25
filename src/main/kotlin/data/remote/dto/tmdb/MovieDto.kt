@@ -1,8 +1,10 @@
 package data.remote.dto.tmdb
 
+import androidx.compose.runtime.Stable
 import kotlinx.serialization.SerialName
 import java.io.Serializable
 
+@Stable
 @kotlinx.serialization.Serializable
 data class MovieDto(
     @SerialName(value = "id")
@@ -33,4 +35,26 @@ data class MovieDto(
     val rating: Double,
     @SerialName(value = "vote_count")
     val voteNumber: Int,
-) : Serializable
+) : Serializable {
+
+    constructor() : this(0, "", false, "", emptySet(), "", "", "", 0.0, "", "", false, 0.0, 0)
+
+    companion object {
+        fun getMockMovie(): MovieDto = MovieDto(
+            0,
+            "",
+            false,
+            "/efpojdpcjzidcjpzdko.jpg",
+            emptySet(),
+            "en-US",
+            "Expend4bles",
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+            50.6,
+            "/fv45onsdvdv.jpg",
+            "2023-10-25",
+            false,
+            50.56,
+            3455
+        )
+    }
+}

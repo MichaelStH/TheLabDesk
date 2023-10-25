@@ -17,7 +17,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import com.toxicbakery.logging.Arbor
 import com.toxicbakery.logging.Seedling
-import core.compose.component.*
+import core.compose.component.AppTitleBar
+import core.compose.component.ScrollableWindowContent
+import core.compose.component.TheLabDeskIcon
+import core.compose.component.TheLabDeskSurface
 import core.compose.theme.TheLabDeskTheme
 import core.compose.utils.WindowDraggableArea
 import core.log.Timber
@@ -27,9 +30,12 @@ import data.local.bean.WindowTypes
 import di.AppModule
 import ui.About
 import ui.Exit
+import ui.home.HomeViewModel
 import ui.main.App
+import ui.main.MainViewModel
+import ui.news.NewsViewModel
 import ui.splashscreen.SplashScreen
-import viewmodel.MainViewModel
+import ui.theaters.TheatersViewModel
 import java.awt.Dimension
 
 
@@ -72,7 +78,12 @@ fun main() {
     initTimber()
 
     val viewModel = MainViewModel(AppModule.injectDependencies())
-    viewModel.getTime()
+    val homeViewModel = HomeViewModel()
+    val newsViewModel = NewsViewModel(AppModule.injectDependencies())
+    val theatersViewModel = TheatersViewModel(AppModule.injectDependencies())
+
+    // viewModel.getTime()
+    viewModel.updateDarkMode(true)
 
     /*GlobalScope.launch {
         while (isActive) {
@@ -155,78 +166,46 @@ fun main() {
 
                             // A surface container using the 'background' color from the theme
                             TheLabDeskSurface(
-                                modifier = Modifier.fillMaxSize().clip(
-                                    shape = if (!SystemManager.isWindows11()) RoundedCornerShape(0.dp) else RoundedCornerShape(
-                                        12.dp
-                                    )
-                                )/*,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(
+                                        shape = if (!SystemManager.isWindows11()) RoundedCornerShape(0.dp) else RoundedCornerShape(
+                                            12.dp
+                                        )
+                                    )/*,
                                 color = if (!viewModel.isDarkMode) md_theme_light_background else md_theme_dark_background*/
                             ) {
-                                if (!SystemManager.isWindows11()) {
-                                    Column(modifier = Modifier.fillMaxSize()) {
-                                        // Custom title toolbar
-                                        WindowDraggableArea(modifier = Modifier.fillMaxWidth()) {
-                                            AppTitleBar(
-                                                viewModel = viewModel,
-                                                windowState = windowState
-                                            ) {
-                                                exitApplication()
-                                            }
-                                        }
-
-                                        Box(
-                                            modifier = Modifier.fillMaxSize(),
-                                            contentAlignment = Alignment.Center
+                                Column(modifier = Modifier.fillMaxSize()) {
+                                    // Custom title toolbar
+                                    WindowDraggableArea(modifier = Modifier.fillMaxWidth()) {
+                                        AppTitleBar(
+                                            viewModel = viewModel,
+                                            windowState = windowState
                                         ) {
-                                            ScrollableWindowContent(
-                                                modifier = Modifier.blur(radius = if (viewModel.shouldShowAboutDialog || viewModel.shouldExitAppConfirmationDialog) 25.dp else 0.dp)
-                                            ) {
-                                                // App Content
-                                                App(viewModel)
-                                            }
-                                            if (viewModel.shouldShowAboutDialog) {
-                                                About(viewModel)
-                                            }
-
-                                            if (viewModel.shouldExitAppConfirmationDialog) {
-                                                Exit(viewModel)
-                                            }
+                                            exitApplication()
                                         }
                                     }
-                                } else {
-//                                    TheLabDeskCard(modifier = Modifier.fillMaxSize(), shape = RoundedCornerShape(12.dp)) {
-                                        Column(modifier = Modifier.fillMaxSize()) {
-                                            // Custom title toolbar
-                                            WindowDraggableArea(modifier = Modifier.fillMaxWidth()) {
-                                                AppTitleBar(
-                                                    viewModel = viewModel,
-                                                    windowState = windowState
-                                                ) {
-                                                    exitApplication()
-                                                }
-                                            }
 
-                                            Box(
-                                                modifier = Modifier.fillMaxSize(),
-                                                contentAlignment = Alignment.Center
-                                            ) {
-                                                ScrollableWindowContent(
-                                                    modifier = Modifier.blur(radius = if (viewModel.shouldShowAboutDialog || viewModel.shouldExitAppConfirmationDialog) 25.dp else 0.dp)
-                                                ) {
-                                                    // App Content
-                                                    App(viewModel)
-                                                }
-                                                if (viewModel.shouldShowAboutDialog) {
-                                                    About(viewModel)
-                                                }
+                                    Box(
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        ScrollableWindowContent(
+                                            modifier = Modifier.blur(radius = if (viewModel.shouldShowAboutDialog || viewModel.shouldExitAppConfirmationDialog) 25.dp else 0.dp)
+                                        ) {
+                                            // App Content
+                                            App(viewModel, homeViewModel, newsViewModel, theatersViewModel)
+                                        }
+                                        if (viewModel.shouldShowAboutDialog) {
+                                            About(viewModel)
+                                        }
 
-                                                if (viewModel.shouldExitAppConfirmationDialog) {
-                                                    Exit(viewModel)
-                                                }
-                                            }
+                                        if (viewModel.shouldExitAppConfirmationDialog) {
+                                            Exit(viewModel)
                                         }
                                     }
-//                                }
+                                }
+
                             }
                         }
                     }

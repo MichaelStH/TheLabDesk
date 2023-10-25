@@ -22,9 +22,8 @@ import core.compose.utils.Text
 fun ScrollableWindowContent(modifier: Modifier, content: @Composable () -> Unit) {
     MaterialTheme {
         Box(
-            modifier = Modifier.fillMaxSize()
-                //.background(color = Color(180, 180, 180))
-                // .padding(10.dp)
+            modifier = Modifier
+                .fillMaxSize()
                 .then(modifier)
         ) {
             val stateVertical = rememberScrollState(0)
@@ -38,6 +37,7 @@ fun ScrollableWindowContent(modifier: Modifier, content: @Composable () -> Unit)
                     .fillMaxHeight(),
                 adapter = rememberScrollbarAdapter(stateVertical)
             )
+
             HorizontalScrollbar(
                 modifier = Modifier
                     .align(Alignment.BottomStart)

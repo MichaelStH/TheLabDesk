@@ -30,7 +30,7 @@ import core.compose.theme.md_theme_dark_primaryContainer
 import core.compose.utils.Text
 import core.compose.utils.WindowDraggableArea
 import core.log.Timber
-import viewmodel.MainViewModel
+import ui.main.MainViewModel
 import java.awt.Toolkit
 
 

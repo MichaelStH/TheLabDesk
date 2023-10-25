@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import core.compose.theme.TheLabDeskTheme
 import data.local.bean.NavigationItemType
 import di.AppModule
-import viewmodel.MainViewModel
 
 
 //////////////////////////////////////////////////

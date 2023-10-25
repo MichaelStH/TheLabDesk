@@ -16,10 +16,12 @@ import core.compose.theme.TheLabDeskTheme
 import data.local.model.compose.NavigationUiState
 import di.AppModule
 import ui.home.Home
+import ui.home.HomeViewModel
 import ui.news.News
+import ui.news.NewsViewModel
 import ui.settings.SettingsContent
 import ui.theaters.Theaters
-import viewmodel.MainViewModel
+import ui.theaters.TheatersViewModel
 
 
 //////////////////////////////////////////////////
@@ -28,7 +30,12 @@ import viewmodel.MainViewModel
 //
 //////////////////////////////////////////////////
 @Composable
-fun NavigationContent(viewModel: MainViewModel) {
+fun NavigationContent(
+    viewModel: MainViewModel,
+    homeViewModel: HomeViewModel,
+    newsViewModel: NewsViewModel,
+    theatersViewModel: TheatersViewModel
+) {
     val currentNavigation by viewModel.currentNavigationUiState.collectAsState()
 
     TheLabDeskTheme(viewModel.isDarkMode) {
@@ -43,24 +50,20 @@ fun NavigationContent(viewModel: MainViewModel) {
                 style = TextStyle(fontWeight = FontWeight.W600, fontSize = 26.sp)
             )
 
-            Box(
-                modifier = Modifier,
-                //color = Color.LightGray,
-                // shape = RoundedCornerShape(35.dp),
-                contentAlignment = Alignment.TopStart
-            ) {
+            Box(modifier = Modifier, contentAlignment = Alignment.TopStart) {
                 when (currentNavigation) {
                     is NavigationUiState.Home -> {
-                        Home(viewModel)
+                        Home(homeViewModel)
                     }
 
                     is NavigationUiState.News -> {
-                        viewModel.fetchNews()
-                        News(viewModel)
+                        newsViewModel.fetchNews()
+                        News(newsViewModel)
                     }
+
                     is NavigationUiState.Theaters -> {
-                        viewModel.fetchMovies()
-                        Theaters(viewModel)
+                        theatersViewModel.fetchMovies()
+                        Theaters(theatersViewModel)
                     }
 
                     is NavigationUiState.Settings -> {
@@ -81,8 +84,13 @@ fun NavigationContent(viewModel: MainViewModel) {
 @Composable
 private fun PreviewNavigationContent() {
     val viewModel = MainViewModel(AppModule.injectDependencies())
+    val homeViewModel = HomeViewModel()
+    val newsViewModel = NewsViewModel(AppModule.injectDependencies())
+    val theatersViewModel = TheatersViewModel(AppModule.injectDependencies())
+
     viewModel.updateCurrentNavigationUiState(NavigationUiState.Settings)
+
     TheLabDeskTheme {
-        NavigationContent(viewModel = viewModel)
+        NavigationContent(viewModel, homeViewModel, newsViewModel, theatersViewModel)
     }
 }

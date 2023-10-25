@@ -20,7 +20,7 @@ import core.compose.theme.TheLabDeskTheme
 import core.compose.theme.samsungSangFamily
 import di.AppModule
 import kotlinx.coroutines.delay
-import viewmodel.MainViewModel
+import ui.main.MainViewModel
 
 //////////////////////////////////////////////////
 //

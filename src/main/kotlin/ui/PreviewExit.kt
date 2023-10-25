@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import core.compose.theme.TheLabDeskTheme
 import di.AppModule
-import viewmodel.MainViewModel
+import ui.main.MainViewModel
 
 
 //////////////////////////////////////////////////

@@ -1,22 +1,20 @@
-package viewmodel
+package ui.main
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
-import core.compose.theme.isDarkTheme
+import base.BaseViewModel
 import core.log.Timber
 import data.IRepository
 import data.local.bean.WindowTypes
-import data.local.model.compose.MoviesUiState
 import data.local.model.compose.NavigationUiState
 import data.local.model.compose.NewsUiState
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import java.util.*
 
-class MainViewModel(private val repository: IRepository) {
+class MainViewModel(private val repository: IRepository) : BaseViewModel(){
 
     var windowType by mutableStateOf(WindowTypes.SPLASHSCREEN)
         private set
@@ -24,8 +22,8 @@ class MainViewModel(private val repository: IRepository) {
     var isLoadingFinished by mutableStateOf(false)
         private set
 
-    var isDarkMode by mutableStateOf(false)
-        private set
+    /*var isDarkMode by mutableStateOf(false)
+        private set*/
 
     private val _navigationOptions = NavigationUiState.values().toMutableStateList()
     val navigationOptions: List<NavigationUiState>
@@ -36,8 +34,6 @@ class MainViewModel(private val repository: IRepository) {
     val currentNavigationUiState: StateFlow<NavigationUiState> = _currentNavigationUiState
 
 
-    private var _movieUiState: MutableStateFlow<MoviesUiState> = MutableStateFlow(MoviesUiState.None)
-    val movieUiState: StateFlow<MoviesUiState> = _movieUiState
 
     var menuOptions: Set<Pair<String, Set<Pair<String, () -> Unit>>>> = buildSet {
         add(
@@ -91,10 +87,10 @@ class MainViewModel(private val repository: IRepository) {
         }
     }
 
-    fun updateDarkMode(isDark: Boolean) {
+    /*fun updateDarkMode(isDark: Boolean) {
         this.isDarkMode = isDark
         isDarkTheme = isDark
-    }
+    }*/
 
     fun updateNavigationItemSelected(selectedOption: NavigationUiState) {
         _navigationOptions.forEach { it.selected = false }
@@ -116,9 +112,6 @@ class MainViewModel(private val repository: IRepository) {
         this._currentNavigationUiState.value = newState
     }
 
-    fun updateMoviesUiState(newState: MoviesUiState) {
-        this._movieUiState.value = newState
-    }
 
     fun updateText(newValue: String) {
         this.text = newValue
@@ -146,71 +139,4 @@ class MainViewModel(private val repository: IRepository) {
         updateNavigationItemSelected(NavigationUiState.Home)
     }
 
-
-    ////////////////////////////////////////////
-    // News
-    ////////////////////////////////////////////
-    private var _newsUiState: MutableStateFlow<NewsUiState> = MutableStateFlow(NewsUiState.Loading)
-    val newsUiState: StateFlow<NewsUiState> = _newsUiState
-
-    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        Timber.e("Error caught: ${throwable.message}")
-        throwable.message
-            ?.let { NewsUiState.Error(it) }
-            ?.let { errorState -> updateNewsUiState(errorState) }
-    }
-
-    fun updateNewsUiState(newState: NewsUiState) {
-        this._newsUiState.value = newState
-    }
-
-    @OptIn(DelicateCoroutinesApi::class)
-    fun fetchNews() {
-        Timber.d("fetchNews()")
-
-        GlobalScope.launch(Dispatchers.IO) {
-            val list = runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-                repository.getNews()
-            }
-
-            Timber.d("result: $list")
-
-            if (list.isNotEmpty()) {
-                withContext(Dispatchers.Default) {
-                    updateNewsUiState(NewsUiState.Success(list))
-                }
-            }
-        }
-    }
-
-
-    @OptIn(DelicateCoroutinesApi::class)
-    fun fetchMovies() {
-        Timber.d("fetchMovies()")
-
-        GlobalScope.launch(Dispatchers.IO) {
-            val list = runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-                repository.getMovies()
-            }
-
-            Timber.d("result: ${list.results.size}")
-
-            if (list.results.isNotEmpty()) {
-                withContext(Dispatchers.Default) {
-                    updateMoviesUiState(MoviesUiState.Success(list))
-                }
-            }
-        }
-    }
-
-    /** Get Time in order to force dark mode or not */
-    fun getTime() {
-        val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-        Timber.d("getTime() | hour: ${hour.toString()}")
-
-        if (hour !in 8..17) {
-            Timber.d("hour NOT in range should force dark mode")
-            updateDarkMode(true)
-        }
-    }
 }

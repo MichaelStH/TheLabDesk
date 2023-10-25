@@ -13,10 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import core.compose.theme.TheLabDeskTheme
 import core.compose.utils.AsyncBitmapImageFromNetwork
-import di.AppModule
+import core.compose.utils.Text
 import ui.WelcomeContent
 import utils.Constants
-import viewmodel.MainViewModel
 
 
 //////////////////////////////////////////////////
@@ -25,7 +24,7 @@ import viewmodel.MainViewModel
 //
 //////////////////////////////////////////////////
 @Composable
-fun Home(viewModel: MainViewModel) {
+fun Home(viewModel: HomeViewModel) {
     val state = rememberLazyListState()
 
     TheLabDeskTheme {
@@ -48,7 +47,7 @@ fun Home(viewModel: MainViewModel) {
                     ) {
                         AsyncBitmapImageFromNetwork(
                             modifier = Modifier.fillMaxWidth(),
-                            url = Constants.IMAGE_URL
+                            url = Constants.IMAGE_MARVEL_LOGO_URL
                         )
                     }
                 }
@@ -58,10 +57,10 @@ fun Home(viewModel: MainViewModel) {
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
-                        viewModel.updateText("Hello, Desktop!")
+                        // viewModel.updateText("Hello, Desktop!")
                     }
                 ) {
-                    core.compose.utils.Text(text = viewModel.text)
+                    Text(text = "Hello, Desktop!")
                 }
             }
         }
@@ -76,7 +75,7 @@ fun Home(viewModel: MainViewModel) {
 @Preview
 @Composable
 private fun PreviewHome() {
-    val viewModel: MainViewModel = MainViewModel(AppModule.injectDependencies())
+    val viewModel = HomeViewModel()
     TheLabDeskTheme {
         Home(viewModel = viewModel)
     }
