@@ -33,6 +33,8 @@ principles.
 
 Repository created and maintained by Saint-Honoré Michaël ([*@MichaelStH*](https://github.com/MichaelStH) on *Github*).
 
+![HotCoffeeLoading](docs/gif/lottie_hot_coffee.gif)
+
 [sem-ver]: https://semver.org/
 [kotools-types-badge]: https://img.shields.io/static/v1?label=version&message=1.0.0&color=blue
 [kotools-types-project]: https://github.com/kotools/types
