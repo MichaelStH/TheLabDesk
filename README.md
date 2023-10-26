@@ -4,6 +4,8 @@
 [![Kotlin][kotlin-badge]][kotlin]
 [![kotlinx.serialization][kotlinx.serialization-badge]][kotlinx.serialization]
 
+![WelcomeToTheLab](docs/images/welcome_image.png)
+
 ## Description
 
 TheLabDesk is another version of [***TheLab***](https://github.com/MichaelStH/TheLab), a *Desktop* application
