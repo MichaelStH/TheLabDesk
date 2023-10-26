@@ -1,18 +1,11 @@
 package core.compose.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.Colors
-import androidx.compose.material.darkColors
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import core.log.Timber
+import androidx.compose.runtime.*
 
 private val LightColorScheme = lightColorScheme(
     primary = md_theme_light_primary,
@@ -114,27 +107,27 @@ fun getColorScheme(colorScheme: ColorScheme): ColorScheme {
     )
 }
 
-val defaultTheme: Pair<ColorScheme,ColorScheme> = Pair(LightColorScheme, DarkColorScheme)
+@Stable
+val defaultTheme: Pair<ColorScheme, ColorScheme> = Pair(LightColorScheme, DarkColorScheme)
 
+@Stable
 var currentTheme by mutableStateOf(defaultTheme)
 
-fun updateCurrentTheme(newTheme:Pair<ColorScheme,ColorScheme>){
+fun updateCurrentTheme(newTheme: Pair<ColorScheme, ColorScheme>) {
     currentTheme = newTheme
 }
 
+@Stable
 var isDarkTheme: Boolean by mutableStateOf(false)
 fun isSystemInDarkTheme(): Boolean = isDarkTheme
 
 @Composable
 fun TheLabDeskTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    colors: Colors = darkColors(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val colorScheme = if (darkTheme) currentTheme.second else currentTheme.first
-    Timber.d("recomposition: darkTheme: $darkTheme")
+    // Timber.d("TheLabDeskTheme | recomposition: darkTheme: $darkTheme")
 
     MaterialTheme(
         colorScheme = colorScheme,

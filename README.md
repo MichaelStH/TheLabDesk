@@ -1,12 +1,9 @@
-# TheLabDesk
-
-[![Kotools Types][kotools-types-badge]][kotools-types-project]
-[![Kotlin][kotlin-badge]][kotlin]
-[![kotlinx.serialization][kotlinx.serialization-badge]][kotlinx.serialization]
-
 ![WelcomeToTheLab](docs/images/welcome_image.png)
 
-## Description
+# TheLabDesk
+
+[![Kotlin][kotlin-badge]][kotlin]
+[![kotlinx.serialization][kotlinx.serialization-badge]][kotlinx.serialization]
 
 TheLabDesk is another version of [***TheLab***](https://github.com/MichaelStH/TheLab), a *Desktop* application
 originally developed
@@ -38,8 +35,6 @@ Repository created and maintained by Saint-Honoré Michaël ([*@MichaelStH*](htt
 ![HotCoffeeLoading](docs/gif/lottie_hot_coffee.gif)
 
 [sem-ver]: https://semver.org/
-[kotools-types-badge]: https://img.shields.io/static/v1?label=version&message=1.0.0&color=blue
-[kotools-types-project]: https://github.com/kotools/types
 [kotlin]: https://kotlinlang.org
 [kotlin-badge]: https://img.shields.io/badge/kotlin-1.9.10-blue?logo=kotlin
 [kotlin.ArithmeticException]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-arithmetic-exception

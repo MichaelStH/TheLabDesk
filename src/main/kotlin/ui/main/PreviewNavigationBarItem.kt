@@ -79,12 +79,15 @@ fun NavigationBarItem(
                         }
                     )
 
-                    Text(
-                        text = item.javaClass.simpleName,
-                        style = if (item.selected) Typography.titleMedium else Typography.bodyMedium,
-                        color = if (item.selected) Color.White else Color.LightGray,
-                        fontSize = if (item.selected) 12.sp else 10.sp
-                    )
+                    if (!item.selected) {
+                        Text(
+                            text = item.javaClass.simpleName,
+                            style = if (item.selected) Typography.titleMedium else Typography.bodyMedium,
+                            color = if (item.selected) Color.White else Color.LightGray,
+                            fontSize = if (item.selected) 12.sp else 10.sp
+                        )
+                    }
+
                 }
             }
         }

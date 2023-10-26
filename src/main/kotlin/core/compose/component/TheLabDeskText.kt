@@ -8,11 +8,28 @@ import androidx.compose.ui.text.TextStyle
 import core.compose.theme.isSystemInDarkTheme
 
 @Composable
-fun TheLabDeskText(modifier: Modifier, text: String, style: TextStyle = TextStyle()) {
+fun TheLabDeskText(modifier: Modifier, text: String) {
     Text(
         modifier = modifier,
         text = text,
-        style = style,
         color = if (!isSystemInDarkTheme()) Color.Black else Color.White
+    )
+}
+
+@Composable
+fun TheLabDeskText(modifier: Modifier, text: String, color: Color) {
+    Text(
+        modifier = modifier,
+        text = text,
+        color = color
+    )
+}
+
+@Composable
+fun TheLabDeskText(modifier: Modifier, text: String, style: TextStyle) {
+    Text(
+        modifier = modifier,
+        text = text,
+        style = style
     )
 }

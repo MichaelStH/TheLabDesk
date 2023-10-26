@@ -105,12 +105,12 @@ fun MoviesContent(viewModel: TheatersViewModel) {
                             item { UpcomingMovies(viewModel) }
                         }
                     } else {
-
                         LazyVerticalStaggeredGrid(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .heightIn(0.dp, this@BoxWithConstraints.maxHeight)
-                                .defaultMinSize(minHeight = 1.dp),
+                                .defaultMinSize(minHeight = 1.dp)
+                                .padding(10.dp),
                             columns = StaggeredGridCells.Adaptive(190.dp),
                             state = lazyStaggeredGridState,
                             horizontalArrangement = Arrangement.spacedBy(8.dp),

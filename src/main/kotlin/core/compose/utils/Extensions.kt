@@ -6,7 +6,7 @@ import core.log.Timber
 
 fun ColorScheme.getColorScheme(): ColorScheme = this
     .apply {
-        Timber.d("Extensions | getColorScheme()")
+        // Timber.d("Extensions | getColorScheme()")
     }
     .run {
         ColorScheme(

@@ -1,4 +1,7 @@
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
@@ -15,18 +18,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import com.toxicbakery.logging.Arbor
 import com.toxicbakery.logging.Seedling
-import core.compose.component.*
+import core.compose.component.AppTitleBar
+import core.compose.component.ScrollableWindowContent
+import core.compose.component.TheLabDeskIcon
+import core.compose.component.TheLabDeskSurface
 import core.compose.theme.TheLabDeskTheme
 import core.compose.utils.WindowDraggableArea
 import core.log.Timber
 import core.utils.DisplayManager
+import core.utils.FileManager
 import core.utils.SystemManager
 import data.local.bean.WindowTypes
 import di.AppModule
@@ -38,13 +44,28 @@ import ui.main.MainViewModel
 import ui.news.NewsViewModel
 import ui.splashscreen.SplashScreen
 import ui.theaters.TheatersViewModel
+import utils.Constants
 import java.awt.Dimension
+import java.util.*
 
 object TheLabDeskApp {
 
+    private val versionProperties = Properties()
+    fun getVersion(): String = versionProperties.getProperty("version") ?: "no version"
+
     fun init() {
         Timber.d("init()")
+        runCatching {
+            versionProperties.load(this.javaClass.getResourceAsStream("generated-version/version.properties"))
+        }
+            .onFailure {
+                Timber.e("init | runCatching | onFailure: ${it.message}")
+            }
+            .onSuccess {
+                Timber.d("init | runCatching | onSuccess")
+            }
 
+        Timber.d("version: ${getVersion()}")
     }
 
     /**
@@ -77,6 +98,7 @@ fun initTimber() {
 //////////////////////////////////////////
 fun main() {
     initTimber()
+    TheLabDeskApp.init()
 
     val viewModel = MainViewModel(AppModule.injectDependencies())
     val homeViewModel = HomeViewModel()
@@ -85,6 +107,8 @@ fun main() {
 
     // viewModel.getTime()
     viewModel.updateDarkMode(true)
+
+    FileManager.createConfigFile()
 
     /*GlobalScope.launch {
         while (isActive) {
@@ -100,7 +124,7 @@ fun main() {
         val screenWidth: Int = DisplayManager.getScreenWidth()
         val screenHeight: Int = DisplayManager.getScreenHeight()
 
-        Timber.d("java.awt.Toolkit.getDefaultToolkit().screenSize | width: ${screenWidth}, height: $screenHeight")
+        Timber.d("application | java.awt.Toolkit.getDefaultToolkit().screenSize | width: ${screenWidth}, height: $screenHeight")
 
         val windowState: WindowState = rememberWindowState(
             width = 500.dp,
@@ -185,80 +209,39 @@ fun main() {
                                     )
                             ) {
 
-                                BoxWithConstraints(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.TopCenter
-                                ) {
+                                Column(modifier = Modifier.fillMaxSize()) {
+                                    // Custom title toolbar
+                                    WindowDraggableArea(modifier = Modifier.fillMaxWidth()) {
+                                        AppTitleBar(
+                                            viewModel = viewModel,
+                                            windowState = windowState
+                                        ) {
+                                            exitApplication()
+                                        }
+                                    }
 
                                     Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .heightIn(0.dp, 120.dp)
-                                            .padding(horizontal = 200.dp)
-                                            .background(Color.Blue),
+                                        modifier = Modifier.fillMaxSize().pointerInput(isPressed) {
+                                            if (viewModel.isDynamicIslandVisible) {
+                                                viewModel.updateIsDynamicIslandVisible(false)
+                                            }
+                                        },
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        /*// Dynamic Island
-                                        AnimatedVisibility(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            visible = if (LocalInspectionMode.current) true else viewModel.isDynamicIslandVisible,
-
-                                            enter = slideInVertically {
-                                                // Slide in from 40 dp from the top.
-                                                with(density) { -40.dp.roundToPx() }
-                                            } + fadeIn(
-                                                // Fade in with the initial alpha of 0.3f.
-                                                initialAlpha = 0.3f
-                                            ),
-                                            exit = slideOutVertically {
-                                                // Slide in from 40 dp from the top.
-                                                with(density) { -40.dp.roundToPx() }
-                                            } + fadeOut()
+                                        ScrollableWindowContent(
+                                            modifier = Modifier.blur(radius = if (viewModel.shouldShowAboutDialog || viewModel.shouldExitAppConfirmationDialog) 25.dp else 0.dp)
                                         ) {
-                                            DynamicIsland(
-                                                viewModel = viewModel,
-                                                modifier = Modifier.height(this@BoxWithConstraints.maxHeight - 8.dp)
-                                                    .clip(shape = RoundedCornerShape(22.dp)),
-                                                islandUiState = viewModel.dynamicIslandState.value
-                                            )
-                                        }*/
-                                    }
-
-                                    Column(modifier = Modifier.fillMaxSize()) {
-                                        // Custom title toolbar
-                                        WindowDraggableArea(modifier = Modifier.fillMaxWidth()) {
-                                            AppTitleBar(
-                                                viewModel = viewModel,
-                                                windowState = windowState
-                                            ) {
-                                                exitApplication()
-                                            }
+                                            // App Content
+                                            App(viewModel, homeViewModel, newsViewModel, theatersViewModel)
+                                        }
+                                        if (viewModel.shouldShowAboutDialog) {
+                                            About(viewModel)
                                         }
 
-                                        Box(
-                                            modifier = Modifier.fillMaxSize().pointerInput(isPressed) {
-                                                if (viewModel.isDynamicIslandVisible) {
-                                                    viewModel.updateIsDynamicIslandVisible(false)
-                                                }
-                                            },
-                                            contentAlignment = Alignment.Center
-                                        ) {
-                                            ScrollableWindowContent(
-                                                modifier = Modifier.blur(radius = if (viewModel.shouldShowAboutDialog || viewModel.shouldExitAppConfirmationDialog) 25.dp else 0.dp)
-                                            ) {
-                                                // App Content
-                                                App(viewModel, homeViewModel, newsViewModel, theatersViewModel)
-                                            }
-                                            if (viewModel.shouldShowAboutDialog) {
-                                                About(viewModel)
-                                            }
-
-                                            if (viewModel.shouldExitAppConfirmationDialog) {
-                                                Exit(viewModel)
-                                            }
+                                        if (viewModel.shouldExitAppConfirmationDialog) {
+                                            Exit(viewModel)
                                         }
                                     }
-
                                 }
                             }
                         }
@@ -268,9 +251,15 @@ fun main() {
         }
 
         LaunchedEffect(viewModel.shouldExitApp) {
+            Timber.d("LaunchedEffect | viewModel.shouldExitApp | value: ${viewModel.shouldExitApp}")
             if (viewModel.shouldExitApp) {
                 exitApplication()
             }
+        }
+
+        LaunchedEffect(viewModel.isDarkMode) {
+            Timber.d("LaunchedEffect | viewModel.isDarkMode | value: ${viewModel.isDarkMode}")
+            FileManager.updateConfigFile(Pair(Constants.IS_DARK_MODE, viewModel.isDarkMode))
         }
     }
 }

@@ -36,7 +36,9 @@ class TheatersViewModel(private val repository: IRepository) : BaseViewModel() {
     private var _tvShowsUiState: MutableStateFlow<MoviesUiState> = MutableStateFlow(MoviesUiState.None)
     val tvShowsUiState: StateFlow<MoviesUiState> = _tvShowsUiState
 
-    var selected by mutableStateOf(0)
+    var theaterTypeSelected by mutableStateOf(0)
+        private set
+    var tabIconSelected by mutableStateOf(0)
         private set
     var isStaggeredMode by mutableStateOf(false)
         private set
@@ -44,20 +46,36 @@ class TheatersViewModel(private val repository: IRepository) : BaseViewModel() {
     fun updateTheatersUiState(newState: TheatersUiState) {
         this._theatersUiState.value = newState
     }
+
     fun updateMoviesUiState(newState: MoviesUiState) {
         this._movieUiState.value = newState
     }
 
-    fun updateSelected(index: Int) {
-        this.selected = index
+    fun updateTheaterTypeSelected(index: Int) {
+        this.theaterTypeSelected = index
 
-        this._theatersUiState.value = when(index) {
-            0 ->{TheatersUiState.Movies}
-            1->{TheatersUiState.TvShows}
-            else->{TheatersUiState.Movies}
+        this._theatersUiState.value = when (index) {
+            0 -> {
+                TheatersUiState.Movies
+            }
+
+            1 -> {
+                TheatersUiState.TvShows
+            }
+
+            else -> {
+                TheatersUiState.Movies
+            }
         }
     }
-    fun updateIsStaggeredMode(isStaggered:Boolean) {
+
+    fun updateTabIconSelected(index: Int) {
+        this.tabIconSelected = index
+
+        updateIsStaggeredMode(if (0 == index) false else if (1 == index) true else false)
+    }
+
+    fun updateIsStaggeredMode(isStaggered: Boolean) {
         this.isStaggeredMode = isStaggered
     }
 

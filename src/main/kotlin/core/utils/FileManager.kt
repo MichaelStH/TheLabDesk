@@ -10,6 +10,7 @@ import org.json.JSONObject
 import utils.Constants
 import java.io.File
 import java.io.FileWriter
+import java.io.IOException
 import java.io.RandomAccessFile
 import java.nio.channels.FileChannel
 import java.nio.channels.FileLock
@@ -81,9 +82,14 @@ object FileManager {
 
     }
 
-    fun getFileByName(filename: String) {
+    @Throws(IOException::class)
+    fun getFileByName(filename: String): File {
         Timber.d("fetchFile() | filename: $filename")
+        return File(APP_FOLDER_PATH, filename)
+    }
 
+    fun createConfigFile() {
+        createFile(APP_FOLDER_PATH, CONFIG_FILE_NAME)
     }
 
 
@@ -123,7 +129,7 @@ object FileManager {
 
     /**
      * Fetch config file from user home directory
-     * @return [com.chronopost.qrcode.data.remote.dto.Config] object
+     * @return [Config] object
      */
     fun getConfigFileToDto(): Config? = runCatching {
         Timber.d("getConfigFileToDto()")
@@ -151,6 +157,11 @@ object FileManager {
     fun updateConfigFile(vararg map: Pair<String, Any>) {
         Timber.d("updateConfigFile()")
         Timber.d("check operation running: $isOperationRunning")
+
+        if(isOperationRunning) {
+            Timber.e("Operation is already running")
+            return
+        }
 
         var json: Json? = null
         // Dark mode content

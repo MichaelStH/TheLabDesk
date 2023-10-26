@@ -1,5 +1,5 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import java.util.Properties
+import java.util.*
 
 plugins {
     kotlin("jvm")
@@ -9,6 +9,20 @@ plugins {
 
 group = "com.riders"
 version = "1.0-SNAPSHOT"
+
+val generatedVersionDir = "$projectDir/src/main/resources/generated-version"
+
+val propertiesFile = file("$generatedVersionDir/version.properties")
+propertiesFile.parentFile.mkdirs()
+val properties = Properties()
+properties.setProperty("version", rootProject.version.toString())
+propertiesFile.writer().use { properties.store(it, null) }
+
+sourceSets {
+    main {
+        output.dir(generatedVersionDir)
+    }
+}
 
 kotlin {
     sourceSets.all {
