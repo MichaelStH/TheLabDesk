@@ -29,9 +29,9 @@ object SystemManager {
         return if (getOperatingSystem().contains("win", true)) {
             System.getProperty("user.home") + File.separator + "Documents" + File.separator
         } else if (getOperatingSystem().contains("mac")) {
-            System.getProperty("user.home")
+            System.getProperty("user.home") + File.separator
         } else {
-            System.getProperty("user.home")
+            System.getProperty("user.home") + File.separator
         }
     }
 
