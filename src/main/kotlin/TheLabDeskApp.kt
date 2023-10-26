@@ -1,8 +1,8 @@
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
+import androidx.compose.animation.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
@@ -10,17 +10,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import com.toxicbakery.logging.Arbor
 import com.toxicbakery.logging.Seedling
-import core.compose.component.AppTitleBar
-import core.compose.component.ScrollableWindowContent
-import core.compose.component.TheLabDeskIcon
-import core.compose.component.TheLabDeskSurface
+import core.compose.component.*
 import core.compose.theme.TheLabDeskTheme
 import core.compose.utils.WindowDraggableArea
 import core.log.Timber
@@ -37,7 +39,6 @@ import ui.news.NewsViewModel
 import ui.splashscreen.SplashScreen
 import ui.theaters.TheatersViewModel
 import java.awt.Dimension
-
 
 object TheLabDeskApp {
 
@@ -140,6 +141,15 @@ fun main() {
             resizable = viewModel.windowType != WindowTypes.SPLASHSCREEN,
             onCloseRequest = ::exitApplication
         ) {
+
+            // Declaring Coroutine scope
+            val scope = rememberCoroutineScope()
+            val interactionSource = remember { MutableInteractionSource() }
+            val isPressed by interactionSource.collectIsPressedAsState()
+            val isFocus by interactionSource.collectIsFocusedAsState()
+            val focusManager: FocusManager = LocalFocusManager.current
+            val density = LocalDensity.current
+
             TheLabDeskTheme(viewModel.isDarkMode) {
                 Box(modifier = Modifier.background(Color.Transparent)) {
                     AnimatedContent(
@@ -172,40 +182,84 @@ fun main() {
                                         shape = if (!SystemManager.isWindows11()) RoundedCornerShape(0.dp) else RoundedCornerShape(
                                             12.dp
                                         )
-                                    )/*,
-                                color = if (!viewModel.isDarkMode) md_theme_light_background else md_theme_dark_background*/
+                                    )
                             ) {
-                                Column(modifier = Modifier.fillMaxSize()) {
-                                    // Custom title toolbar
-                                    WindowDraggableArea(modifier = Modifier.fillMaxWidth()) {
-                                        AppTitleBar(
-                                            viewModel = viewModel,
-                                            windowState = windowState
-                                        ) {
-                                            exitApplication()
-                                        }
-                                    }
+
+                                BoxWithConstraints(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.TopCenter
+                                ) {
 
                                     Box(
-                                        modifier = Modifier.fillMaxSize(),
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .heightIn(0.dp, 120.dp)
+                                            .padding(horizontal = 200.dp)
+                                            .background(Color.Blue),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        ScrollableWindowContent(
-                                            modifier = Modifier.blur(radius = if (viewModel.shouldShowAboutDialog || viewModel.shouldExitAppConfirmationDialog) 25.dp else 0.dp)
+                                        /*// Dynamic Island
+                                        AnimatedVisibility(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            visible = if (LocalInspectionMode.current) true else viewModel.isDynamicIslandVisible,
+
+                                            enter = slideInVertically {
+                                                // Slide in from 40 dp from the top.
+                                                with(density) { -40.dp.roundToPx() }
+                                            } + fadeIn(
+                                                // Fade in with the initial alpha of 0.3f.
+                                                initialAlpha = 0.3f
+                                            ),
+                                            exit = slideOutVertically {
+                                                // Slide in from 40 dp from the top.
+                                                with(density) { -40.dp.roundToPx() }
+                                            } + fadeOut()
                                         ) {
-                                            // App Content
-                                            App(viewModel, homeViewModel, newsViewModel, theatersViewModel)
-                                        }
-                                        if (viewModel.shouldShowAboutDialog) {
-                                            About(viewModel)
+                                            DynamicIsland(
+                                                viewModel = viewModel,
+                                                modifier = Modifier.height(this@BoxWithConstraints.maxHeight - 8.dp)
+                                                    .clip(shape = RoundedCornerShape(22.dp)),
+                                                islandUiState = viewModel.dynamicIslandState.value
+                                            )
+                                        }*/
+                                    }
+
+                                    Column(modifier = Modifier.fillMaxSize()) {
+                                        // Custom title toolbar
+                                        WindowDraggableArea(modifier = Modifier.fillMaxWidth()) {
+                                            AppTitleBar(
+                                                viewModel = viewModel,
+                                                windowState = windowState
+                                            ) {
+                                                exitApplication()
+                                            }
                                         }
 
-                                        if (viewModel.shouldExitAppConfirmationDialog) {
-                                            Exit(viewModel)
+                                        Box(
+                                            modifier = Modifier.fillMaxSize().pointerInput(isPressed) {
+                                                if (viewModel.isDynamicIslandVisible) {
+                                                    viewModel.updateIsDynamicIslandVisible(false)
+                                                }
+                                            },
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            ScrollableWindowContent(
+                                                modifier = Modifier.blur(radius = if (viewModel.shouldShowAboutDialog || viewModel.shouldExitAppConfirmationDialog) 25.dp else 0.dp)
+                                            ) {
+                                                // App Content
+                                                App(viewModel, homeViewModel, newsViewModel, theatersViewModel)
+                                            }
+                                            if (viewModel.shouldShowAboutDialog) {
+                                                About(viewModel)
+                                            }
+
+                                            if (viewModel.shouldExitAppConfirmationDialog) {
+                                                Exit(viewModel)
+                                            }
                                         }
                                     }
-                                }
 
+                                }
                             }
                         }
                     }

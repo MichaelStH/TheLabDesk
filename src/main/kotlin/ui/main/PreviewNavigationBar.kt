@@ -47,7 +47,13 @@ fun NavigationBar(viewModel: MainViewModel) {
                         // Create a composable function which will take list of NavigationUiState
                         // and a callback to call when any selection is tapped by user on UI
                         if (item.navigationItemType == NavigationItemType.DEFAULT) {
-                            NavigationBarItem(viewModel, item, viewModel::updateNavigationItemSelected)
+                            NavigationBarItem(viewModel, item) {
+                                if (viewModel.isDynamicIslandVisible) {
+                                    viewModel.updateIsDynamicIslandVisible(false)
+                                }
+
+                                viewModel.updateNavigationItemSelected(item)
+                            }
                         }
                     }
                 }
@@ -58,7 +64,12 @@ fun NavigationBar(viewModel: MainViewModel) {
                 if (null != viewModel.navigationOptions.find { it.navigationItemType == NavigationItemType.SETTINGS }) {
                     val settingsItem =
                         viewModel.navigationOptions.find { it.navigationItemType == NavigationItemType.SETTINGS }!!
-                    NavigationBarItem(viewModel, settingsItem, viewModel::updateNavigationItemSelected)
+                    NavigationBarItem(viewModel, settingsItem) {
+                        if (viewModel.isDynamicIslandVisible) {
+                            viewModel.updateIsDynamicIslandVisible(false)
+                        }
+                        viewModel.updateNavigationItemSelected(settingsItem)
+                    }
                 }
             }
         }

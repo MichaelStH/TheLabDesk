@@ -8,13 +8,39 @@ import base.BaseViewModel
 import core.log.Timber
 import data.IRepository
 import data.local.bean.WindowTypes
+import data.local.model.compose.IslandUiState
 import data.local.model.compose.NavigationUiState
-import data.local.model.compose.NewsUiState
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class MainViewModel(private val repository: IRepository) : BaseViewModel(){
+class MainViewModel(private val repository: IRepository) : BaseViewModel() {
+
+    //////////////////////////////////////////
+    // Coroutines
+    //////////////////////////////////////////
+    private val coroutineExceptionHandler =
+        CoroutineExceptionHandler { _, throwable ->
+            throwable.printStackTrace()
+            Timber.e("${throwable.message}")
+        }
+
+
+    //////////////////////////////////////////
+    // Compose states
+    //////////////////////////////////////////
+    var isDynamicIslandVisible by mutableStateOf(false)
+        private set
+    var searchedAppRequest by mutableStateOf("")
+    var isSearchFocused by mutableStateOf(false)
+        private set
+
+    var keyboardVisible by mutableStateOf(false)
+
+    val dynamicIslandState = mutableStateOf<IslandUiState>(IslandUiState.DefaultState())
+    fun displayDynamicIsland(isDisplayed: Boolean) {
+        dynamicIslandState.value = IslandUiState.SearchState()
+    }
 
     var windowType by mutableStateOf(WindowTypes.SPLASHSCREEN)
         private set
@@ -32,7 +58,6 @@ class MainViewModel(private val repository: IRepository) : BaseViewModel(){
     private var _currentNavigationUiState: MutableStateFlow<NavigationUiState> =
         MutableStateFlow(NavigationUiState.Home)
     val currentNavigationUiState: StateFlow<NavigationUiState> = _currentNavigationUiState
-
 
 
     var menuOptions: Set<Pair<String, Set<Pair<String, () -> Unit>>>> = buildSet {
@@ -133,10 +158,30 @@ class MainViewModel(private val repository: IRepository) : BaseViewModel(){
         this.shouldExitApp = exitApp
     }
 
+    fun updateKeyboardVisible(isVisible: Boolean) {
+        keyboardVisible = isVisible
+    }
+
+    fun updateIsDynamicIslandVisible(visible: Boolean) {
+        isDynamicIslandVisible = visible
+    }
+
+    fun updateIsSearchFocused(focused: Boolean) {
+        isSearchFocused = focused
+    }
+
     init {
         Timber.d("Init ViewModel")
 
         updateNavigationItemSelected(NavigationUiState.Home)
     }
 
+    //////////////////////////////////
+    //
+    // CLASS METHODS
+    //
+    //////////////////////////////////
+    fun searchApp(requestedAppName: String) {
+        searchedAppRequest = requestedAppName
+    }
 }
