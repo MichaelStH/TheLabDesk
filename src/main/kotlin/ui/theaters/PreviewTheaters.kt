@@ -30,6 +30,7 @@ import core.compose.theme.TheLabDeskTheme
 import core.compose.theme.Typography
 import core.compose.utils.AsyncBitmapImageFromNetworkWithModifier
 import data.local.model.compose.MoviesUiState
+import data.local.model.compose.TheatersUiState
 import data.remote.dto.tmdb.MovieDto
 import di.AppModule
 import utils.Constants
@@ -155,146 +156,21 @@ fun Header(viewModel: TheatersViewModel, movie: MovieDto) {
 }
 
 @Composable
-fun TrendingMovies(viewModel: TheatersViewModel) {
-    val lazyListState = rememberLazyListState()
-
-    TheLabDeskTheme(viewModel.isDarkMode) {
-        Column(modifier = Modifier.heightIn(0.dp, 450.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            TheLabDeskText(
-                modifier = Modifier,
-                text = "Trending Movies",
-                style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.W600)
-            )
-            LazyRow(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                state = lazyListState
-            ) {
-                items(items = (viewModel.movieUiState.value as MoviesUiState.Success).response.results) {
-                    TheatersItem(viewModel, it)
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun PopularMovies(viewModel: TheatersViewModel) {
-    val lazyListState = rememberLazyListState()
-
-    TheLabDeskTheme(viewModel.isDarkMode) {
-        Column(modifier = Modifier.heightIn(0.dp, 450.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            TheLabDeskText(modifier = Modifier, text = "Popular Movies")
-        }
-    }
-}
-
-
-@Composable
-fun UpcomingMovies(viewModel: TheatersViewModel) {
-    val lazyListState = rememberLazyListState()
-    TheLabDeskTheme(viewModel.isDarkMode) {
-
-        Column(modifier = Modifier.heightIn(0.dp, 450.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            TheLabDeskText(modifier = Modifier, text = "Upcoming Movies")
-        }
-    }
-}
-
-
-@Composable
-fun PopularTvShows(viewModel: TheatersViewModel) {
-    val lazyListState = rememberLazyListState()
-    TheLabDeskTheme(viewModel.isDarkMode) {
-
-        Column(modifier = Modifier.heightIn(0.dp, 450.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            TheLabDeskText(modifier = Modifier, text = "Popular TV Shows")
-        }
-    }
-}
-
-@Composable
-fun TrendingTvShows(viewModel: TheatersViewModel) {
-    val lazyListState = rememberLazyListState()
-    TheLabDeskTheme(viewModel.isDarkMode) {
-
-        Column(modifier = Modifier.heightIn(0.dp, 450.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            TheLabDeskText(modifier = Modifier, text = "Trending TV Shows")
-        }
-    }
-}
-
-
-@Composable
 fun Theaters(viewModel: TheatersViewModel) {
-    val lazyListState = rememberLazyListState()
-    val lazyStaggeredGridState = rememberLazyStaggeredGridState()
-    val movieUiState by viewModel.movieUiState.collectAsState()
+    val theatersUiState by viewModel.theatersUiState.collectAsState()
 
     TheLabDeskTheme(viewModel.isDarkMode) {
         BoxWithConstraints(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            when (movieUiState) {
-                is MoviesUiState.Success -> {
-                    LazyColumn(
-                        modifier = Modifier
-                            .width(this.maxWidth)
-                            .heightIn(0.dp, this.maxHeight)
-                            .defaultMinSize(minHeight = 1.dp)
-                            .padding(10.dp),
-                        state = lazyListState,
-                        horizontalAlignment = Alignment.Start,
-                        verticalArrangement = Arrangement.spacedBy(24.dp),
-                    ) {
-                        item {
-                            Header(
-                                viewModel,
-                                (movieUiState as MoviesUiState.Success).response.results.first()
-                            )
-                        }
-
-                        item { TrendingMovies(viewModel) }
-                        item { PopularMovies(viewModel) }
-                        item { UpcomingMovies(viewModel) }
-                        item { PopularTvShows(viewModel) }
-                        item { TrendingTvShows(viewModel) }
-
-                        item {
-                            LazyVerticalStaggeredGrid(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .heightIn(0.dp, this@BoxWithConstraints.maxHeight)
-                                    .defaultMinSize(minHeight = 1.dp),
-                                columns = StaggeredGridCells.Adaptive(190.dp),
-                                state = lazyStaggeredGridState,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                verticalItemSpacing = 12.dp
-                            ) {
-                                /*item(
-                                    // Replace "maxCurrentLineSpan" with the number of spans this item should take.
-                                    // Use "maxCurrentLineSpan" if you want to take full width.
-                                    span = StaggeredGridItemSpan.FullLine
-                                ) {
-                                    Header(viewModel, (movieUiState as MoviesUiState.Success).response.results.first())
-                                }*/
-
-                                items(items = (movieUiState as MoviesUiState.Success).response.results) {
-                                    TheatersItem(viewModel, it)
-                                }
-                            }
-                        }
-                    }
+            when (theatersUiState) {
+                is TheatersUiState.Movies-> {
+                    MoviesContent(viewModel)
                 }
 
-                is MoviesUiState.Error -> {
-                    TheLabDeskText(modifier = Modifier, text = (movieUiState as MoviesUiState.Error).message)
-                }
-
-                is MoviesUiState.None -> {
-                    CircularProgressIndicator()
+                is TheatersUiState.TvShows -> {
+                    TvShowsContent(viewModel)
                 }
             }
         }
