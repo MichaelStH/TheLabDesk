@@ -100,7 +100,7 @@ fun NavigationContent(
                     }
 
                     is NavigationUiState.Theaters -> {
-                        theatersViewModel.fetchMovies()
+                        theatersViewModel.fetchTMDBData()
                         Theaters(theatersViewModel)
                     }
 

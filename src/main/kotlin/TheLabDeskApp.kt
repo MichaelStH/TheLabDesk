@@ -208,7 +208,6 @@ fun main() {
                                         )
                                     )
                             ) {
-
                                 Column(modifier = Modifier.fillMaxSize()) {
                                     // Custom title toolbar
                                     WindowDraggableArea(modifier = Modifier.fillMaxWidth()) {

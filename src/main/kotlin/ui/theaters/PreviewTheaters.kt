@@ -3,34 +3,24 @@ package ui.theaters
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.items
-import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import core.compose.component.TheLabDeskCard
-import core.compose.component.TheLabDeskText
 import core.compose.theme.TheLabDeskTheme
 import core.compose.theme.Typography
 import core.compose.utils.AsyncBitmapImageFromNetworkWithModifier
-import data.local.model.compose.MoviesUiState
 import data.local.model.compose.TheatersUiState
+import data.local.model.tmdb.MovieModel
+import data.local.model.tmdb.TvShowsModel
 import data.remote.dto.tmdb.MovieDto
 import di.AppModule
 import utils.Constants
@@ -98,7 +88,64 @@ fun MovieHeader(viewModel: TheatersViewModel, titlePlaceholder: String, item: Mo
 }
 
 @Composable
-fun Header(viewModel: TheatersViewModel, movie: MovieDto) {
+fun Header(viewModel: TheatersViewModel, tvShowsModel: TvShowsModel) {
+    val backdropUrl =
+        "${Constants.BASE_URL_TMDB_IMAGE_W_500_ENDPOINT}${tvShowsModel.backdropPath}"
+    val poster =
+        "${Constants.BASE_URL_TMDB_IMAGE_W_500_ENDPOINT}${tvShowsModel.poster}"
+
+    TheLabDeskTheme(viewModel.isDarkMode) {
+        TheLabDeskCard(modifier = Modifier.fillMaxWidth().heightIn(0.dp, 300.dp)) {
+            BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+                // Image
+                AsyncBitmapImageFromNetworkWithModifier(
+                    modifier = Modifier
+                        .width(this.maxWidth / 3)
+                        .height(this.maxHeight)
+                        .align(Alignment.CenterEnd),
+                    url = backdropUrl
+                )
+
+                // Gradient
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.horizontalGradient(
+                                colors = listOf(
+                                    Color.Black,
+                                    Color.Black,
+                                    Color.Black,
+                                    Color.Transparent
+                                )
+                            )
+                        )
+                        .align(Alignment.CenterStart)
+                )
+
+
+                Column(
+                    modifier = Modifier.align(Alignment.CenterStart).padding(start = 20.dp)
+                ) {
+                    Text(
+                        modifier = Modifier,
+                        text = "Trending right now",
+                        style = Typography.bodyMedium
+                    )
+
+                    Text(
+                        modifier = Modifier,
+                        text = tvShowsModel.originalTitle.toString(),
+                        style = Typography.titleLarge,
+                        fontSize = 32.sp
+                    )
+                }
+            }
+        }
+    }
+}
+@Composable
+fun Header(viewModel: TheatersViewModel, movie: MovieModel) {
     val backdropUrl =
         "${Constants.BASE_URL_TMDB_IMAGE_W_500_ENDPOINT}${movie.backdropPath}"
     val poster =
@@ -145,7 +192,7 @@ fun Header(viewModel: TheatersViewModel, movie: MovieDto) {
 
                     Text(
                         modifier = Modifier,
-                        text = movie.originalTitle,
+                        text = movie.originalTitle.toString(),
                         style = Typography.titleLarge,
                         fontSize = 32.sp
                     )
@@ -165,7 +212,7 @@ fun Theaters(viewModel: TheatersViewModel) {
             contentAlignment = Alignment.Center
         ) {
             when (theatersUiState) {
-                is TheatersUiState.Movies-> {
+                is TheatersUiState.Movies -> {
                     MoviesContent(viewModel)
                 }
 
@@ -174,6 +221,14 @@ fun Theaters(viewModel: TheatersViewModel) {
                 }
             }
         }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchTrendingMovies()
+        viewModel.fetchPopularMovies()
+        viewModel.fetchUpcomingMovies()
+        viewModel.fetchTrendingTvShows()
+        viewModel.fetchPopularTvShows()
     }
 }
 

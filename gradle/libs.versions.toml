@@ -14,7 +14,7 @@ kotlinxSerializationJson = "1.5.1"
 compose = "1.5.3"
 # Ktor
 ktor = "2.3.4"
-types = "4.0.0"
+types = "4.3.1"
 # Zxing
 zxing = "3.5.2"
 
@@ -36,7 +36,7 @@ ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "
 ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
-kotools-types = { group = "io.github.kotools", name = "types", version.ref = "types" }
+kotools-types = { group = "org.kotools", name = "types", version.ref = "types" }
 # zxing
 zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxing" }
 zxing-javase = { group = "com.google.zxing", name = "javase", version.ref = "zxing" }

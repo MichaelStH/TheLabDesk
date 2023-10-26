@@ -1,48 +1,40 @@
 package data.remote.dto.tmdb
 
-import data.local.model.tmdb.MovieModel
+import data.local.model.tmdb.TvShowsModel
 import kotlinx.serialization.SerialName
 import java.io.Serializable
 
 @kotlinx.serialization.Serializable
-data class MovieDto(
+data class TvShowsDto(
     @SerialName(value = "id")
     val id: Int,
-    @SerialName(value = "title")
-    val title: String,
-    @SerialName(value = "adult")
-    val adult: Boolean,
+    @SerialName(value = "name")
+    val name: String,
     @SerialName(value = "backdrop_path")
     val backdropPath: String,
     @SerialName(value = "genre_ids")
     val genresID: Set<Int>,
     @SerialName(value = "original_language")
     val originalLanguage: String,
-    @SerialName(value = "original_title")
-    val originalTitle: String,
+    @SerialName(value = "original_name")
+    val originalName: String,
     @SerialName(value = "overview")
     val overview: String,
     @SerialName(value = "popularity")
     val popularity: Double,
     @SerialName(value = "poster_path")
     val poster: String,
-    @SerialName(value = "release_date")
-    val releaseDate: String,
-    @SerialName(value = "video")
-    val video: Boolean,
+    @SerialName(value = "first_air_date")
+    val firstAirDate: String,
     @SerialName(value = "vote_average")
     val rating: Double,
     @SerialName(value = "vote_count")
     val voteNumber: Int,
 ) : Serializable {
-
-    constructor() : this(0, "", false, "", emptySet(), "", "", "", 0.0, "", "", false, 0.0, 0)
-
     companion object {
-        fun getMockMovie(): MovieDto = MovieDto(
+        fun getMockMovie(): TvShowsDto = TvShowsDto(
             0,
             "",
-            false,
             "/efpojdpcjzidcjpzdko.jpg",
             emptySet(),
             "en-US",
@@ -51,11 +43,10 @@ data class MovieDto(
             50.6,
             "/fv45onsdvdv.jpg",
             "2023-10-25",
-            false,
             50.56,
             3455
         )
     }
 }
 
-fun MovieDto.toModel(): MovieModel = MovieModel(this)
+fun TvShowsDto.toModel(): TvShowsModel = TvShowsModel(this)

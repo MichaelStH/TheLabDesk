@@ -3,7 +3,8 @@ package data.remote
 import androidx.compose.ui.res.useResource
 import core.log.Timber
 import data.remote.dto.NewsDto
-import data.remote.dto.tmdb.TMDBResponse
+import data.remote.dto.tmdb.TMDBMovieResponse
+import data.remote.dto.tmdb.TMDBTvShowsResponse
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -32,7 +33,7 @@ class ApiImpl : IApi {
         }
 
         install(ContentNegotiation) {
-            json() // Example: Register JSON content transformation
+            json(Json { ignoreUnknownKeys = true }) // Example: Register JSON content transformation
             // Add more transformations as needed for other content types
         }
 
@@ -70,11 +71,86 @@ class ApiImpl : IApi {
         return news.mapIndexed { index, item -> NewsDto(index, item) }
     }
 
-    override suspend fun getMovies(): TMDBResponse {
+    override suspend fun getTrendingMovies(): TMDBMovieResponse {
+        val url = "${Constants.BASE_URL_TMDB_ENDPOINT}/movie/now_playing?api_key=${Constants.TMDB_API_KEY}"
+        Timber.d("getTrendingMovies() | url: $url")
+
+        val response: TMDBMovieResponse = mClient.get(url).body<TMDBMovieResponse>()
+
+        if (null == response) {
+            Timber.e("response is null")
+        } else {
+            Timber.d("total count found: ${response.totalResults}")
+        }
+
+        return response
+    }
+
+    override suspend fun getPopularMovies(): TMDBMovieResponse {
+        val url = "${Constants.BASE_URL_TMDB_ENDPOINT}/movie/popular?api_key=${Constants.TMDB_API_KEY}"
+        Timber.d("getPopularMovies() | url: $url")
+
+        val response: TMDBMovieResponse = mClient.get(url).body<TMDBMovieResponse>()
+
+        if (null == response) {
+            Timber.e("response is null")
+        } else {
+            Timber.d("total count found: ${response.totalResults}")
+        }
+
+        return response
+    }
+
+    override suspend fun getUpcomingMovies(): TMDBMovieResponse {
+        val url = "${Constants.BASE_URL_TMDB_ENDPOINT}/movie/upcoming?api_key=${Constants.TMDB_API_KEY}"
+        Timber.d("getUpcomingMovies() | url: $url")
+
+        val response: TMDBMovieResponse = mClient.get(url).body<TMDBMovieResponse>()
+
+        if (null == response) {
+            Timber.e("response is null")
+        } else {
+            Timber.d("total count found: ${response.totalResults}")
+        }
+
+        return response
+    }
+
+    override suspend fun getTrendingTvShows(): TMDBTvShowsResponse {
+        val url = "${Constants.BASE_URL_TMDB_ENDPOINT}/tv/airing_today?api_key=${Constants.TMDB_API_KEY}"
+        Timber.d("getTrendingTvShows() | url: $url")
+
+        val response: TMDBTvShowsResponse = mClient.get(url).body<TMDBTvShowsResponse>()
+
+        if (null == response) {
+            Timber.e("response is null")
+        } else {
+            Timber.d("total count found: ${response.totalResults}")
+        }
+
+        return response
+    }
+
+    override suspend fun getPopularTvShows(): TMDBTvShowsResponse {
+        val url = "${Constants.BASE_URL_TMDB_ENDPOINT}/tv/popular?api_key=${Constants.TMDB_API_KEY}"
+        Timber.d("getPopularTvShows() | url: $url")
+
+        val response: TMDBTvShowsResponse = mClient.get(url).body<TMDBTvShowsResponse>()
+
+        if (null == response) {
+            Timber.e("response is null")
+        } else {
+            Timber.d("total count found: ${response.totalResults}")
+        }
+
+        return response
+    }
+
+    override suspend fun getMovies(): TMDBMovieResponse {
         val url = "${Constants.BASE_URL_TMDB_ENDPOINT}/movie/now_playing?api_key=${Constants.TMDB_API_KEY}"
         Timber.d("getMovies() | url: $url")
 
-        val response: TMDBResponse = mClient.get(url).body<TMDBResponse>()
+        val response: TMDBMovieResponse = mClient.get(url).body<TMDBMovieResponse>()
 
         if (null == response) {
             Timber.e("response is null")

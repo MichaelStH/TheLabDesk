@@ -30,6 +30,6 @@ fun TheLabDeskText(modifier: Modifier, text: String, style: TextStyle) {
     Text(
         modifier = modifier,
         text = text,
-        style = style
+        style = style.copy(color = if (!isSystemInDarkTheme()) Color.Black else Color.White )
     )
 }

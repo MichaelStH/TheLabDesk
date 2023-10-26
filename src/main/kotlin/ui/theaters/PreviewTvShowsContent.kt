@@ -2,6 +2,8 @@ package ui.theaters
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.staggeredgrid.*
 import androidx.compose.material3.CircularProgressIndicator
@@ -10,7 +12,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import core.compose.component.TheLabDeskText
 import core.compose.theme.TheLabDeskTheme
 import data.local.model.compose.MoviesUiState
@@ -22,7 +27,25 @@ fun PopularTvShows(viewModel: TheatersViewModel) {
     TheLabDeskTheme(viewModel.isDarkMode) {
 
         Column(modifier = Modifier.heightIn(0.dp, 450.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            TheLabDeskText(modifier = Modifier, text = "Popular TV Shows")
+            TheLabDeskText(
+                modifier = Modifier, text = "Popular TV Shows",
+                style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.W600)
+            )
+
+            if (viewModel.popularTvShowsList.toList().isEmpty()) {
+                CircularProgressIndicator()
+            } else {
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    state = lazyListState
+                ) {
+                    items(items = viewModel.popularTvShowsList.toList()) {
+                        TheatersItem(viewModel, it)
+                    }
+                }
+            }
         }
     }
 }
@@ -33,7 +56,25 @@ fun TrendingTvShows(viewModel: TheatersViewModel) {
     TheLabDeskTheme(viewModel.isDarkMode) {
 
         Column(modifier = Modifier.heightIn(0.dp, 450.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            TheLabDeskText(modifier = Modifier, text = "Trending TV Shows")
+            TheLabDeskText(
+                modifier = Modifier, text = "Trending TV Shows",
+                style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.W600)
+            )
+
+            if (viewModel.trendingTvShowsList.toList().isEmpty()) {
+                CircularProgressIndicator()
+            } else {
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    state = lazyListState
+                ) {
+                    items(items = viewModel.trendingTvShowsList.toList()) {
+                        TheatersItem(viewModel, it)
+                    }
+                }
+            }
         }
     }
 }
@@ -66,7 +107,7 @@ fun TvShowsContent(viewModel: TheatersViewModel) {
                             item {
                                 Header(
                                     viewModel,
-                                    (tvShowsUiState as MoviesUiState.Success).response.results.first()
+                                    viewModel.trendingTvShowsList.toList().first()
                                 )
                             }
                             item { PopularTvShows(viewModel) }
@@ -88,10 +129,10 @@ fun TvShowsContent(viewModel: TheatersViewModel) {
                                 // Use "maxCurrentLineSpan" if you want to take full width.
                                 span = StaggeredGridItemSpan.FullLine
                             ) {
-                                Header(viewModel, (tvShowsUiState as MoviesUiState.Success).response.results.first())
+                                Header(viewModel, viewModel.trendingTvShowsList.toList().first())
                             }
 
-                            items(items = (tvShowsUiState as MoviesUiState.Success).response.results) {
+                            items(items = viewModel.trendingTvShowsList.toList()) {
                                 TheatersItem(viewModel, it)
                             }
                         }

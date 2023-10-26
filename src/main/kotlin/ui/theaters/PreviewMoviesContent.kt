@@ -32,14 +32,19 @@ fun TrendingMovies(viewModel: TheatersViewModel) {
                 text = "Trending Movies",
                 style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.W600)
             )
-            LazyRow(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                state = lazyListState
-            ) {
-                items(items = (viewModel.movieUiState.value as MoviesUiState.Success).response.results) {
-                    TheatersItem(viewModel, it)
+
+            if (viewModel.trendingMovieList.toList().isEmpty()) {
+                CircularProgressIndicator()
+            } else {
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    state = lazyListState
+                ) {
+                    items(items = viewModel.trendingMovieList.toList()) {
+                        TheatersItem(viewModel, it)
+                    }
                 }
             }
         }
@@ -52,7 +57,25 @@ fun PopularMovies(viewModel: TheatersViewModel) {
 
     TheLabDeskTheme(viewModel.isDarkMode) {
         Column(modifier = Modifier.heightIn(0.dp, 450.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            TheLabDeskText(modifier = Modifier, text = "Popular Movies")
+            TheLabDeskText(
+                modifier = Modifier, text = "Popular Movies",
+                style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.W600)
+            )
+
+            if (viewModel.popularMovieList.toList().isEmpty()) {
+                CircularProgressIndicator()
+            } else {
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    state = lazyListState
+                ) {
+                    items(items = viewModel.popularMovieList.toList()) {
+                        TheatersItem(viewModel, it)
+                    }
+                }
+            }
         }
     }
 }
@@ -64,7 +87,20 @@ fun UpcomingMovies(viewModel: TheatersViewModel) {
     TheLabDeskTheme(viewModel.isDarkMode) {
 
         Column(modifier = Modifier.heightIn(0.dp, 450.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            TheLabDeskText(modifier = Modifier, text = "Upcoming Movies")
+            TheLabDeskText(
+                modifier = Modifier, text = "Upcoming Movies",
+                style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.W600)
+            )
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                state = lazyListState
+            ) {
+                items(items = viewModel.upcomingMovieList.toList()) {
+                    TheatersItem(viewModel, it)
+                }
+            }
         }
     }
 }
@@ -94,10 +130,12 @@ fun MoviesContent(viewModel: TheatersViewModel) {
                             verticalArrangement = Arrangement.spacedBy(24.dp),
                         ) {
                             item {
-                                Header(
-                                    viewModel,
-                                    (movieUiState as MoviesUiState.Success).response.results.first()
-                                )
+                                if (viewModel.trendingMovieList.isNotEmpty()) {
+                                    Header(
+                                        viewModel,
+                                        viewModel.trendingMovieList.toList().first()
+                                    )
+                                }
                             }
 
                             item { TrendingMovies(viewModel) }
@@ -121,10 +159,12 @@ fun MoviesContent(viewModel: TheatersViewModel) {
                                 // Use "maxCurrentLineSpan" if you want to take full width.
                                 span = StaggeredGridItemSpan.FullLine
                             ) {
-                                Header(viewModel, (movieUiState as MoviesUiState.Success).response.results.first())
+                                if (viewModel.trendingMovieList.isNotEmpty()) {
+                                    Header(viewModel, viewModel.trendingMovieList.toList().first())
+                                }
                             }
 
-                            items(items = (movieUiState as MoviesUiState.Success).response.results) {
+                            items(items = viewModel.trendingMovieList.toList()) {
                                 TheatersItem(viewModel, it)
                             }
                         }
