@@ -3,13 +3,14 @@ package ui.theaters
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.staggeredgrid.*
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -19,10 +20,13 @@ import androidx.compose.ui.unit.sp
 import core.compose.component.TheLabDeskText
 import core.compose.theme.TheLabDeskTheme
 import data.local.model.compose.MoviesUiState
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun PopularTvShows(viewModel: TheatersViewModel) {
+    // Remember a CoroutineScope to be able to launch
+    val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
     TheLabDeskTheme(viewModel.isDarkMode) {
 
@@ -41,8 +45,13 @@ fun PopularTvShows(viewModel: TheatersViewModel) {
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     state = lazyListState
                 ) {
-                    items(items = viewModel.popularTvShowsList.toList()) {
-                        TheatersItem(viewModel, it)
+                    itemsIndexed(items = viewModel.popularTvShowsList.toList()) { index, item ->
+                        TheatersItem(viewModel, item) {
+                            coroutineScope.launch {
+                                // Animate scroll to the index-th item
+                                lazyListState.animateScrollToItem(index = index)
+                            }
+                        }
                     }
                 }
             }
@@ -52,6 +61,8 @@ fun PopularTvShows(viewModel: TheatersViewModel) {
 
 @Composable
 fun TrendingTvShows(viewModel: TheatersViewModel) {
+    // Remember a CoroutineScope to be able to launch
+    val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
     TheLabDeskTheme(viewModel.isDarkMode) {
 
@@ -70,8 +81,13 @@ fun TrendingTvShows(viewModel: TheatersViewModel) {
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     state = lazyListState
                 ) {
-                    items(items = viewModel.trendingTvShowsList.toList()) {
-                        TheatersItem(viewModel, it)
+                    itemsIndexed(items = viewModel.trendingTvShowsList.toList()) { index, item ->
+                        TheatersItem(viewModel, item) {
+                            coroutineScope.launch {
+                                // Animate scroll to the index-th item
+                                lazyListState.animateScrollToItem(index = index)
+                            }
+                        }
                     }
                 }
             }
@@ -82,6 +98,8 @@ fun TrendingTvShows(viewModel: TheatersViewModel) {
 
 @Composable
 fun TvShowsContent(viewModel: TheatersViewModel) {
+    // Remember a CoroutineScope to be able to launch
+    val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
     val lazyStaggeredGridState = rememberLazyStaggeredGridState()
     val tvShowsUiState by viewModel.tvShowsUiState.collectAsState()
@@ -132,8 +150,13 @@ fun TvShowsContent(viewModel: TheatersViewModel) {
                                 Header(viewModel, viewModel.trendingTvShowsList.toList().first())
                             }
 
-                            items(items = viewModel.trendingTvShowsList.toList()) {
-                                TheatersItem(viewModel, it)
+                            itemsIndexed(items = viewModel.trendingTvShowsList.toList()) { index, item ->
+                                TheatersItem(viewModel, item) {
+                                    coroutineScope.launch {
+                                        // Animate scroll to the index-th item
+                                        lazyListState.animateScrollToItem(index = index)
+                                    }
+                                }
                             }
                         }
                     }

@@ -26,10 +26,11 @@ fun TheLabDeskText(modifier: Modifier, text: String, color: Color) {
 }
 
 @Composable
-fun TheLabDeskText(modifier: Modifier, text: String, style: TextStyle) {
+fun TheLabDeskText(modifier: Modifier, text: String, maxLines: Int = 2, style: TextStyle) {
     Text(
         modifier = modifier,
         text = text,
-        style = style.copy(color = if (!isSystemInDarkTheme()) Color.Black else Color.White )
+        style = style.copy(color = if (!isSystemInDarkTheme()) Color.Black else Color.White),
+        maxLines = maxLines
     )
 }
