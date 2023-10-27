@@ -7,27 +7,28 @@ import kotools.types.text.toNotBlankString
 
 /*
 Toolbar = Set<Menu>
-Menu = Label + NotEmptySet<MenuOption>
-MenuOption = Label + (Action | NotEmptySet<MenuOption>)
-ActionableOption = Label + Action
-Label = NotBlankString
+MenuOption = Menu | RunnableMenuOption
+Menu = MenuOptionLabel + NotEmptySet<MenuOption>
+MenuLabel = "File" | "Help"
+RunnableMenuOption = MenuOptionLabel + Action
+RunnableMenuOptionLabel = "New Window" | "Exit" | "About"
 Action = () -> Unit
  */
 
 private fun main() {
     MenuToolbar(
         Menu(
-            label = "File".toNotBlankString().getOrThrow(),
-            RunnableMenuOption("New Window".toNotBlankString().getOrThrow()) {
+            MenuOptionLabel.File,
+            RunnableMenuOption(MenuOptionLabel.NewWindow) {
                 Timber.d("onClick() : New Window")
             },
-            RunnableMenuOption("Exit".toNotBlankString().getOrThrow()) {
+            RunnableMenuOption(MenuOptionLabel.Exit) {
                 Timber.d("onClick(): Exit")
             }
         ),
         Menu(
-            label = "Help".toNotBlankString().getOrThrow(),
-            RunnableMenuOption("About".toNotBlankString().getOrThrow()) {
+            MenuOptionLabel.Help,
+            RunnableMenuOption(MenuOptionLabel.About) {
                 Timber.d("Click on 'About'.")
             }
         )
@@ -43,11 +44,25 @@ interface MenuToolbar {
 }
 
 sealed interface MenuOption {
-    val label: NotBlankString
+    val label: MenuOptionLabel
+}
+
+enum class MenuOptionLabel(private val value: String) {
+    About("About"),
+    Exit("Exit"),
+    File("File"),
+    Help("Help"),
+    NewWindow("New Window");
+
+    fun toNotBlankString(): NotBlankString = value.toNotBlankString()
+        .getOrNull()
+        ?: error("Converting '$value' to NotBlankString shouldn't fail.")
+
+    override fun toString(): String = value
 }
 
 fun Menu(
-    label: NotBlankString,
+    label: MenuOptionLabel,
     option: MenuOption,
     vararg otherOptions: MenuOption
 ): Menu {
@@ -59,7 +74,7 @@ interface Menu : MenuOption {
 }
 
 fun RunnableMenuOption(
-    label: NotBlankString,
+    label: MenuOptionLabel,
     action: () -> Unit
 ): RunnableMenuOption {
     TODO()
