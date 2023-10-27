@@ -1,0 +1,59 @@
+# Copyright 2023 Loïc Lamarque. All rights reserved.
+
+name: Integration
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '**gradle*'
+      - '**.kt*'
+      - .github/workflows/integration.yml
+  push:
+    branches: [ main ]
+    paths:
+      - '**gradle*'
+      - '**.kt*'
+      - .github/workflows/integration.yml
+  workflow_dispatch:
+jobs:
+  # ---------- Stage 1 ----------
+  validate-wrapper:
+    name: Validate Gradle wrapper
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.0.0
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1.0.6
+  # ---------- Stage 2 ----------
+  dependencies:
+    name: Submit dependencies to GitHub
+    needs: validate-wrapper
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.0.0
+      - name: Submit dependencies to GitHub
+        uses: mikepenz/gradle-dependency-submission@v0.9.1
+        with:
+          gradle-build-configuration: runtimeClasspath
+          fail-on-error: true
+  check:
+    name: Run checks
+    needs: validate-wrapper
+    runs-on: ubuntu-latest
+    permissions: read-all
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.0.0
+      - name: Setup Java & Gradle
+        uses: actions/setup-java@v3.11.0
+        with:
+          java-version: 17
+          distribution: temurin
+          cache: gradle
+      - name: Run all checks
+        run: ./gradlew --no-daemon --quiet :check
