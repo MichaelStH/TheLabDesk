@@ -3,13 +3,13 @@
 name: Integration
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ master, develop ]
     paths:
       - '**gradle*'
       - '**.kt*'
       - .github/workflows/integration.yml
   push:
-    branches: [ main ]
+    branches: [ master, develop ]
     paths:
       - '**gradle*'
       - '**.kt*'
