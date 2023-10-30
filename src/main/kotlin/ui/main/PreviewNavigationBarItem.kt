@@ -87,7 +87,6 @@ fun NavigationBarItem(
                             fontSize = if (item.selected) 12.sp else 10.sp
                         )
                     }
-
                 }
             }
         }

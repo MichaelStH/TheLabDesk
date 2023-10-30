@@ -24,20 +24,29 @@ import androidx.compose.ui.unit.sp
 import core.compose.component.TheLabDeskText
 import core.compose.theme.TheLabDeskTheme
 import data.local.model.compose.MoviesUiState
+import data.local.model.tmdb.MovieModel
+import data.local.model.tmdb.TvShowsModel
 import kotlinx.coroutines.launch
+import utils.Constants
 
-
+/**
+ * Scrollable row section of TMDB items
+ *
+ * @param viewModel instance of ViewModel use to set Dark Mode
+ * @param title represents the title of the section
+ * @param list represents the list we want to display (with [MovieModel] items)
+ */
 @Composable
-fun TrendingMovies(viewModel: TheatersViewModel) {
+private fun TMDBLazyRowSection(viewModel:TheatersViewModel, title: String, list: List<MovieModel>) {
     // Remember a CoroutineScope to be able to launch
     val coroutineScope = rememberCoroutineScope()
-    val lazyListState = rememberLazyListState()
+    val lazyRowListState = rememberLazyListState()
 
     TheLabDeskTheme(viewModel.isDarkMode) {
         Column(modifier = Modifier.heightIn(0.dp, 450.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             TheLabDeskText(
                 modifier = Modifier,
-                text = "Trending Movies",
+                text = title,
                 style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.W600)
             )
 
@@ -51,19 +60,19 @@ fun TrendingMovies(viewModel: TheatersViewModel) {
                             orientation = Orientation.Horizontal,
                             state = rememberDraggableState { delta ->
                                 coroutineScope.launch {
-                                    lazyListState.scrollBy(-delta)
+                                    lazyRowListState.scrollBy(-delta)
                                 }
                             },
                         ),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    state = lazyListState
+                    state = lazyRowListState
                 ) {
-                    itemsIndexed(items = viewModel.trendingMovieList.toList()) { index, item ->
+                    itemsIndexed(items = list) { index, item ->
                         TheatersItem(viewModel, item) {
                             coroutineScope.launch {
                                 // Animate scroll to the index-th item
-                                lazyListState.animateScrollToItem(index = index)
+                                lazyRowListState.animateScrollToItem(index = index)
                             }
                         }
                     }
@@ -73,74 +82,6 @@ fun TrendingMovies(viewModel: TheatersViewModel) {
     }
 }
 
-@Composable
-fun PopularMovies(viewModel: TheatersViewModel) {
-    val lazyListState = rememberLazyListState()
-    // Remember a CoroutineScope to be able to launch
-    val coroutineScope = rememberCoroutineScope()
-
-    TheLabDeskTheme(viewModel.isDarkMode) {
-        Column(modifier = Modifier.heightIn(0.dp, 450.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            TheLabDeskText(
-                modifier = Modifier, text = "Popular Movies",
-                style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.W600)
-            )
-
-            if (viewModel.popularMovieList.toList().isEmpty()) {
-                CircularProgressIndicator()
-            } else {
-                LazyRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    state = lazyListState
-                ) {
-                    itemsIndexed(items = viewModel.popularMovieList.toList()) { index, item ->
-                        TheatersItem(viewModel, item) {
-                            coroutineScope.launch {
-                                // Animate scroll to the index-th item
-                                lazyListState.animateScrollToItem(index = index)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-
-@Composable
-fun UpcomingMovies(viewModel: TheatersViewModel) {
-    val lazyListState = rememberLazyListState()
-    // Remember a CoroutineScope to be able to launch
-    val coroutineScope = rememberCoroutineScope()
-
-    TheLabDeskTheme(viewModel.isDarkMode) {
-
-        Column(modifier = Modifier.heightIn(0.dp, 450.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            TheLabDeskText(
-                modifier = Modifier, text = "Upcoming Movies",
-                style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.W600)
-            )
-            LazyRow(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                state = lazyListState
-            ) {
-                itemsIndexed(items = viewModel.upcomingMovieList.toList()) { index, item ->
-                    TheatersItem(viewModel, item) {
-                        coroutineScope.launch {
-                            // Animate scroll to the index-th item
-                            lazyListState.animateScrollToItem(index = index)
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun MoviesContent(viewModel: TheatersViewModel) {
@@ -177,9 +118,15 @@ fun MoviesContent(viewModel: TheatersViewModel) {
                                 }
                             }
 
-                            item { TrendingMovies(viewModel) }
-                            item { PopularMovies(viewModel) }
-                            item { UpcomingMovies(viewModel) }
+                            item {
+                                // Trending Movies
+                                TMDBLazyRowSection(viewModel, Constants.TITLE_TRENDING_MOVIES, viewModel.trendingMovieList.toList()) }
+                            item {
+                                // Popular Movies
+                                TMDBLazyRowSection(viewModel, Constants.TITLE_POPULAR_MOVIES, viewModel.popularMovieList.toList()) }
+                            item {
+                                // Upcoming Movies
+                                TMDBLazyRowSection(viewModel, Constants.TITLE_UPCOMING_MOVIES, viewModel.upcomingMovieList.toList()) }
                         }
                     } else {
                         LazyVerticalStaggeredGrid(

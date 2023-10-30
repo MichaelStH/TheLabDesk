@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import core.compose.theme.TheLabDeskTheme
 import data.local.model.compose.NewsUiState
 import di.AppModule
-import ui.main.MainViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

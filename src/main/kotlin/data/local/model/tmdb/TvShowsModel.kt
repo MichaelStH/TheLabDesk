@@ -39,7 +39,7 @@ data class TvShowsModel(
         tvShowsDto.overview.toNotBlankString().getOrElse { "N/A".toNotBlankString().getOrThrow() },
         tvShowsDto.popularity,
         tvShowsDto.poster.toNotBlankString().getOrThrow(),
-        tvShowsDto.firstAirDate.toNotBlankString().getOrThrow(),
+        tvShowsDto.firstAirDate.toNotBlankString().getOrElse { "N/A".toNotBlankString().getOrThrow() },
         tvShowsDto.rating,
         tvShowsDto.voteNumber.toPositiveInt().getOrThrow()
     )

@@ -1,5 +1,9 @@
 package ui.theaters
 
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -20,72 +24,54 @@ import androidx.compose.ui.unit.sp
 import core.compose.component.TheLabDeskText
 import core.compose.theme.TheLabDeskTheme
 import data.local.model.compose.MoviesUiState
+import data.local.model.tmdb.TvShowsModel
 import kotlinx.coroutines.launch
+import utils.Constants
 
-
+/**
+ * Scrollable row section of TMDB items
+ *
+ * @param viewModel instance of ViewModel use to set Dark Mode
+ * @param title represents the title of the section
+ * @param list represents the list we want to display (with [TvShowsModel] items)
+ */
 @Composable
-fun PopularTvShows(viewModel: TheatersViewModel) {
+private fun TMDBLazyRowSection(viewModel:TheatersViewModel, title: String, list: List<TvShowsModel>) {
     // Remember a CoroutineScope to be able to launch
     val coroutineScope = rememberCoroutineScope()
-    val lazyListState = rememberLazyListState()
-    TheLabDeskTheme(viewModel.isDarkMode) {
+    val lazyRowListState = rememberLazyListState()
 
+    TheLabDeskTheme(viewModel.isDarkMode) {
         Column(modifier = Modifier.heightIn(0.dp, 450.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             TheLabDeskText(
-                modifier = Modifier, text = "Popular TV Shows",
+                modifier = Modifier,
+                text = title,
                 style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.W600)
             )
 
-            if (viewModel.popularTvShowsList.toList().isEmpty()) {
+            if (viewModel.trendingMovieList.toList().isEmpty()) {
                 CircularProgressIndicator()
             } else {
                 LazyRow(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .draggable(
+                            orientation = Orientation.Horizontal,
+                            state = rememberDraggableState { delta ->
+                                coroutineScope.launch {
+                                    lazyRowListState.scrollBy(-delta)
+                                }
+                            },
+                        ),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    state = lazyListState
+                    state = lazyRowListState
                 ) {
-                    itemsIndexed(items = viewModel.popularTvShowsList.toList()) { index, item ->
+                    itemsIndexed(items = list) { index, item ->
                         TheatersItem(viewModel, item) {
                             coroutineScope.launch {
                                 // Animate scroll to the index-th item
-                                lazyListState.animateScrollToItem(index = index)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun TrendingTvShows(viewModel: TheatersViewModel) {
-    // Remember a CoroutineScope to be able to launch
-    val coroutineScope = rememberCoroutineScope()
-    val lazyListState = rememberLazyListState()
-    TheLabDeskTheme(viewModel.isDarkMode) {
-
-        Column(modifier = Modifier.heightIn(0.dp, 450.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            TheLabDeskText(
-                modifier = Modifier, text = "Trending TV Shows",
-                style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.W600)
-            )
-
-            if (viewModel.trendingTvShowsList.toList().isEmpty()) {
-                CircularProgressIndicator()
-            } else {
-                LazyRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    state = lazyListState
-                ) {
-                    itemsIndexed(items = viewModel.trendingTvShowsList.toList()) { index, item ->
-                        TheatersItem(viewModel, item) {
-                            coroutineScope.launch {
-                                // Animate scroll to the index-th item
-                                lazyListState.animateScrollToItem(index = index)
+                                lazyRowListState.animateScrollToItem(index = index)
                             }
                         }
                     }
@@ -128,8 +114,14 @@ fun TvShowsContent(viewModel: TheatersViewModel) {
                                     viewModel.trendingTvShowsList.toList().first()
                                 )
                             }
-                            item { PopularTvShows(viewModel) }
-                            item { TrendingTvShows(viewModel) }
+                            item {
+                                // Popular Tv Shows
+                                TMDBLazyRowSection(viewModel, Constants.TITLE_POPULAR_TV_SHOWS, viewModel.popularTvShowsList.toList())
+                            }
+
+                            item {
+                                // Trending Tv Shows
+                                TMDBLazyRowSection(viewModel, Constants.TITLE_TRENDING_TV_SHOWS, viewModel.trendingTvShowsList.toList()) }
                         }
                     } else {
                         LazyVerticalStaggeredGrid(

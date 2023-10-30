@@ -24,7 +24,10 @@ class TheatersViewModel(private val repository: IRepository) : BaseViewModel() {
         Timber.e("Error caught: ${throwable.message}")
         throwable.message
             ?.let { MoviesUiState.Error(it) }
-            ?.let { errorState -> updateMoviesUiState(errorState) }
+            ?.let { errorState ->
+                updateMoviesUiState(errorState)
+                updateTvShowsUiState(errorState)
+            }
     }
 
     //////////////////////////////
@@ -53,11 +56,11 @@ class TheatersViewModel(private val repository: IRepository) : BaseViewModel() {
     var popularTvShowsList: List<TvShowsModel> by mutableStateOf(emptyList())
         private set
 
-    var theaterTypeSelected by mutableStateOf(0)
+    var theaterTypeSelected:Int by mutableStateOf(0)
         private set
-    var tabIconSelected by mutableStateOf(0)
+    var tabIconSelected:Int by mutableStateOf(0)
         private set
-    var isStaggeredMode by mutableStateOf(false)
+    var isStaggeredMode:Boolean by mutableStateOf(false)
         private set
 
     fun updateTheatersUiState(newState: TheatersUiState) {
@@ -74,6 +77,9 @@ class TheatersViewModel(private val repository: IRepository) : BaseViewModel() {
 
     fun updatePopularMovieList(list: List<MovieModel>) {
         this.popularMovieList = list
+    }
+    fun updateTrendingMovieList(list: List<MovieModel>) {
+        this.trendingMovieList = list
     }
 
     fun updateUpcomingMovieList(list: List<MovieModel>) {
@@ -116,11 +122,6 @@ class TheatersViewModel(private val repository: IRepository) : BaseViewModel() {
         this.isStaggeredMode = isStaggered
     }
 
-    fun <T> clearList(list: MutableList<T>) {
-        if (list.isNotEmpty()) {
-            list.clear()
-        }
-    }
 
     fun fetchTrendingMovies() {
         Timber.d("fetchTrendingMovies()")
@@ -198,8 +199,8 @@ class TheatersViewModel(private val repository: IRepository) : BaseViewModel() {
 
         val result = runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
             val popularMoviesJob = async { repository.getPopularMovies() }
-            val trendingMoviesJob = launch { repository.getTrendingMovies() }
-            val upcomingMoviesJob = launch { repository.getUpcomingMovies() }
+            val trendingMoviesJob = async { repository.getTrendingMovies() }
+            val upcomingMoviesJob = async { repository.getUpcomingMovies() }
             val popularTvShowsJob = async { repository.getPopularTvShows() }
             val trendingTvShowsJob = async { repository.getTrendingTvShows() }
 
@@ -208,6 +209,20 @@ class TheatersViewModel(private val repository: IRepository) : BaseViewModel() {
                     .results
                     .map { it.toModel() }
                     .let { updatePopularMovieList(it) }
+            }
+
+            withContext(Dispatchers.Default) {
+                trendingMoviesJob.await()
+                    .results
+                    .map { it.toModel() }
+                    .let { updateTrendingMovieList(it) }
+            }
+
+            withContext(Dispatchers.Default) {
+                upcomingMoviesJob.await()
+                    .results
+                    .map { it.toModel() }
+                    .let { updateUpcomingMovieList(it) }
             }
 
 
@@ -225,22 +240,10 @@ class TheatersViewModel(private val repository: IRepository) : BaseViewModel() {
                     .let { updateTrendingTvShowsList(it) }
             }
 
-            joinAll(
-                popularMoviesJob,
-                trendingMoviesJob,
-                upcomingMoviesJob,
-                popularTvShowsJob,
-                trendingTvShowsJob
-            )
-
             repository.getMovies()
         }
 
-        Timber.d("result: ${result.results.size}")
-
-        if (result.results.isNotEmpty()) {
-            updateMoviesUiState(MoviesUiState.Success(result))
-            updateTvShowsUiState(MoviesUiState.Success(result))
-        }
+        updateMoviesUiState(MoviesUiState.Success(result))
+        updateTvShowsUiState(MoviesUiState.Success(result))
     }
 }

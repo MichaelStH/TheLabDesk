@@ -144,6 +144,8 @@ fun Header(viewModel: TheatersViewModel, tvShowsModel: TvShowsModel) {
         }
     }
 }
+
+
 @Composable
 fun Header(viewModel: TheatersViewModel, movie: MovieModel) {
     val backdropUrl =
@@ -223,13 +225,13 @@ fun Theaters(viewModel: TheatersViewModel) {
         }
     }
 
-    LaunchedEffect(Unit) {
+    /*LaunchedEffect(Unit) {
         viewModel.fetchTrendingMovies()
         viewModel.fetchPopularMovies()
         viewModel.fetchUpcomingMovies()
         viewModel.fetchTrendingTvShows()
         viewModel.fetchPopularTvShows()
-    }
+    }*/
 }
 
 //////////////////////////////////////////////////

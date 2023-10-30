@@ -46,6 +46,7 @@ fun SettingsContent(viewModel: MainViewModel) {
                         modifier = Modifier,
                         text = if (viewModel.isDarkMode) "Disable dark mode" else "Enable dark mode"
                     )
+
                     Column(
                         modifier = Modifier,
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -53,11 +54,9 @@ fun SettingsContent(viewModel: MainViewModel) {
                     ) {
                         TheLabDeskSwitch(viewModel)
                     }
-                    //Switch(checked = viewModel.isDarkMode, onCheckedChange = viewModel::updateDarkMode)
                 }
             }
         }
-
     }
 }
 
@@ -69,7 +68,7 @@ fun SettingsContent(viewModel: MainViewModel) {
 @Preview
 @Composable
 private fun PreviewSettingsContent() {
-    val viewModel: MainViewModel = MainViewModel(AppModule.injectDependencies())
+    val viewModel = MainViewModel(AppModule.injectDependencies())
     viewModel.updateDarkMode(true)
     TheLabDeskTheme {
         SettingsContent(viewModel = viewModel)
