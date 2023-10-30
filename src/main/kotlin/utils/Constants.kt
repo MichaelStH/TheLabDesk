@@ -1,12 +1,15 @@
 package utils
 
 object Constants {
+
+
     // APP
     const val PLACEHOLDER_YES = "YES"
     const val PLACEHOLDER_NO = "NO"
     const val PLACEHOLDER_OK = "Ok"
     const val PLACEHOLDER_CANCEL = "Cancel"
     const val PLACEHOLDER_BACK = "Back"
+    const val PLACEHOLDER_PROVIDED_BY: String="Data provided by"
 
     // FileManager
     const val EMPTY_JSON_BLOCK = "{}"
@@ -26,6 +29,7 @@ object Constants {
     const val IMAGE_NETFLIX_LOGO_URL = "https://image.tmdb.org/t/p/w500/wwemzKWzjKYJFfCeiB57q3r4Bcm.svg"
 
     // THEATERS
+    const val URL_TMDB_WEBSITE: String = "https://www.themoviedb.org/?language=fr"
     const val BASE_URL_TMDB_ENDPOINT = "https://api.themoviedb.org/3"
     const val BASE_URL_TMDB_IMAGE_W_ORIGINAL_ENDPOINT = "https://image.tmdb.org/t/p/original"
     const val BASE_URL_TMDB_IMAGE_W_500_ENDPOINT = "https://image.tmdb.org/t/p/w500"

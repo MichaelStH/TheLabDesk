@@ -2,16 +2,18 @@ package ui.main
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dashboard
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -20,8 +22,11 @@ import core.compose.component.TheLabDeskIconTab
 import core.compose.component.TheLabDeskText
 import core.compose.theme.TheLabDeskTheme
 import core.compose.theme.isSystemInDarkTheme
+import core.utils.SystemManager
 import data.local.model.compose.NavigationUiState
 import di.AppModule
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import ui.home.Home
 import ui.home.HomeViewModel
 import ui.news.News
@@ -30,6 +35,7 @@ import ui.settings.SettingsContent
 import ui.theaters.TheaterTab
 import ui.theaters.Theaters
 import ui.theaters.TheatersViewModel
+import utils.Constants
 
 
 //////////////////////////////////////////////////
@@ -37,6 +43,7 @@ import ui.theaters.TheatersViewModel
 // COMPOSE
 //
 //////////////////////////////////////////////////
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavigationContent(
     viewModel: MainViewModel,
@@ -78,12 +85,66 @@ fun NavigationContent(
 
                 AnimatedVisibility(visible = currentNavigation is NavigationUiState.Theaters) {
                     Box(modifier = Modifier.heightIn(0.dp, 40.dp)) {
-                        TheLabDeskIconTab(
-                            tabWidth = 42.dp,
-                            items = listOf(Icons.Filled.List, Icons.Filled.Dashboard),
-                            selectedItemIndex = theatersViewModel.tabIconSelected,
-                            onClick = { theatersViewModel.updateTabIconSelected(it) },
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxHeight(),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+
+                            // Visibility mode
+                            TheLabDeskIconTab(
+                                tabWidth = 42.dp,
+                                items = listOf(Icons.Filled.List, Icons.Filled.Dashboard),
+                                selectedItemIndex = theatersViewModel.tabIconSelected,
+                                onClick = { theatersViewModel.updateTabIconSelected(it) },
+                            )
+
+
+                            // Tooltip
+                            val tooltipState = remember { RichTooltipState() }
+                            val scope = rememberCoroutineScope()
+
+                            RichTooltipBox(
+                                title = { },
+                                action = {
+                                    TextButton(
+                                        onClick = {
+                                            SystemManager.openInBrowser(Constants.URL_TMDB_WEBSITE)
+
+                                            scope.launch {
+                                                delay(1_500)
+                                                tooltipState.dismiss()
+                                            }
+                                        }
+                                    ) { Text("Learn More") }
+                                },
+                                text = {
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        TheLabDeskText(modifier = Modifier, text = Constants.PLACEHOLDER_PROVIDED_BY)
+                                        Image(
+                                            modifier = Modifier.size(36.dp),
+                                            painter = painterResource(resourcePath = "images/ic_the_lab_12_logo_white.xml"),
+                                            contentDescription = "TMDB logo"
+                                        )
+                                    }
+                                },
+                                tooltipState = tooltipState
+                            ) {
+                                IconButton(
+                                    onClick = { scope.launch { tooltipState.show() } },
+                                    modifier = Modifier.tooltipAnchor()
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Info,
+                                        contentDescription = "About icon",
+                                        tint = if (!isSystemInDarkTheme()) Color.Black else Color.White
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }

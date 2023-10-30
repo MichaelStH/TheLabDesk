@@ -224,14 +224,6 @@ fun Theaters(viewModel: TheatersViewModel) {
             }
         }
     }
-
-    /*LaunchedEffect(Unit) {
-        viewModel.fetchTrendingMovies()
-        viewModel.fetchPopularMovies()
-        viewModel.fetchUpcomingMovies()
-        viewModel.fetchTrendingTvShows()
-        viewModel.fetchPopularTvShows()
-    }*/
 }
 
 //////////////////////////////////////////////////
