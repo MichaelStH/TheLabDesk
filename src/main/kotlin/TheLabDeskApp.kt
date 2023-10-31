@@ -26,7 +26,6 @@ import com.toxicbakery.logging.Arbor
 import com.toxicbakery.logging.Seedling
 import core.compose.component.AppTitleBar
 import core.compose.component.ScrollableWindowContent
-import core.compose.component.TheLabDeskIcon
 import core.compose.component.TheLabDeskSurface
 import core.compose.theme.TheLabDeskTheme
 import core.compose.utils.WindowDraggableArea
@@ -139,7 +138,11 @@ fun main() {
 
             Tray(
                 state = trayState,
-                icon = TheLabDeskIcon,
+                icon = painterResource(
+                    resourcePath = if (SystemManager.isMacOs()) "icons/thelab_desk.icns"
+                    else if (SystemManager.isLinux()) "icons/thelab_desk.png"
+                    else "icons/thelab_desk.ico"
+                ),
                 menu = {
                     Item(
                         "Send notification",

@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.loadImageBitmap
 import core.log.Timber
+import core.utils.SystemManager
 
 object TheLabDeskIcon : Painter() {
     override val intrinsicSize = Size(256f, 256f)
@@ -16,7 +17,11 @@ object TheLabDeskIcon : Painter() {
     override fun DrawScope.onDraw() {
         val imageBitmap: ImageBitmap? =
             runCatching {
-                TheLabDeskApp.javaClass.getResourceAsStream("images/ic_lab.png")?.let { loadImageBitmap(it) }
+                TheLabDeskApp.javaClass.getResourceAsStream(
+                    if (SystemManager.isMacOs()) "icons/thelab_desk.icns"
+                    else if (SystemManager.isLinux()) "icons/thelab_desk.png"
+                    else "icons/thelab_desk.ico"
+                )?.let { loadImageBitmap(it) }
             }
                 .onFailure {
                     Timber.e("runCatching | onFailure | error caught: ${it.message}")

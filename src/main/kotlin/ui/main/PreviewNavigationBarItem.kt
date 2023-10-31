@@ -101,7 +101,7 @@ fun NavigationBarItem(
 @Preview
 @Composable
 private fun PreviewNavigationBarItem() {
-    val viewModel: MainViewModel = MainViewModel(AppModule.injectDependencies())
+    val viewModel = MainViewModel(AppModule.injectDependencies())
     MaterialTheme {
         NavigationBarItem(
             viewModel = viewModel,

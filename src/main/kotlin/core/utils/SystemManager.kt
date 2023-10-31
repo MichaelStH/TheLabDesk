@@ -87,6 +87,15 @@ object SystemManager {
      */
     fun isMacOs(): Boolean = getOperatingSystem().lowercase(Locale.getDefault()).contains("mac")
 
+    /**
+     * Check if current system is macOS
+     * @return true if it is macOS, false if not
+     */
+    fun isLinux(): Boolean =
+        getOperatingSystem().lowercase(Locale.getDefault()).contains("deb") ||
+                getOperatingSystem().lowercase(Locale.getDefault()).contains("linux") ||
+                getOperatingSystem().lowercase(Locale.getDefault()).contains("ubuntu")
+
     fun isSystemInDarkTheme(): Boolean {
         Timber.d("isSystemInDarkTheme()")
         return when {
