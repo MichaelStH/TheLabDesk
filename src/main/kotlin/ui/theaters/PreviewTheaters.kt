@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -17,13 +16,10 @@ import androidx.compose.ui.unit.sp
 import core.compose.component.TheLabDeskCard
 import core.compose.theme.TheLabDeskTheme
 import core.compose.theme.Typography
+import core.compose.theme.isSystemInDarkTheme
 import core.compose.utils.AsyncBitmapImageFromNetworkWithModifier
 import data.local.model.compose.TheatersUiState
-import data.local.model.tmdb.MovieModel
-import data.local.model.tmdb.TvShowsModel
-import data.remote.dto.tmdb.MovieDto
 import di.AppModule
-import utils.Constants
 
 
 //////////////////////////////////////////////////
@@ -32,9 +28,25 @@ import utils.Constants
 //
 //////////////////////////////////////////////////
 @Composable
-fun MovieHeader(viewModel: TheatersViewModel, titlePlaceholder: String, item: MovieDto) {
-    val backdropUrl =
-        "${Constants.BASE_URL_TMDB_IMAGE_W_500_ENDPOINT}${item.backdropPath}"
+fun TMDBHeader(
+    viewModel: TheatersViewModel,
+    titlePlaceholder: String,
+    title: String,
+    backdropUrl: String,
+    posterUrl: String
+) {
+
+    val gradientColors: List<Color> = if (!isSystemInDarkTheme()) listOf(
+        Color.White,
+        Color.White,
+        Color.White,
+        Color.Transparent
+    ) else listOf(
+        Color.Black,
+        Color.Black,
+        Color.Black,
+        Color.Transparent
+    )
 
     TheLabDeskTheme(viewModel.isDarkMode) {
         TheLabDeskCard(modifier = Modifier.fillMaxWidth().heightIn(0.dp, 300.dp)) {
@@ -52,19 +64,9 @@ fun MovieHeader(viewModel: TheatersViewModel, titlePlaceholder: String, item: Mo
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(
-                            Brush.horizontalGradient(
-                                colors = listOf(
-                                    Color.Black,
-                                    Color.Black,
-                                    Color.Black,
-                                    Color.Transparent
-                                )
-                            )
-                        )
+                        .background(brush = Brush.horizontalGradient(colors = gradientColors))
                         .align(Alignment.CenterStart)
                 )
-
 
                 Column(
                     modifier = Modifier.align(Alignment.CenterStart).padding(start = 20.dp)
@@ -77,124 +79,7 @@ fun MovieHeader(viewModel: TheatersViewModel, titlePlaceholder: String, item: Mo
 
                     Text(
                         modifier = Modifier,
-                        text = item.originalTitle,
-                        style = Typography.titleLarge,
-                        fontSize = 32.sp
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun Header(viewModel: TheatersViewModel, tvShowsModel: TvShowsModel) {
-    val backdropUrl =
-        "${Constants.BASE_URL_TMDB_IMAGE_W_500_ENDPOINT}${tvShowsModel.backdropPath}"
-    val poster =
-        "${Constants.BASE_URL_TMDB_IMAGE_W_500_ENDPOINT}${tvShowsModel.poster}"
-
-    TheLabDeskTheme(viewModel.isDarkMode) {
-        TheLabDeskCard(modifier = Modifier.fillMaxWidth().heightIn(0.dp, 300.dp)) {
-            BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-                // Image
-                AsyncBitmapImageFromNetworkWithModifier(
-                    modifier = Modifier
-                        .width(this.maxWidth / 3)
-                        .height(this.maxHeight)
-                        .align(Alignment.CenterEnd),
-                    url = backdropUrl
-                )
-
-                // Gradient
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.horizontalGradient(
-                                colors = listOf(
-                                    Color.Black,
-                                    Color.Black,
-                                    Color.Black,
-                                    Color.Transparent
-                                )
-                            )
-                        )
-                        .align(Alignment.CenterStart)
-                )
-
-
-                Column(
-                    modifier = Modifier.align(Alignment.CenterStart).padding(start = 20.dp)
-                ) {
-                    Text(
-                        modifier = Modifier,
-                        text = "Trending right now",
-                        style = Typography.bodyMedium
-                    )
-
-                    Text(
-                        modifier = Modifier,
-                        text = tvShowsModel.originalTitle.toString(),
-                        style = Typography.titleLarge,
-                        fontSize = 32.sp
-                    )
-                }
-            }
-        }
-    }
-}
-
-
-@Composable
-fun Header(viewModel: TheatersViewModel, movie: MovieModel) {
-    val backdropUrl =
-        "${Constants.BASE_URL_TMDB_IMAGE_W_500_ENDPOINT}${movie.backdropPath}"
-    val poster =
-        "${Constants.BASE_URL_TMDB_IMAGE_W_500_ENDPOINT}${movie.poster}"
-
-    TheLabDeskTheme(viewModel.isDarkMode) {
-        TheLabDeskCard(modifier = Modifier.fillMaxWidth().heightIn(0.dp, 300.dp)) {
-            BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-                // Image
-                AsyncBitmapImageFromNetworkWithModifier(
-                    modifier = Modifier
-                        .width(this.maxWidth / 3)
-                        .height(this.maxHeight)
-                        .align(Alignment.CenterEnd),
-                    url = backdropUrl
-                )
-
-                // Gradient
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.horizontalGradient(
-                                colors = listOf(
-                                    Color.Black,
-                                    Color.Black,
-                                    Color.Black,
-                                    Color.Transparent
-                                )
-                            )
-                        )
-                        .align(Alignment.CenterStart)
-                )
-
-
-                Column(
-                    modifier = Modifier.align(Alignment.CenterStart).padding(start = 20.dp)
-                ) {
-                    Text(
-                        modifier = Modifier,
-                        text = "Trending right now",
-                        style = Typography.bodyMedium
-                    )
-
-                    Text(
-                        modifier = Modifier,
-                        text = movie.originalTitle.toString(),
+                        text = title,
                         style = Typography.titleLarge,
                         fontSize = 32.sp
                     )

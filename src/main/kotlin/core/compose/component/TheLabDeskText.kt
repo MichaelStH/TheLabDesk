@@ -34,3 +34,14 @@ fun TheLabDeskText(modifier: Modifier, text: String, maxLines: Int = 2, style: T
         maxLines = maxLines
     )
 }
+
+@Composable
+fun TheLabDeskText(modifier: Modifier, text: String, maxLines: Int = 2, style: TextStyle, color: Color) {
+    Text(
+        modifier = modifier,
+        text = text,
+        style = style,
+        color = color,
+        maxLines = maxLines
+    )
+}

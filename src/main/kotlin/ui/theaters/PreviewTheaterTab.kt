@@ -44,8 +44,8 @@ fun TheaterTab(
         )
 
         Row(
-            horizontalArrangement = Arrangement.Center,
             modifier = Modifier.clip(CircleShape),
+            horizontalArrangement = Arrangement.Center,
         ) {
             items.mapIndexed { index, text ->
                 val isSelected = index == selectedItemIndex

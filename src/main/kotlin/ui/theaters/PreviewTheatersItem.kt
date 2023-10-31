@@ -95,7 +95,8 @@ fun TheatersItemContent(title: String, overview: String, poster: String, backdro
                                 .align(Alignment.BottomCenter)
                                 .padding(bottom = 16.dp),
                             text = title,
-                            style = TextStyle(color = Color.White, textAlign = TextAlign.Center)
+                            style = TextStyle(textAlign = TextAlign.Center),
+                            color = Color.White
                         )
                     }
                 }

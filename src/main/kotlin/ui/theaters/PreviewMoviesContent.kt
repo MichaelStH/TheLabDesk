@@ -1,5 +1,6 @@
 package ui.theaters
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -11,21 +12,26 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.staggeredgrid.*
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import core.compose.component.TheLabDeskCard
 import core.compose.component.TheLabDeskText
 import core.compose.theme.TheLabDeskTheme
+import core.compose.theme.Typography
+import core.compose.utils.AsyncBitmapImageFromNetworkWithModifier
 import data.local.model.compose.MoviesUiState
 import data.local.model.tmdb.MovieModel
-import data.local.model.tmdb.TvShowsModel
 import kotlinx.coroutines.launch
 import utils.Constants
 
@@ -37,7 +43,7 @@ import utils.Constants
  * @param list represents the list we want to display (with [MovieModel] items)
  */
 @Composable
-private fun TMDBLazyRowSection(viewModel:TheatersViewModel, title: String, list: List<MovieModel>) {
+private fun TMDBLazyRowSection(viewModel: TheatersViewModel, title: String, list: List<MovieModel>) {
     // Remember a CoroutineScope to be able to launch
     val coroutineScope = rememberCoroutineScope()
     val lazyRowListState = rememberLazyListState()
@@ -82,6 +88,70 @@ private fun TMDBLazyRowSection(viewModel:TheatersViewModel, title: String, list:
     }
 }
 
+@Composable
+private fun Header(viewModel: TheatersViewModel, movie: MovieModel) {
+    val backdropUrl =
+        "${Constants.BASE_URL_TMDB_IMAGE_W_500_ENDPOINT}${movie.backdropPath}"
+    val poster =
+        "${Constants.BASE_URL_TMDB_IMAGE_W_500_ENDPOINT}${movie.poster}"
+
+    TheLabDeskTheme(viewModel.isDarkMode) {
+        TMDBHeader(
+            viewModel = viewModel,
+            "Trending right now",
+            title = movie.originalTitle.toString(),
+            backdropUrl = backdropUrl,
+            posterUrl = poster
+        )
+        TheLabDeskCard(modifier = Modifier.fillMaxWidth().heightIn(0.dp, 300.dp)) {
+            BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+                // Image
+                AsyncBitmapImageFromNetworkWithModifier(
+                    modifier = Modifier
+                        .width(this.maxWidth / 3)
+                        .height(this.maxHeight)
+                        .align(Alignment.CenterEnd),
+                    url = backdropUrl
+                )
+
+                // Gradient
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.horizontalGradient(
+                                colors = listOf(
+                                    Color.Black,
+                                    Color.Black,
+                                    Color.Black,
+                                    Color.Transparent
+                                )
+                            )
+                        )
+                        .align(Alignment.CenterStart)
+                )
+
+
+                Column(
+                    modifier = Modifier.align(Alignment.CenterStart).padding(start = 20.dp)
+                ) {
+                    Text(
+                        modifier = Modifier,
+                        text = "Trending right now",
+                        style = Typography.bodyMedium
+                    )
+
+                    Text(
+                        modifier = Modifier,
+                        text = movie.originalTitle.toString(),
+                        style = Typography.titleLarge,
+                        fontSize = 32.sp
+                    )
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun MoviesContent(viewModel: TheatersViewModel) {
@@ -111,22 +181,46 @@ fun MoviesContent(viewModel: TheatersViewModel) {
                         ) {
                             item {
                                 if (viewModel.trendingMovieList.isNotEmpty()) {
-                                    Header(
-                                        viewModel,
-                                        viewModel.trendingMovieList.toList().first()
+                                    val movie = viewModel.trendingMovieList.toList().first()
+                                    val backdropUrl =
+                                        "${Constants.BASE_URL_TMDB_IMAGE_W_500_ENDPOINT}${movie.backdropPath}"
+                                    val poster =
+                                        "${Constants.BASE_URL_TMDB_IMAGE_W_500_ENDPOINT}${movie.poster}"
+
+                                    TMDBHeader(
+                                        viewModel = viewModel,
+                                        "Trending right now",
+                                        title = movie.originalTitle.toString(),
+                                        backdropUrl = backdropUrl,
+                                        posterUrl = poster
                                     )
                                 }
                             }
 
                             item {
                                 // Trending Movies
-                                TMDBLazyRowSection(viewModel, Constants.TITLE_TRENDING_MOVIES, viewModel.trendingMovieList.toList()) }
+                                TMDBLazyRowSection(
+                                    viewModel,
+                                    Constants.TITLE_TRENDING_MOVIES,
+                                    viewModel.trendingMovieList.toList()
+                                )
+                            }
                             item {
                                 // Popular Movies
-                                TMDBLazyRowSection(viewModel, Constants.TITLE_POPULAR_MOVIES, viewModel.popularMovieList.toList()) }
+                                TMDBLazyRowSection(
+                                    viewModel,
+                                    Constants.TITLE_POPULAR_MOVIES,
+                                    viewModel.popularMovieList.toList()
+                                )
+                            }
                             item {
                                 // Upcoming Movies
-                                TMDBLazyRowSection(viewModel, Constants.TITLE_UPCOMING_MOVIES, viewModel.upcomingMovieList.toList()) }
+                                TMDBLazyRowSection(
+                                    viewModel,
+                                    Constants.TITLE_UPCOMING_MOVIES,
+                                    viewModel.upcomingMovieList.toList()
+                                )
+                            }
                         }
                     } else {
                         LazyVerticalStaggeredGrid(

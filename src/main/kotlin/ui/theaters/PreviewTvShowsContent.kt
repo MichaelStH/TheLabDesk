@@ -36,7 +36,7 @@ import utils.Constants
  * @param list represents the list we want to display (with [TvShowsModel] items)
  */
 @Composable
-private fun TMDBLazyRowSection(viewModel:TheatersViewModel, title: String, list: List<TvShowsModel>) {
+private fun TMDBLazyRowSection(viewModel: TheatersViewModel, title: String, list: List<TvShowsModel>) {
     // Remember a CoroutineScope to be able to launch
     val coroutineScope = rememberCoroutineScope()
     val lazyRowListState = rememberLazyListState()
@@ -109,19 +109,38 @@ fun TvShowsContent(viewModel: TheatersViewModel) {
                             verticalArrangement = Arrangement.spacedBy(24.dp),
                         ) {
                             item {
-                                Header(
-                                    viewModel,
-                                    viewModel.trendingTvShowsList.toList().first()
+                                val tvShow = viewModel.trendingTvShowsList.toList().first()
+                                val backdropUrl =
+                                    "${Constants.BASE_URL_TMDB_IMAGE_W_500_ENDPOINT}${tvShow.backdropPath}"
+                                val poster =
+                                    "${Constants.BASE_URL_TMDB_IMAGE_W_500_ENDPOINT}${tvShow.poster}"
+
+                                TMDBHeader(
+                                    viewModel = viewModel,
+                                    "Trending right now",
+                                    title = tvShow.originalTitle.toString(),
+                                    backdropUrl = backdropUrl,
+                                    posterUrl = poster
                                 )
                             }
+
                             item {
                                 // Popular Tv Shows
-                                TMDBLazyRowSection(viewModel, Constants.TITLE_POPULAR_TV_SHOWS, viewModel.popularTvShowsList.toList())
+                                TMDBLazyRowSection(
+                                    viewModel,
+                                    Constants.TITLE_POPULAR_TV_SHOWS,
+                                    viewModel.popularTvShowsList.toList()
+                                )
                             }
 
                             item {
                                 // Trending Tv Shows
-                                TMDBLazyRowSection(viewModel, Constants.TITLE_TRENDING_TV_SHOWS, viewModel.trendingTvShowsList.toList()) }
+                                TMDBLazyRowSection(
+                                    viewModel,
+                                    Constants.TITLE_TRENDING_TV_SHOWS,
+                                    viewModel.trendingTvShowsList.toList()
+                                )
+                            }
                         }
                     } else {
                         LazyVerticalStaggeredGrid(
@@ -139,7 +158,19 @@ fun TvShowsContent(viewModel: TheatersViewModel) {
                                 // Use "maxCurrentLineSpan" if you want to take full width.
                                 span = StaggeredGridItemSpan.FullLine
                             ) {
-                                Header(viewModel, viewModel.trendingTvShowsList.toList().first())
+                                val tvShow = viewModel.trendingTvShowsList.toList().first()
+                                val backdropUrl =
+                                    "${Constants.BASE_URL_TMDB_IMAGE_W_500_ENDPOINT}${tvShow.backdropPath}"
+                                val poster =
+                                    "${Constants.BASE_URL_TMDB_IMAGE_W_500_ENDPOINT}${tvShow.poster}"
+
+                                TMDBHeader(
+                                    viewModel = viewModel,
+                                    "Trending right now",
+                                    title = tvShow.originalTitle.toString(),
+                                    backdropUrl = backdropUrl,
+                                    posterUrl = poster
+                                )
                             }
 
                             itemsIndexed(items = viewModel.trendingTvShowsList.toList()) { index, item ->
