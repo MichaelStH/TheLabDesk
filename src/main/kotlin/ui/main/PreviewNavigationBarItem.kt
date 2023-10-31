@@ -53,7 +53,7 @@ fun NavigationBarItem(
                     modifier = Modifier
                         .width(4.dp)
                         .height(animatedHeight.value)
-                        .background(color = if (!isSystemInDarkTheme()) currentTheme.first.getColorScheme().primaryContainer else currentTheme.second.getColorScheme().primaryContainer)
+                        .background(color = if (!isSystemInDarkTheme()) currentTheme.second.getColorScheme().primaryContainer else currentTheme.first.getColorScheme().primaryContainer)
                 )
             }
 
@@ -72,8 +72,8 @@ fun NavigationBarItem(
                         modifier = Modifier.size(30.dp),
                         imageVector = item.icon,
                         contentDescription = null,
-                        tint = if (item.selected && !isSystemInDarkTheme()) currentTheme.first.getColorScheme().primaryContainer
-                        else if (item.selected && isSystemInDarkTheme()) currentTheme.second.getColorScheme().primaryContainer
+                        tint = if (item.selected && !isSystemInDarkTheme()) currentTheme.second.getColorScheme().primaryContainer
+                        else if (item.selected && isSystemInDarkTheme()) currentTheme.first.getColorScheme().primaryContainer
                         else {
                             if (!isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
                         }
@@ -82,9 +82,9 @@ fun NavigationBarItem(
                     if (!item.selected) {
                         Text(
                             text = item.javaClass.simpleName,
-                            style = if (item.selected) Typography.titleMedium else Typography.bodyMedium,
-                            color = if (item.selected) Color.White else Color.LightGray,
-                            fontSize = if (item.selected) 12.sp else 10.sp
+                            style = Typography.titleMedium,
+                            color = if (!isSystemInDarkTheme()) Color.DarkGray else Color.LightGray,
+                            fontSize = 12.sp
                         )
                     }
                 }
