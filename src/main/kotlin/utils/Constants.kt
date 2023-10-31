@@ -2,14 +2,14 @@ package utils
 
 object Constants {
 
-
     // APP
+    const val APP_NAME = "TheLab Desk"
     const val PLACEHOLDER_YES = "YES"
     const val PLACEHOLDER_NO = "NO"
     const val PLACEHOLDER_OK = "Ok"
     const val PLACEHOLDER_CANCEL = "Cancel"
     const val PLACEHOLDER_BACK = "Back"
-    const val PLACEHOLDER_PROVIDED_BY: String="Data provided by"
+    const val PLACEHOLDER_PROVIDED_BY: String = "Data provided by"
 
     // FileManager
     const val EMPTY_JSON_BLOCK = "{}"
@@ -19,6 +19,7 @@ object Constants {
 
     // BARCODE DATA
     const val qrCodeData = "201;20190204;008318;SAROUFIME;Philippe;;x5qgmIWjQKkCnaFdv4krXRu80EV/1LEmcCl4Lxjf1N8="
+    const val QR_CODE_DATA_THE_LAB_DESK_GITHUB = "https://github.com/MichaelStH/TheLabDesk/tree/develop"
 
     // HOME
     const val IMAGE_INTELLI_J_LOGO_URL =
@@ -35,11 +36,11 @@ object Constants {
     const val BASE_URL_TMDB_IMAGE_W_500_ENDPOINT = "https://image.tmdb.org/t/p/w500"
     const val TMDB_API_KEY = "ce64cb079f708591ef896ddb86a32ddc"
 
-    const val TITLE_POPULAR_MOVIES= "Popular Movies"
-    const val TITLE_TRENDING_MOVIES= "Trending Movies"
-    const val TITLE_UPCOMING_MOVIES= "Upcioming Movies"
-    const val TITLE_POPULAR_TV_SHOWS= "Popular Tv Shows"
-    const val TITLE_TRENDING_TV_SHOWS= "Trending Tv Shows"
+    const val TITLE_POPULAR_MOVIES = "Popular Movies"
+    const val TITLE_TRENDING_MOVIES = "Trending Movies"
+    const val TITLE_UPCOMING_MOVIES = "Upcioming Movies"
+    const val TITLE_POPULAR_TV_SHOWS = "Popular Tv Shows"
+    const val TITLE_TRENDING_TV_SHOWS = "Trending Tv Shows"
 
     // SETTINGS
     const val PLACEHOLDER_ENABLE_DARK_MODE = "Enable dark mode"

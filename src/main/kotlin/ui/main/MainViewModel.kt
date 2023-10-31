@@ -70,6 +70,9 @@ class MainViewModel(private val repository: IRepository) : BaseViewModel() {
                     })
                     add(Pair("Exit") {
                         Timber.d("onClick() : Exit")
+                        if (shouldShowAboutDialog) {
+                            updateShouldShowAboutDialog(false)
+                        }
                         updateShowExitConfirmation(true)
                     })
                 })
@@ -80,6 +83,9 @@ class MainViewModel(private val repository: IRepository) : BaseViewModel() {
                 buildSet {
                     add(Pair("About") {
                         Timber.d("onClick() : About")
+                        if (shouldExitAppConfirmationDialog) {
+                            updateShowExitConfirmation(false)
+                        }
                         updateShouldShowAboutDialog(true)
                     })
                 })
