@@ -1,4 +1,4 @@
-package core.compose.component
+package core.compose.component.dynamicisland
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.unit.dp
+import core.compose.component.TheLabDeskSurface
 import core.compose.theme.Orange
 import core.compose.theme.TheLabDeskTheme
 import di.AppModule

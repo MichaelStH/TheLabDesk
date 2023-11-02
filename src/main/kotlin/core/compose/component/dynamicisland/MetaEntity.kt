@@ -1,4 +1,4 @@
-package core.compose.component
+package core.compose.component.dynamicisland
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape

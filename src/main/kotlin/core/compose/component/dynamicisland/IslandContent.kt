@@ -1,4 +1,4 @@
-package  core.compose.component
+package  core.compose.component.dynamicisland
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
@@ -13,6 +13,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import core.compose.component.TheLabDeskSurface
+import ui.home.Welcome
 import core.compose.theme.TheLabDeskTheme
 import data.local.model.compose.IslandUiState
 import di.AppModule
@@ -86,7 +88,7 @@ private fun PreviewIslandContent() {
                 Box(
                     modifier = Modifier.fillMaxWidth().heightIn(0.dp, 100.dp),
                     contentAlignment = Alignment.CenterStart
-                ) {  DynamicIsland(viewModel, IslandUiState.WelcomeState())}
+                ) {  DynamicIsland(viewModel, IslandUiState.WelcomeState()) }
 
                 Box(
                     modifier = Modifier.fillMaxWidth().heightIn(0.dp, 100.dp),

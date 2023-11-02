@@ -31,7 +31,14 @@ import di.AppModule
 import utils.Constants
 
 @Composable
-fun TheatersItemContent(title: String, overview: String, poster: String, backdrop: String, onClick: () -> Unit) {
+fun TheatersItemContent(
+    id: Int,
+    title: String,
+    overview: String,
+    poster: String,
+    backdrop: String,
+    onClick: () -> Unit
+) {
     val (width, height) = (190.dp to 285.dp)
     var visible by remember { mutableStateOf(false) }
 
@@ -125,8 +132,14 @@ fun TheatersItemContent(title: String, overview: String, poster: String, backdro
                     maxLines = 7
                 )
 
-                Button(modifier = Modifier, onClick = { visible = !visible }) {
-                    Text(text = "Close")
+                Row(modifier = Modifier, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Button(modifier = Modifier, onClick = { visible = !visible }) {
+                        Text(text = "Watch teaser")
+                    }
+
+                    Button(modifier = Modifier, onClick = { visible = !visible }) {
+                        Text(text = "Close")
+                    }
                 }
             }
         }
@@ -137,6 +150,7 @@ fun TheatersItemContent(title: String, overview: String, poster: String, backdro
 fun TheatersItem(viewModel: TheatersViewModel, movie: MovieModel, onClick: () -> Unit) {
     TheLabDeskTheme(viewModel.isDarkMode) {
         TheatersItemContent(
+            id = movie.id.toInt(),
             title = movie.originalTitle.toString(),
             overview = movie.overview.toString(),
             poster = movie.poster.toString(),
@@ -150,6 +164,7 @@ fun TheatersItem(viewModel: TheatersViewModel, movie: MovieModel, onClick: () ->
 fun TheatersItem(viewModel: TheatersViewModel, tvShow: TvShowsModel, onClick: () -> Unit) {
     TheLabDeskTheme(viewModel.isDarkMode) {
         TheatersItemContent(
+            id = tvShow.id.toInt(),
             title = tvShow.originalTitle.toString(),
             overview = tvShow.overview.toString(),
             poster = tvShow.poster.toString(),

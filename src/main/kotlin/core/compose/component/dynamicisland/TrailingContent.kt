@@ -1,4 +1,4 @@
-package core.compose.component
+package core.compose.component.dynamicisland
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -7,43 +7,29 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Call
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color.Companion.Green
-import androidx.compose.ui.text.TextStyle
+import core.compose.component.TheLabDeskSurface
 import core.compose.theme.TheLabDeskTheme
 import data.local.model.compose.IslandUiState
 import di.AppModule
 import ui.main.MainViewModel
 
-@Preview
 @Composable
-fun LeadingContent(state: IslandUiState) {
+fun TrailingContent(state: IslandUiState) {
     AnimatedVisibility(
         modifier = Modifier.fillMaxHeight(),
-        visible = state.hasLeadingContent,
+        visible = state.hasTrailingContent,
         enter = fadeIn(animationSpec = tween(300, 300))
     ) {
         Box(
-            Modifier
-                .width(state.leadingContentSize),
+            modifier = Modifier.width(state.trailingContentSize),
             contentAlignment = Alignment.Center,
         ) {
             when (state) {
                 is IslandUiState.CallState -> {
-                    TheLabDeskText(modifier = Modifier, text = "9:41", style = TextStyle(color = Green))
-                }
-
-                is IslandUiState.CallTimerState -> {
-                    Icon(
-                        imageVector = Icons.Rounded.Call,
-                        contentDescription = null,
-                        tint = Green,
-                    )
+                    CallWaveform()
                 }
 
                 else -> {}
@@ -52,15 +38,16 @@ fun LeadingContent(state: IslandUiState) {
     }
 }
 
+
 @Preview
 @Composable
-private fun LeadingContent() {
+private fun PreviewTrailingContent() {
     val viewModel = MainViewModel(AppModule.injectDependencies())
     viewModel.updateDarkMode(true)
 
     TheLabDeskTheme(viewModel.isDarkMode) {
         TheLabDeskSurface(modifier = Modifier) {
-            LeadingContent(IslandUiState.CallState())
+            TrailingContent(IslandUiState.CallState())
         }
     }
 }

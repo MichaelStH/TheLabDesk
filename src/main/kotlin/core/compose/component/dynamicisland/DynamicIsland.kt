@@ -1,4 +1,4 @@
-package core.compose.component
+package core.compose.component.dynamicisland
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.Animatable
@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import core.compose.component.*
 import core.compose.theme.TheLabDeskTheme
 import core.utils.DisplayManager
 import data.local.model.compose.IslandUiState

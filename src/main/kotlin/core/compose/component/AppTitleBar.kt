@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowScope
 import androidx.compose.ui.window.WindowState
+import core.compose.component.dynamicisland.DynamicIsland
 import core.compose.theme.TheLabDeskTheme
 import core.compose.theme.md_theme_dark_primaryContainer
 import core.compose.utils.Text

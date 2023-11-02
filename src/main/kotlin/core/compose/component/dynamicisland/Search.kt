@@ -1,4 +1,4 @@
-package core.compose.component
+package core.compose.component.dynamicisland
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Box
@@ -26,6 +26,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import core.compose.component.TheLabDeskSurface
 import core.compose.theme.TheLabDeskTheme
 import core.compose.theme.md_theme_dark_primary
 import core.log.Timber

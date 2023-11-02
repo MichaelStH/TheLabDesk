@@ -1,4 +1,4 @@
-package core.compose.component
+package core.compose.component.dynamicisland
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import core.compose.component.TheLabDeskSurface
 import core.compose.theme.Orange
 import core.compose.theme.TheLabDeskTheme
 import data.local.model.compose.IslandUiState

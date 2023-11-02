@@ -19,6 +19,13 @@ object SystemManager {
     }
 
     /**
+     * @return operating system's name using default value
+     */
+    fun getOperatingSystem(defaultValue: String): String {
+        return System.getProperty("os.name", defaultValue)
+    }
+
+    /**
      * @return system's version
      */
     fun getVersion(): String {
@@ -86,6 +93,10 @@ object SystemManager {
      * @return true if it is macOS, false if not
      */
     fun isMacOs(): Boolean = getOperatingSystem().lowercase(Locale.getDefault()).contains("mac")
+    fun isMacOs(defaultValue: String): Boolean = getOperatingSystem(defaultValue)
+            .lowercase(Locale.ENGLISH)
+            .run { "mac" in this || "darwin" in this }
+
 
     /**
      * Check if current system is macOS

@@ -28,6 +28,7 @@ import data.local.model.tmdb.TvShowsModel
 import kotlinx.coroutines.launch
 import utils.Constants
 
+
 /**
  * Scrollable row section of TMDB items
  *

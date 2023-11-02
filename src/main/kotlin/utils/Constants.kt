@@ -22,6 +22,10 @@ object Constants {
     const val QR_CODE_DATA_THE_LAB_DESK_GITHUB = "https://github.com/MichaelStH/TheLabDesk/tree/develop"
 
     // HOME
+    const val VIDEO_BUNNY_URL = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+    const val VIDEO_YOUTUBE_BASE_URL = "http://www.youtube.com/v/"
+    const val VIDEO_YOUTUBE_WATCH_BASE_URL = "https://www.youtube.com/watch?v="
+    const val VIDEO_YOUTUBE_SHORT_BASE_URL = "https://youtu.be/"
     const val IMAGE_INTELLI_J_LOGO_URL =
         "https://raw.githubusercontent.com/JetBrains/compose-multiplatform/master/artwork/idea-logo.svg"
 

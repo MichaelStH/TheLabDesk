@@ -1,4 +1,4 @@
-package core.compose.component
+package ui.home
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
@@ -10,6 +10,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import core.compose.component.TheLabDeskSurface
+import core.compose.component.TheLabDeskText
 import core.compose.theme.TheLabDeskTheme
 import core.compose.theme.isSystemInDarkTheme
 import di.AppModule
