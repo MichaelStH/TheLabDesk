@@ -12,9 +12,18 @@ kotlinxCoroutines = "1.7.2"
 kotlinxSerializationJson = "1.5.1"
 # Compose
 compose = "1.5.3"
+# Json
+jakartaJson = "2.1.2"
+json = "20231013"
+jackson="2.15.3"
 # Ktor
 ktor = "2.3.4"
+nativeParametersStoreAccess = "0.1.2"
 types = "4.3.1"
+# Vlc PLayer
+vlcPlayer = "4.8.2"
+#YoutubePlayer
+youtubePlayer = "12.1.0"
 # Zxing
 zxing = "3.5.2"
 
@@ -36,7 +45,18 @@ ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "
 ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
+# Kotools
 kotools-types = { group = "org.kotools", name = "types", version.ref = "types" }
+# Json
+jakarta-json = { group = "jakarta.json", name = "jakarta.json-api", version.ref = "jakartaJson" }
+org-json = { group = "org.json", name = "json", version.ref = "json" }
+jackson-core = { group = "com.fasterxml.jackson.core", name = "jackson-core", version.ref = "jackson" }
+jackson-dataformat = { group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-xml", version.ref = "jackson" }
+native-parameters-store-access = { group = "com.github.tkuenneth", name = "nativeparameterstoreaccess", version.ref = "nativeParametersStoreAccess" }
+# Vlc Player
+vlc-player = { group = "uk.co.caprica", name = "vlcj", version.ref = "vlcPlayer" }
+# YoutubePlayer
+youtube-player = { group = "com.pierfrancescosoffritti.androidyoutubeplayer", name = "core", version.ref = "youtubePlayer" }
 # zxing
 zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxing" }
 zxing-javase = { group = "com.google.zxing", name = "javase", version.ref = "zxing" }

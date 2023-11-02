@@ -32,6 +32,7 @@ kotlin {
     }
 }
 
+@OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 dependencies {
 
     // Kotlin
@@ -45,8 +46,11 @@ dependencies {
     // (in a separate module for demo project and in testMain).
     // With compose.desktop.common you will also lose @Preview functionality
     implementation(compose.desktop.currentOs)
+    implementation(compose.desktop.components.animatedImage)
+    implementation(compose.desktop.components.splitPane)
     implementation(compose.animation)
     implementation(compose.animationGraphics)
+    implementation(compose.components.resources)
     implementation(compose.material)
     implementation(compose.material3)
     implementation(compose.materialIconsExtended)
@@ -66,14 +70,16 @@ dependencies {
 
 
     // https://mvnrepository.com/artifact/jakarta.json/jakarta.json-api
-    implementation("jakarta.json:jakarta.json-api:2.1.2")
+    implementation(libs.jakarta.json)
     // https://mvnrepository.com/artifact/org.json/json
-    implementation("org.json:json:20231013")
+    implementation(libs.org.json)
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
-    implementation("com.fasterxml.jackson.core:jackson-core:2.15.3")
+    implementation(libs.jackson.core)
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-xml
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.3")
+    implementation(libs.jackson.dataformat)
 
+    /* https://proandroiddev.com/unifying-video-players-compose-multiplatform-for-ios-android-desktop-aa920d29bbf3 */
+    implementation(libs.vlc.player)
 
     // Types
     implementation(libs.kotools.types)
@@ -90,7 +96,7 @@ dependencies {
      * As you can see, the color mode is stored in the Windows Registry and the macOS Defaults database.
      * To access both in Java or Kotlin I have written a tiny open source library called Native Parameter Store Acess.
      */
-    implementation("com.github.tkuenneth:nativeparameterstoreaccess:0.1.2")
+    implementation(libs.native.parameters.store.access)
 }
 
 tasks.wrapper {
