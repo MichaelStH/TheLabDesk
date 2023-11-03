@@ -1,5 +1,6 @@
 package ui.theaters
 
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -42,6 +43,14 @@ class TheatersViewModel(private val repository: IRepository) : BaseViewModel() {
     private var _tvShowsUiState: MutableStateFlow<MoviesUiState> = MutableStateFlow(MoviesUiState.None)
     val tvShowsUiState: StateFlow<MoviesUiState> = _tvShowsUiState
 
+    var theaterItemIdSelected: Pair<Int, String> by mutableStateOf(-1 to "")
+        private set
+
+    val startTheaterItemTeaserVideo by derivedStateOf {
+        theaterItemIdSelected.first != -1 && theaterItemIdSelected.second.isNotEmpty()
+    }
+    var showTheaterItemTeaserVideo: Boolean by mutableStateOf(false)
+        private set
 
     var trendingMovieList: List<MovieModel> by mutableStateOf(emptyList())
         private set
@@ -56,11 +65,11 @@ class TheatersViewModel(private val repository: IRepository) : BaseViewModel() {
     var popularTvShowsList: List<TvShowsModel> by mutableStateOf(emptyList())
         private set
 
-    var theaterTypeSelected:Int by mutableStateOf(0)
+    var theaterTypeSelected: Int by mutableStateOf(0)
         private set
-    var tabIconSelected:Int by mutableStateOf(0)
+    var tabIconSelected: Int by mutableStateOf(0)
         private set
-    var isStaggeredMode:Boolean by mutableStateOf(false)
+    var isStaggeredMode: Boolean by mutableStateOf(false)
         private set
 
     fun updateTheatersUiState(newState: TheatersUiState) {
@@ -78,6 +87,7 @@ class TheatersViewModel(private val repository: IRepository) : BaseViewModel() {
     fun updatePopularMovieList(list: List<MovieModel>) {
         this.popularMovieList = list
     }
+
     fun updateTrendingMovieList(list: List<MovieModel>) {
         this.trendingMovieList = list
     }
@@ -122,77 +132,13 @@ class TheatersViewModel(private val repository: IRepository) : BaseViewModel() {
         this.isStaggeredMode = isStaggered
     }
 
-
-    fun fetchTrendingMovies() {
-        Timber.d("fetchTrendingMovies()")
-        val list = runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-            repository.getTrendingMovies()
-        }
-
-        Timber.d("result: ${list.results.size}")
-
-        if (list.results.isNotEmpty()) {
-            trendingMovieList = list.results.map { it.toModel() }
-            updateMoviesUiState(MoviesUiState.Success(list))
-        }
+    fun updateShowTeaserVideo(showTeaser: Boolean) {
+        this.showTheaterItemTeaserVideo = showTeaser
     }
 
-    fun fetchPopularMovies() {
-        Timber.d("fetchPopularMovies()")
-        val list = runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-            repository.getPopularMovies()
-        }
-
-        Timber.d("result: ${list.results.size}")
-
-        if (list.results.isNotEmpty()) {
-            val modelList = list.results.map { it.toModel() }
-            updatePopularMovieList(modelList)
-        }
+    fun updateTheaterItemIdSelected(tmdbItemIdKey: Pair<Int, String>) {
+        this.theaterItemIdSelected = tmdbItemIdKey
     }
-
-    fun fetchUpcomingMovies() {
-        Timber.d("fetchUpcomingMovies()")
-        val list = runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-            repository.getUpcomingMovies()
-        }
-
-        Timber.d("result: ${list.results.size}")
-
-        if (list.results.isNotEmpty()) {
-            val modelList = list.results.map { it.toModel() }
-            updateUpcomingMovieList(modelList)
-        }
-    }
-
-    fun fetchTrendingTvShows() {
-        Timber.d("fetchTrendingTvShows()")
-        val list = runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-            repository.getTrendingTvShows()
-        }
-
-        Timber.d("result: ${list.results.size}")
-
-        if (list.results.isNotEmpty()) {
-            val modelList = list.results.map { it.toModel() }
-            updateTrendingTvShowsList(modelList)
-        }
-    }
-
-    fun fetchPopularTvShows() {
-        Timber.d("fetchPopularTvShows()")
-        val list = runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-            repository.getPopularTvShows()
-        }
-
-        Timber.d("result: ${list.results.size}")
-
-        if (list.results.isNotEmpty()) {
-            val modelList = list.results.map { it.toModel() }
-            updatePopularTvShowsList(modelList)
-        }
-    }
-
 
     fun fetchTMDBData() {
         Timber.d("fetchTMDBData()")
@@ -245,5 +191,29 @@ class TheatersViewModel(private val repository: IRepository) : BaseViewModel() {
 
         updateMoviesUiState(MoviesUiState.Success(result))
         updateTvShowsUiState(MoviesUiState.Success(result))
+    }
+
+    fun getTMDBItemId(movieID: Int) {
+        Timber.d("getTMDBItemId()")
+
+        runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
+
+            val video = repository.getVideos(movieID)
+
+            val youtubeKey = video.results.find { it.type.contains("teaser", true) }
+
+            youtubeKey?.let {
+
+                delay(1_500)
+
+                // Youtube key found update value
+                withContext(Dispatchers.Default) {
+                    updateTheaterItemIdSelected(video.id to it.key)
+                }
+            } ?: run {
+                // Youtube key not found
+                Timber.e("Youtube key not found")
+            }
+        }
     }
 }

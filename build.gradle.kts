@@ -5,10 +5,26 @@ plugins {
     kotlin("jvm")
     id("org.jetbrains.compose")
     kotlin("plugin.serialization")
+    id("org.openjfx.javafxplugin")
 }
 
 group = "com.riders"
 version = "1.0-SNAPSHOT"
+
+val osName = System.getProperty("os.name")
+val targetOs = when {
+    osName == "Mac OS X" -> "macos"
+    osName.startsWith("Win") -> "windows"
+    osName.startsWith("Linux") -> "linux"
+    else -> error("Unsupported OS: $osName")
+}
+
+val osArch = System.getProperty("os.arch")
+var targetArch = when (osArch) {
+    "x86_64", "amd64" -> "x64"
+    "aarch64" -> "arm64"
+    else -> error("Unsupported arch: $osArch")
+}
 
 val generatedVersionDir = "$projectDir/src/main/resources/generated-version"
 
@@ -97,6 +113,9 @@ dependencies {
      * To access both in Java or Kotlin I have written a tiny open source library called Native Parameter Store Acess.
      */
     implementation(libs.native.parameters.store.access)
+
+    implementation("org.openjfx:javafx-web:21")
+    implementation("org.jetbrains.jcef:jcef-skiko:0.1")
 }
 
 tasks.wrapper {
@@ -126,6 +145,11 @@ compose.desktop {
             }
         }
     }
+}
+
+javafx {
+    version = "21"
+    modules = listOf("javafx.controls", "javafx.swing", "javafx.web", "javafx.graphics")
 }
 
 fun readProperties(propertiesFile: File) = Properties().apply {

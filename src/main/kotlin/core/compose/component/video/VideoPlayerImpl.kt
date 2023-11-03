@@ -1,7 +1,11 @@
 package core.compose.component.video
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.awt.ComposePanel
 import androidx.compose.ui.awt.SwingPanel
 import androidx.compose.ui.graphics.Color
 import core.log.Timber
@@ -17,6 +21,7 @@ import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer
 import utils.toPercentage
 import java.awt.Component
+import javax.swing.JPanel
 
 @Composable
 fun VideoPlayerImpl(
@@ -32,13 +37,11 @@ fun VideoPlayerImpl(
 ) {
     val mediaPlayerComponent = remember { initializeMediaPlayerComponent() }
     val mediaPlayer = remember { mediaPlayerComponent.mediaPlayer() }
-    mediaPlayer.overlay()
-    mediaPlayer.videoSurface()
     mediaPlayer.emitProgressTo(progressState)
     mediaPlayer.setupVideoFinishHandler(onFinish)
 
     val factory = remember { { mediaPlayerComponent } }
-/* OR the following code and using SwingPanel(factory = { factory }, ...) */
+    /* OR the following code and using SwingPanel(factory = { factory }, ...) */
 
     // val factory by rememberUpdatedState(mediaPlayerComponent)
 
@@ -67,11 +70,24 @@ fun VideoPlayerImpl(
     }
 
     DisposableEffect(Unit) { onDispose(mediaPlayer::release) }
-    SwingPanel(
-        factory = factory,
-        background = Color.Transparent,
-        modifier = modifier
-    )
+    SwingPanel( // <--- Swing panel as root for hierarchy where drawing over heavyweight components needed (Swing/Compose switching trick START)
+        modifier = Modifier.fillMaxSize().background(Color.Black),
+        factory = {
+            ComposePanel().apply { // <--- Switch back to Compose world for layout management purposes (Swing/Compose switching trick END)
+                setContent {
+                    Box(modifier = Modifier.fillMaxSize().background(Color.Black)) { // <--- Here we use Box to make layering of SwingPanels
+                        SwingPanel(
+                            factory = factory,
+                            background = Color.Black,
+                            modifier = modifier
+                        ) {
+                            it.background = java.awt.Color.BLACK
+                            it.isVisible = true
+                        }
+                    }
+                }
+            }
+        })
 }
 
 

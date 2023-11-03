@@ -32,6 +32,7 @@ import utils.Constants
 
 @Composable
 fun TheatersItemContent(
+    viewModel: TheatersViewModel,
     id: Int,
     title: String,
     overview: String,
@@ -132,8 +133,14 @@ fun TheatersItemContent(
                     maxLines = 7
                 )
 
-                Row(modifier = Modifier, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Button(modifier = Modifier, onClick = { visible = !visible }) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Button(
+                        modifier = Modifier,
+                        onClick = {
+                            viewModel.updateShowTeaserVideo(true)
+                            viewModel.getTMDBItemId(id)
+                        }
+                    ) {
                         Text(text = "Watch teaser")
                     }
 
@@ -150,6 +157,7 @@ fun TheatersItemContent(
 fun TheatersItem(viewModel: TheatersViewModel, movie: MovieModel, onClick: () -> Unit) {
     TheLabDeskTheme(viewModel.isDarkMode) {
         TheatersItemContent(
+            viewModel = viewModel,
             id = movie.id.toInt(),
             title = movie.originalTitle.toString(),
             overview = movie.overview.toString(),
@@ -164,6 +172,7 @@ fun TheatersItem(viewModel: TheatersViewModel, movie: MovieModel, onClick: () ->
 fun TheatersItem(viewModel: TheatersViewModel, tvShow: TvShowsModel, onClick: () -> Unit) {
     TheLabDeskTheme(viewModel.isDarkMode) {
         TheatersItemContent(
+            viewModel = viewModel,
             id = tvShow.id.toInt(),
             title = tvShow.originalTitle.toString(),
             overview = tvShow.overview.toString(),

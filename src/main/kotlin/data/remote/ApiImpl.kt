@@ -5,6 +5,7 @@ import core.log.Timber
 import data.remote.dto.NewsDto
 import data.remote.dto.tmdb.TMDBMovieResponse
 import data.remote.dto.tmdb.TMDBTvShowsResponse
+import data.remote.dto.tmdb.TMDBVideoResponse
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -156,6 +157,21 @@ class ApiImpl : IApi {
             Timber.e("response is null")
         } else {
             Timber.d("total count found: ${response.totalResults}")
+        }
+
+        return response
+    }
+
+    override suspend fun getVideos(movieID: Int): TMDBVideoResponse {
+        val url = "${Constants.BASE_URL_TMDB_ENDPOINT}/movie/$movieID/videos?api_key=${Constants.TMDB_API_KEY}"
+        Timber.d("getVideos() | url: $url")
+
+        val response: TMDBVideoResponse = mClient.get(url).body<TMDBVideoResponse>()
+
+        if (null == response) {
+            Timber.e("response is null")
+        } else {
+            Timber.d("total videos found: ${response.results.size}")
         }
 
         return response

@@ -42,6 +42,7 @@ import ui.main.App
 import ui.main.MainViewModel
 import ui.news.NewsViewModel
 import ui.splashscreen.SplashScreen
+import ui.theaters.TheaterTeaserContent
 import ui.theaters.TheatersViewModel
 import utils.Constants
 import java.awt.Dimension
@@ -231,7 +232,7 @@ fun main() {
                                         contentAlignment = Alignment.Center
                                     ) {
                                         ScrollableWindowContent(
-                                            modifier = Modifier.blur(radius = if (viewModel.shouldShowAboutDialog || viewModel.shouldExitAppConfirmationDialog) 25.dp else 0.dp)
+                                            modifier = Modifier.blur(radius = if (viewModel.shouldShowAboutDialog || viewModel.shouldExitAppConfirmationDialog || theatersViewModel.showTheaterItemTeaserVideo) 25.dp else 0.dp)
                                         ) {
                                             // App Content
                                             App(viewModel, homeViewModel, newsViewModel, theatersViewModel)
@@ -242,6 +243,10 @@ fun main() {
 
                                         if (viewModel.shouldExitAppConfirmationDialog) {
                                             Exit(viewModel)
+                                        }
+
+                                        if(theatersViewModel.showTheaterItemTeaserVideo){
+                                            TheaterTeaserContent(theatersViewModel)
                                         }
                                     }
                                 }
