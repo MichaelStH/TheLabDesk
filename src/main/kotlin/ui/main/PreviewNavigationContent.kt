@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import core.compose.component.TheLabDeskIconTab
 import core.compose.component.TheLabDeskText
-import core.compose.component.browser.Browser
 import core.compose.theme.TheLabDeskTheme
 import core.compose.theme.isSystemInDarkTheme
 import core.utils.SystemManager
@@ -29,6 +28,8 @@ import data.local.model.compose.NavigationUiState
 import di.AppModule
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import ui.browser.BrowserContent
+import ui.browser.BrowserViewModel
 import ui.home.Home
 import ui.home.HomeViewModel
 import ui.news.News
@@ -52,6 +53,7 @@ fun NavigationContent(
     viewModel: MainViewModel,
     homeViewModel: HomeViewModel,
     newsViewModel: NewsViewModel,
+    browserViewModel: BrowserViewModel,
     theatersViewModel: TheatersViewModel
 ) {
     val currentNavigation by viewModel.currentNavigationUiState.collectAsState()
@@ -155,7 +157,7 @@ fun NavigationContent(
             Box(modifier = Modifier, contentAlignment = Alignment.TopStart) {
                 when (currentNavigation) {
                     is NavigationUiState.Home -> {
-                        Home(homeViewModel)
+                        Home(viewModel = homeViewModel)
                     }
 
                     is NavigationUiState.News -> {
@@ -169,7 +171,7 @@ fun NavigationContent(
                     }
 
                     is NavigationUiState.WebView -> {
-                        Browser(composeWindow = composeWindow, modifier = Modifier.fillMaxSize(), url="http://www.google.com")
+                        BrowserContent(composeWindow = composeWindow, viewModel = browserViewModel)
                     }
 
                     is NavigationUiState.Settings -> {

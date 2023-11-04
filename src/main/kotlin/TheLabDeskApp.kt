@@ -38,6 +38,7 @@ import data.local.bean.WindowTypes
 import di.AppModule
 import ui.About
 import ui.Exit
+import ui.browser.BrowserViewModel
 import ui.home.HomeViewModel
 import ui.main.App
 import ui.main.MainViewModel
@@ -104,6 +105,7 @@ fun main() {
     val viewModel = MainViewModel(AppModule.injectDependencies())
     val homeViewModel = HomeViewModel()
     val newsViewModel = NewsViewModel(AppModule.injectDependencies())
+    val browserViewModel = BrowserViewModel()
     val theatersViewModel = TheatersViewModel(AppModule.injectDependencies())
 
     // viewModel.getTime()
@@ -245,7 +247,7 @@ fun main() {
                                             modifier = Modifier.blur(radius = if (viewModel.shouldShowAboutDialog || viewModel.shouldExitAppConfirmationDialog || theatersViewModel.showTheaterItemTeaserVideo) 25.dp else 0.dp)
                                         ) {
                                             // App Content
-                                            App(window, viewModel, homeViewModel, newsViewModel, theatersViewModel)
+                                            App(window, viewModel, homeViewModel, newsViewModel,browserViewModel, theatersViewModel)
                                         }
                                         if (viewModel.shouldShowAboutDialog) {
                                             About(viewModel)

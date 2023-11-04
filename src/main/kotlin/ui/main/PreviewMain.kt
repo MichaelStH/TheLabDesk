@@ -9,6 +9,7 @@ import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.unit.dp
 import core.compose.theme.TheLabDeskTheme
 import di.AppModule
+import ui.browser.BrowserViewModel
 import ui.home.HomeViewModel
 import ui.news.NewsViewModel
 import ui.theaters.TheatersViewModel
@@ -26,6 +27,7 @@ fun App(
     viewModel: MainViewModel,
     homeViewModel: HomeViewModel,
     newsViewModel: NewsViewModel,
+    browserViewModel:BrowserViewModel,
     theatersViewModel: TheatersViewModel
 ) {
     TheLabDeskTheme(viewModel.isDarkMode) {
@@ -40,7 +42,7 @@ fun App(
                     NavigationBar(viewModel)
                 }
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
-                    NavigationContent(composeWindow, viewModel, homeViewModel, newsViewModel, theatersViewModel)
+                    NavigationContent(composeWindow, viewModel, homeViewModel, newsViewModel, browserViewModel,theatersViewModel)
                 }
             }
         }
