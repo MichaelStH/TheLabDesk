@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import core.compose.component.TheLabDeskSurface
-import ui.home.Welcome
 import core.compose.theme.TheLabDeskTheme
 import data.local.model.compose.IslandUiState
 import di.AppModule

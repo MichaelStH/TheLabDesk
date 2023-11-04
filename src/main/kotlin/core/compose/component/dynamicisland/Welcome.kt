@@ -1,4 +1,4 @@
-package ui.home
+package core.compose.component.dynamicisland
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
