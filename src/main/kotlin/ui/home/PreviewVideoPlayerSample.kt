@@ -30,7 +30,7 @@ fun VideoPlayerSample() {
     val videoState = rememberVideoPlayerState()
 
     HomeSectionContent(title = title, description = desc) {
-        Card(modifier = Modifier.width(400.dp).height(200.dp), shape = RoundedCornerShape(16.dp)) {
+        Card(modifier = Modifier.width(395.dp).height(195.dp), shape = RoundedCornerShape(16.dp)) {
             BoxWithConstraints(
                 modifier = Modifier.fillMaxSize().background(Color.Black).wrapContentSize().clip(shape = RoundedCornerShape(16.dp)),
                 contentAlignment = Alignment.Center

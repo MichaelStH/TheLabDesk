@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -52,13 +54,15 @@ fun TheaterTeaserContent(viewModel: TheatersViewModel) {
     val cardHeight: Dp = (DisplayManager.getScreenHeight() - (DisplayManager.getScreenHeight() / 2)).dp
 
     TheLabDeskTheme {
-        TheLabDeskCard(modifier = Modifier.width(width).height(cardHeight), shape = RoundedCornerShape(35.dp)) {
+        TheLabDeskCard(
+            modifier = Modifier.width(width).height(cardHeight).hoverable(interactionSource),
+            shape = RoundedCornerShape(35.dp)
+        ) {
             Surface(modifier = Modifier.fillMaxWidth().fillMaxHeight().background(Color.Black), color = Color.Black) {
                 BoxWithConstraints(
                     modifier = Modifier
                         .fillMaxSize()
-                        .hoverable(interactionSource)
-                        .background(Color.Transparent),
+                        .background(Color.Black),
                     contentAlignment = Alignment.Center
                 ) {
                     AnimatedContent(
@@ -66,8 +70,8 @@ fun TheaterTeaserContent(viewModel: TheatersViewModel) {
                         targetState = viewModel.startTheaterItemTeaserVideo
                     ) { target ->
                         if (!target) {
-                            Box(modifier = Modifier.size(24.dp), contentAlignment = Alignment.Center) {
-                                CircularProgressIndicator(modifier = Modifier.fillMaxSize().align(Alignment.Center))
+                            Box(modifier = Modifier.size(30.dp).align(Alignment.Center), contentAlignment = Alignment.Center) {
+                                CircularProgressIndicator(modifier = Modifier.size(24.dp).align(Alignment.Center))
                             }
                         } else {
                             BoxWithConstraints(
@@ -80,12 +84,29 @@ fun TheaterTeaserContent(viewModel: TheatersViewModel) {
                                     onFinish = videoState::stopPlayback
                                 )
                             }
+                        }
+                    }
 
-                                AnimatedVisibility(visible = isHovered, enter = fadeIn(), exit = fadeOut()){
-                                    // Controls
-                                    Box(modifier= Modifier.fillMaxSize().background(Color.Transparent)){
-                                        LinearProgressIndicator(modifier = Modifier.align(Alignment.Center), progress = videoState.progress.value.fraction)
-                                    }
+                    AnimatedVisibility(visible = isHovered, enter = fadeIn(), exit = fadeOut()) {
+                        // Controls
+                        Box(modifier = Modifier.fillMaxSize().background(Color.Transparent)) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(10.dp).align(Alignment.BottomCenter),
+                                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+
+                                IconButton(onClick = { videoState.toggleResume() }) {
+                                    Icon(
+                                        imageVector = if (!videoState.isResumed) Icons.Filled.PlayArrow else Icons.Filled.Pause,
+                                        contentDescription = null
+                                    )
+                                }
+
+                                LinearProgressIndicator(
+                                    modifier = Modifier.fillMaxWidth().padding(end= 16.dp),
+                                    progress = videoState.progress.value.fraction
+                                )
                             }
                         }
                     }

@@ -199,15 +199,12 @@ class TheatersViewModel(private val repository: IRepository) : BaseViewModel() {
         runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
 
             val video = repository.getVideos(movieID)
-
             val youtubeKey = video.results.find { it.type.contains("teaser", true) }
 
             youtubeKey?.let {
-
-                delay(1_500)
-
                 // Youtube key found update value
                 withContext(Dispatchers.Default) {
+                    delay(1_500)
                     updateTheaterItemIdSelected(video.id to it.key)
                 }
             } ?: run {
