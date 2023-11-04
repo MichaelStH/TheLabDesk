@@ -12,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -20,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import core.compose.component.TheLabDeskIconTab
 import core.compose.component.TheLabDeskText
+import core.compose.component.browser.Browser
 import core.compose.theme.TheLabDeskTheme
 import core.compose.theme.isSystemInDarkTheme
 import core.utils.SystemManager
@@ -46,6 +48,7 @@ import utils.Constants
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavigationContent(
+    composeWindow: ComposeWindow,
     viewModel: MainViewModel,
     homeViewModel: HomeViewModel,
     newsViewModel: NewsViewModel,
@@ -165,6 +168,10 @@ fun NavigationContent(
                         Theaters(theatersViewModel)
                     }
 
+                    is NavigationUiState.WebView -> {
+                        Browser(composeWindow = composeWindow, modifier = Modifier.fillMaxSize(), url="http://www.google.com")
+                    }
+
                     is NavigationUiState.Settings -> {
                         SettingsContent(viewModel)
                     }
@@ -190,6 +197,6 @@ private fun PreviewNavigationContent() {
     viewModel.updateCurrentNavigationUiState(NavigationUiState.Settings)
 
     TheLabDeskTheme {
-        NavigationContent(viewModel, homeViewModel, newsViewModel, theatersViewModel)
+        // NavigationContent(viewModel, homeViewModel, newsViewModel, theatersViewModel)
     }
 }

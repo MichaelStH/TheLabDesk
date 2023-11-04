@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.unit.dp
 import core.compose.theme.TheLabDeskTheme
 import di.AppModule
@@ -21,6 +22,7 @@ import ui.theaters.TheatersViewModel
 @Composable
 @Preview
 fun App(
+    composeWindow: ComposeWindow,
     viewModel: MainViewModel,
     homeViewModel: HomeViewModel,
     newsViewModel: NewsViewModel,
@@ -38,7 +40,7 @@ fun App(
                     NavigationBar(viewModel)
                 }
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
-                    NavigationContent(viewModel, homeViewModel, newsViewModel, theatersViewModel)
+                    NavigationContent(composeWindow, viewModel, homeViewModel, newsViewModel, theatersViewModel)
                 }
             }
         }
@@ -60,6 +62,6 @@ private fun PreviewApp() {
     val theatersViewModel = TheatersViewModel(AppModule.injectDependencies())
 
     TheLabDeskTheme {
-        App(viewModel, homeViewModel, newsViewModel, theatersViewModel)
+        // App(viewModel, homeViewModel, newsViewModel, theatersViewModel)
     }
 }

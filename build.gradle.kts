@@ -77,6 +77,7 @@ dependencies {
     implementation(compose.uiTooling)
     implementation(libs.compose.full)
 
+
     // Ktor
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.cio)

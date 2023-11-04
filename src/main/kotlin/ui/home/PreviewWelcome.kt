@@ -1,4 +1,4 @@
-package ui
+package ui.home
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
