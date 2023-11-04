@@ -174,7 +174,7 @@ fun main() {
             state = windowState,
             icon = painterResource("images/ic_lab.png"),
             undecorated = true,
-            transparent = true,
+            transparent = false,
             resizable = viewModel.windowType != WindowTypes.SPLASHSCREEN,
             onCloseRequest = {
                 PlatformImpl.removeListener(finishListener)

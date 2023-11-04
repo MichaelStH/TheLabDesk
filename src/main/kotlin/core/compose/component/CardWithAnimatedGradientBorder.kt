@@ -63,8 +63,7 @@ fun CardWithAnimatedBorder(
 
     Surface(modifier = modifier, shape = RoundedCornerShape(20.dp)) {
         Surface(
-            modifier =
-            Modifier.clipToBounds().fillMaxWidth().padding(1.dp).drawWithContent {
+            modifier = Modifier.clipToBounds().fillMaxWidth().padding(1.dp).drawWithContent {
                 rotate(angle) {
                     drawCircle(
                         brush = brush,
@@ -86,7 +85,7 @@ fun CardWithAnimatedBorder(
 @Preview
 @Composable
 private fun PreviewCardWithAnimatedBorder() {
-    var progress by remember { mutableFloatStateOf(0f) }
+    val progress by remember { mutableFloatStateOf(0f) }
 
     TheLabDeskTheme {
         CardWithAnimatedBorder() {

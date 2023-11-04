@@ -1,6 +1,7 @@
 package ui.splashscreen
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
@@ -34,7 +35,7 @@ fun SplashScreen(viewModel: MainViewModel) {
     TheLabDeskTheme {
         CardWithAnimatedBorder(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
             Column(
-                modifier = Modifier.fillMaxWidth(.8f).fillMaxHeight(.8f),
+                modifier = Modifier.fillMaxWidth(.8f).fillMaxHeight(.8f).background(color=Color.Transparent),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically)
             ) {
