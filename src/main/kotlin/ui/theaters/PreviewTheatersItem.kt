@@ -6,13 +6,18 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -21,7 +26,7 @@ import core.compose.component.TheLabDeskCard
 import core.compose.component.TheLabDeskText
 import core.compose.theme.TheLabDeskTheme
 import core.compose.theme.Typography
-import core.compose.utils.AsyncBitmapImageFromNetworkWithModifier
+import core.compose.utils.AsyncBitmapImageFromNetwork
 import core.compose.utils.Text
 import data.local.model.tmdb.MovieModel
 import data.local.model.tmdb.TvShowsModel
@@ -71,12 +76,13 @@ fun TheatersItemContent(
                 ) {
 
                     // Background image
-                    AsyncBitmapImageFromNetworkWithModifier(
+                    AsyncBitmapImageFromNetwork(
                         modifier = Modifier
                             .width(width)
                             .heightIn(0.dp, height)
                             .zIndex(0f),
-                        url = posterUrl
+                        url = posterUrl,
+                        contentScale = ContentScale.Crop
                     )
 
                     // Gradient
@@ -141,11 +147,17 @@ fun TheatersItemContent(
                             viewModel.getTMDBItemId(id)
                         }
                     ) {
-                        Text(text = "Watch teaser")
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Icon(imageVector = Icons.Filled.PlayArrow, contentDescription = "play_icon")
+                            Text(text = "Watch teaser")
+                        }
                     }
 
                     Button(modifier = Modifier, onClick = { visible = !visible }) {
-                        Text(text = "Close")
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Icon(imageVector = Icons.Default.Close, contentDescription = "close_icon")
+                            Text(text = "Close")
+                        }
                     }
                 }
             }

@@ -1,16 +1,23 @@
 package ui.theaters
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
+import androidx.compose.foundation.hoverable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,8 +37,11 @@ import utils.Constants
 @Composable
 fun TheaterTeaserContent(viewModel: TheatersViewModel) {
 
-    val width = 800.dp
+    val width = 760.dp
     val height = 692.dp
+
+    val interactionSource = remember { MutableInteractionSource() }
+    val isHovered by interactionSource.collectIsHoveredAsState()
 
     val videoState = rememberVideoPlayerState()
 
@@ -45,7 +55,10 @@ fun TheaterTeaserContent(viewModel: TheatersViewModel) {
         TheLabDeskCard(modifier = Modifier.width(width).height(cardHeight), shape = RoundedCornerShape(35.dp)) {
             Surface(modifier = Modifier.fillMaxWidth().fillMaxHeight().background(Color.Black), color = Color.Black) {
                 BoxWithConstraints(
-                    modifier = Modifier.fillMaxSize().background(Color.Transparent),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .hoverable(interactionSource)
+                        .background(Color.Transparent),
                     contentAlignment = Alignment.Center
                 ) {
                     AnimatedContent(
@@ -68,7 +81,12 @@ fun TheaterTeaserContent(viewModel: TheatersViewModel) {
                                 )
                             }
 
-
+                                AnimatedVisibility(visible = isHovered, enter = fadeIn(), exit = fadeOut()){
+                                    // Controls
+                                    Box(modifier= Modifier.fillMaxSize().background(Color.Transparent)){
+                                        LinearProgressIndicator(modifier = Modifier.align(Alignment.Center), progress = videoState.progress.value.fraction)
+                                    }
+                            }
                         }
                     }
 

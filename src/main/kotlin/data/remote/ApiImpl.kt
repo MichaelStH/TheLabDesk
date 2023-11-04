@@ -34,7 +34,12 @@ class ApiImpl : IApi {
         }
 
         install(ContentNegotiation) {
-            json(Json { ignoreUnknownKeys = true }) // Example: Register JSON content transformation
+            json(
+                Json {
+                isLenient = true
+                ignoreUnknownKeys = true
+                coerceInputValues = true
+            }) // Example: Register JSON content transformation
             // Add more transformations as needed for other content types
         }
 
@@ -49,8 +54,9 @@ class ApiImpl : IApi {
     }
 
     private val json = Json {
-        // isLenient = true
+        isLenient = true
         ignoreUnknownKeys = true
+        coerceInputValues = true
     }
 
     @Throws(IOException::class)

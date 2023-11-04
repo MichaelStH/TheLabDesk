@@ -11,7 +11,7 @@ data class TvShowsDto(
     @SerialName(value = "name")
     val name: String,
     @SerialName(value = "backdrop_path")
-    val backdropPath: String,
+    val backdropPath: String?,
     @SerialName(value = "genre_ids")
     val genresID: Set<Int>,
     @SerialName(value = "original_language")

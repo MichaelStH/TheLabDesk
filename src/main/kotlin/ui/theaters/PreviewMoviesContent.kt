@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -29,7 +30,7 @@ import core.compose.component.TheLabDeskCard
 import core.compose.component.TheLabDeskText
 import core.compose.theme.TheLabDeskTheme
 import core.compose.theme.Typography
-import core.compose.utils.AsyncBitmapImageFromNetworkWithModifier
+import core.compose.utils.AsyncBitmapImageFromNetwork
 import data.local.model.compose.MoviesUiState
 import data.local.model.tmdb.MovieModel
 import kotlinx.coroutines.launch
@@ -106,12 +107,13 @@ private fun Header(viewModel: TheatersViewModel, movie: MovieModel) {
         TheLabDeskCard(modifier = Modifier.fillMaxWidth().heightIn(0.dp, 300.dp)) {
             BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
                 // Image
-                AsyncBitmapImageFromNetworkWithModifier(
+                AsyncBitmapImageFromNetwork(
                     modifier = Modifier
                         .width(this.maxWidth / 3)
                         .height(this.maxHeight)
                         .align(Alignment.CenterEnd),
-                    url = backdropUrl
+                    url = backdropUrl,
+                    contentScale = ContentScale.Crop
                 )
 
                 // Gradient

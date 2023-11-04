@@ -11,13 +11,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import core.compose.component.TheLabDeskCard
 import core.compose.theme.TheLabDeskTheme
 import core.compose.theme.Typography
 import core.compose.theme.isSystemInDarkTheme
-import core.compose.utils.AsyncBitmapImageFromNetworkWithModifier
+import core.compose.utils.AsyncBitmapImageFromNetwork
 import data.local.model.compose.TheatersUiState
 import di.AppModule
 
@@ -52,12 +53,13 @@ fun TMDBHeader(
         TheLabDeskCard(modifier = Modifier.fillMaxWidth().heightIn(0.dp, 300.dp)) {
             BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
                 // Image
-                AsyncBitmapImageFromNetworkWithModifier(
+                AsyncBitmapImageFromNetwork(
                     modifier = Modifier
                         .width(this.maxWidth / 3)
                         .height(this.maxHeight)
                         .align(Alignment.CenterEnd),
-                    url = backdropUrl
+                    url = backdropUrl,
+                    contentScale = ContentScale.Crop
                 )
 
                 // Gradient

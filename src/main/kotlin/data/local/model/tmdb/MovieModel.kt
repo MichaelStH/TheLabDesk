@@ -49,7 +49,7 @@ data class MovieModel(
         movieDto.id.toPositiveInt().getOrThrow(),
         movieDto.title.toNotBlankString().getOrThrow(),
         movieDto.adult,
-        movieDto.backdropPath.toNotBlankString().getOrThrow(),
+        movieDto.backdropPath.toNotBlankString().getOrElse { "N/A".toNotBlankString().getOrThrow() },
         movieDto.genresID.toNotEmptySet().getOrThrow(),
         movieDto.originalLanguage.toNotBlankString().getOrThrow(),
         movieDto.originalTitle.toNotBlankString().getOrThrow(),

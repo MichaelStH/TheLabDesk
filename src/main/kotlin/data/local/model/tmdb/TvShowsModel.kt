@@ -31,7 +31,7 @@ data class TvShowsModel(
     constructor(tvShowsDto: TvShowsDto) : this(
         tvShowsDto.id.toPositiveInt().getOrThrow(),
         tvShowsDto.name.toNotBlankString().getOrThrow(),
-        tvShowsDto.backdropPath.toNotBlankString().getOrThrow(),
+        tvShowsDto.backdropPath?.run { this.toNotBlankString().getOrThrow() } ?: "N/A".toNotBlankString().getOrThrow(),
         tvShowsDto.genresID.map { it.toPositiveInt().getOrThrow() }.toNotEmptySet()
             .getOrElse { notEmptySetOf(0.toPositiveIntOrThrow()) },
         tvShowsDto.originalLanguage.toNotBlankString().getOrThrow(),
