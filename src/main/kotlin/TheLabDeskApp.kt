@@ -22,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
+import com.sun.javafx.application.PlatformImpl
 import com.toxicbakery.logging.Arbor
 import com.toxicbakery.logging.Seedling
 import core.compose.component.AppTitleBar
@@ -119,8 +120,14 @@ fun main() {
             delay(1_000)
         }
     }*/
+    application(exitProcessOnExit = true) {
+        // Required to make sure the JavaFx event loop doesn't finish (can happen when java fx panels in app are shown/hidden)
+        val finishListener = object : PlatformImpl.FinishListener {
+            override fun idle(implicitExit: Boolean) {}
+            override fun exitCalled() {}
+        }
+        PlatformImpl.addListener(finishListener)
 
-    application {
         val screenWidth: Int = DisplayManager.getScreenWidth()
         val screenHeight: Int = DisplayManager.getScreenHeight()
 
@@ -167,7 +174,10 @@ fun main() {
             undecorated = true,
             transparent = true,
             resizable = viewModel.windowType != WindowTypes.SPLASHSCREEN,
-            onCloseRequest = ::exitApplication
+            onCloseRequest = {
+                PlatformImpl.removeListener(finishListener)
+                exitApplication()
+            }
         ) {
 
             // Declaring Coroutine scope
@@ -235,7 +245,7 @@ fun main() {
                                             modifier = Modifier.blur(radius = if (viewModel.shouldShowAboutDialog || viewModel.shouldExitAppConfirmationDialog || theatersViewModel.showTheaterItemTeaserVideo) 25.dp else 0.dp)
                                         ) {
                                             // App Content
-                                            App(viewModel, homeViewModel, newsViewModel, theatersViewModel)
+                                            App(window, viewModel, homeViewModel, newsViewModel, theatersViewModel)
                                         }
                                         if (viewModel.shouldShowAboutDialog) {
                                             About(viewModel)
