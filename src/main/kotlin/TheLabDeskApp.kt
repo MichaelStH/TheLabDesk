@@ -52,6 +52,8 @@ import java.util.*
 
 object TheLabDeskApp {
 
+    var isVlcFound: Boolean = false
+
     private val versionProperties = Properties()
     fun getVersion(): String = versionProperties.getProperty("version") ?: "no version"
 
@@ -76,6 +78,10 @@ object TheLabDeskApp {
     fun initArbor() {
         Arbor.sow(Seedling())
         Timber.d("initArbor()")
+    }
+
+    fun updateVlcFoundLibrary(isVlcFound: Boolean) {
+        this.isVlcFound = isVlcFound
     }
 }
 

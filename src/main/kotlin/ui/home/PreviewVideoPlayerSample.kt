@@ -1,5 +1,7 @@
 package ui.home
 
+import TheLabDeskApp
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -11,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import core.compose.component.video.NoVideoPlayerFound
 import core.compose.component.video.VideoPlayer
 import core.compose.component.video.rememberVideoPlayerState
 import utils.Constants
@@ -32,15 +35,23 @@ fun VideoPlayerSample() {
     HomeSectionContent(title = title, description = desc) {
         Card(modifier = Modifier.width(395.dp).height(195.dp), shape = RoundedCornerShape(16.dp)) {
             BoxWithConstraints(
-                modifier = Modifier.fillMaxSize().background(Color.Black).wrapContentSize().clip(shape = RoundedCornerShape(16.dp)),
+                modifier = Modifier.fillMaxSize().background(Color.Black).wrapContentSize()
+                    .clip(shape = RoundedCornerShape(16.dp)),
                 contentAlignment = Alignment.Center
             ) {
-                VideoPlayer(
-                    modifier = Modifier.fillMaxSize(),
-                    url = Constants.VIDEO_BUNNY_URL,
-                    state = videoState,
-                    onFinish = videoState::stopPlayback
-                )
+
+                AnimatedContent(targetState = TheLabDeskApp.isVlcFound) { vlcFound ->
+                    if (!vlcFound) {
+                        NoVideoPlayerFound()
+                    } else {
+                        VideoPlayer(
+                            modifier = Modifier.fillMaxSize(),
+                            url = Constants.VIDEO_BUNNY_URL,
+                            state = videoState,
+                            onFinish = videoState::stopPlayback
+                        )
+                    }
+                }
             }
         }
     }

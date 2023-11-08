@@ -1,5 +1,6 @@
 package core.compose.component.video
 
+import TheLabDeskApp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,7 +22,6 @@ import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer
 import utils.toPercentage
 import java.awt.Component
-import javax.swing.JPanel
 
 @Composable
 fun VideoPlayerImpl(
@@ -35,12 +35,17 @@ fun VideoPlayerImpl(
     modifier: Modifier,
     onFinish: (() -> Unit)?
 ) {
+    if (null == initializeMediaPlayerComponent()) {
+        Timber.e("Unable to initialize Media Player Component")
+        return
+    }
+
     val mediaPlayerComponent = remember { initializeMediaPlayerComponent() }
-    val mediaPlayer = remember { mediaPlayerComponent.mediaPlayer() }
+    val mediaPlayer = remember { mediaPlayerComponent!!.mediaPlayer() }
     mediaPlayer.emitProgressTo(progressState)
     mediaPlayer.setupVideoFinishHandler(onFinish)
 
-    val factory = remember { { mediaPlayerComponent } }
+    val factory = remember { { mediaPlayerComponent!! } }
     /* OR the following code and using SwingPanel(factory = { factory }, ...) */
 
     // val factory by rememberUpdatedState(mediaPlayerComponent)
@@ -75,7 +80,9 @@ fun VideoPlayerImpl(
         factory = {
             ComposePanel().apply { // <--- Switch back to Compose world for layout management purposes (Swing/Compose switching trick END)
                 setContent {
-                    Box(modifier = Modifier.fillMaxSize().background(Color.Black)) { // <--- Here we use Box to make layering of SwingPanels
+                    Box(
+                        modifier = Modifier.fillMaxSize().background(Color.Black)
+                    ) { // <--- Here we use Box to make layering of SwingPanels
                         SwingPanel(
                             factory = factory,
                             background = Color.Black,
@@ -95,22 +102,31 @@ fun VideoPlayerImpl(
  * See https://github.com/caprica/vlcj/issues/887#issuecomment-503288294
  * for why we're using CallbackMediaPlayerComponent for macOS.
  */
-private fun initializeMediaPlayerComponent(): Component {
+private fun initializeMediaPlayerComponent(): Component? {
     Timber.d("initializeMediaPlayerComponent()")
 
+    // Check if VLC library can be found on current system
     val found = NativeDiscovery().discover()
     Timber.d("Found: $found")
-    Timber.d("LibVlc: ${LibVlc.libvlc_get_version()}")
 
-    /*val mediaPlayerComponent : MediaPlayerComponent = if (SystemManager.isMacOs("generic")) {
-        Timber.e("isMacOs() | Call CallbackMediaPlayerComponent()")
-        CallbackMediaPlayerComponent()
+    return if (!found) {
+        Timber.e("Unable to find VLC library file. Please make sure that VLC is installed on your system")
+        TheLabDeskApp.updateVlcFoundLibrary(false)
+        null
     } else {
-        Timber.e("NOT isMacOs() | Call EmbeddedMediaPlayerComponent()")
-        EmbeddedMediaPlayerComponent()
-    }*/
+        TheLabDeskApp.updateVlcFoundLibrary(false)
+        Timber.d("LibVlc: ${LibVlc.libvlc_get_version()}")
 
-    return EmbeddedMediaPlayerComponent()
+        /*val mediaPlayerComponent : MediaPlayerComponent = if (SystemManager.isMacOs("generic")) {
+            Timber.e("isMacOs() | Call CallbackMediaPlayerComponent()")
+            CallbackMediaPlayerComponent()
+        } else {
+            Timber.e("NOT isMacOs() | Call EmbeddedMediaPlayerComponent()")
+            EmbeddedMediaPlayerComponent()
+        }*/
+
+        return EmbeddedMediaPlayerComponent()
+    }
 }
 
 /**
