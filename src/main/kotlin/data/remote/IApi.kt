@@ -14,5 +14,6 @@ interface IApi {
     suspend fun getTrendingTvShows(): TMDBTvShowsResponse
     suspend fun getPopularTvShows(): TMDBTvShowsResponse
     suspend fun getMovies(): TMDBMovieResponse
-    suspend fun getVideos(movieID:Int): TMDBVideoResponse
+    suspend fun getMovieVideos(movieID: Int): TMDBVideoResponse?
+    suspend fun getTvShowVideos(thShowID: Int): TMDBVideoResponse?
 }

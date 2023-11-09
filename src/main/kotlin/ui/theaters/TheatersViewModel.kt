@@ -207,14 +207,14 @@ class TheatersViewModel(private val repository: IRepository) : BaseViewModel() {
         updateTvShowsUiState(MoviesUiState.Success(result))
     }
 
-    fun getTMDBItemId(movieID: Int, name: String) {
+    fun getTMDBItemId(movieID: Int, name: String, isMovie: Boolean) {
         Timber.d("getTMDBItemId()")
 
         runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
             delay(2_500)
 
-            val video = repository.getVideos(movieID)
-            val youtubeKey = video.results.find { it.type.contains("teaser", true) }
+            val video = if (isMovie) repository.getMovieVideos(movieID) else repository.getTvShowVideos(movieID)
+            val youtubeKey = video?.results?.find { it.type.contains("teaser", true) }
 
             youtubeKey?.let {
                 // Youtube key found update value

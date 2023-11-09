@@ -52,8 +52,8 @@ class BrowserViewModel : BaseViewModel() {
     fun search() {
         Timber.d("search() | url: $currentUrl")
         // if (Platform.isFxApplicationThread())
-            Platform.runLater {
-                engine?.load(currentUrl)
-            }
+        Platform.runLater {
+            engine?.load(currentUrl)
+        }
     }
 }

@@ -8,6 +8,7 @@ import core.log.Timber
 import java.util.*
 
 abstract class BaseViewModel {
+
     var isDarkMode by mutableStateOf(false)
         private set
 

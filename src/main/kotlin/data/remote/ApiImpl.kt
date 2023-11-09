@@ -36,10 +36,10 @@ class ApiImpl : IApi {
         install(ContentNegotiation) {
             json(
                 Json {
-                isLenient = true
-                ignoreUnknownKeys = true
-                coerceInputValues = true
-            }) // Example: Register JSON content transformation
+                    isLenient = true
+                    ignoreUnknownKeys = true
+                    coerceInputValues = true
+                }) // Example: Register JSON content transformation
             // Add more transformations as needed for other content types
         }
 
@@ -168,18 +168,33 @@ class ApiImpl : IApi {
         return response
     }
 
-    override suspend fun getVideos(movieID: Int): TMDBVideoResponse {
+    override suspend fun getMovieVideos(movieID: Int): TMDBVideoResponse? {
         val url = "${Constants.BASE_URL_TMDB_ENDPOINT}/movie/$movieID/videos?api_key=${Constants.TMDB_API_KEY}"
-        Timber.d("getVideos() | url: $url")
+        Timber.d("getMovieVideos() | url: $url")
 
-        val response: TMDBVideoResponse = mClient.get(url).body<TMDBVideoResponse>()
+        val response: TMDBVideoResponse? = mClient.get(url).body<TMDBVideoResponse>()
 
-        if (null == response) {
+        return if (null == response) {
             Timber.e("response is null")
+            null
         } else {
             Timber.d("total videos found: ${response.results.size}")
+            response
         }
+    }
 
-        return response
+    override suspend fun getTvShowVideos(thShowID: Int): TMDBVideoResponse? {
+        val url = "${Constants.BASE_URL_TMDB_ENDPOINT}/tv/$thShowID/videos?api_key=${Constants.TMDB_API_KEY}"
+        Timber.d("getTvShowVideos() | url: $url")
+
+        val response: TMDBVideoResponse? = mClient.get(url).body<TMDBVideoResponse>()
+
+        return if (null == response) {
+            Timber.e("response is null")
+            null
+        } else {
+            Timber.d("total videos found: ${response.results.size}")
+            response
+        }
     }
 }

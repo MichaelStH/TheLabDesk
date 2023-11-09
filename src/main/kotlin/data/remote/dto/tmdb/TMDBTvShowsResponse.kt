@@ -6,13 +6,13 @@ import java.io.Serializable
 @kotlinx.serialization.Serializable
 data class TMDBTvShowsResponse(
     @SerialName(value = "dates")
-    val dates:Dates?=null,
+    val dates: Dates? = null,
     @SerialName(value = "page")
-    val page:Int,
+    val page: Int,
     @SerialName(value = "results")
-    val results:List<TvShowsDto>,
+    val results: List<TvShowsDto>,
     @SerialName(value = "total_pages")
-    val totalPages:Int,
+    val totalPages: Int,
     @SerialName(value = "total_results")
-    val totalResults:Int
-): Serializable
+    val totalResults: Int
+) : Serializable

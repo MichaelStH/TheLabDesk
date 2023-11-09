@@ -43,6 +43,7 @@ fun TheatersItemContent(
     overview: String,
     poster: String,
     backdrop: String,
+    isMovie: Boolean,
     onClick: () -> Unit
 ) {
     val (width, height) = (190.dp to 285.dp)
@@ -144,17 +145,23 @@ fun TheatersItemContent(
                         modifier = Modifier,
                         onClick = {
                             viewModel.updateShowTeaserVideo(true)
-                            viewModel.getTMDBItemId(id,title)
+                            viewModel.getTMDBItemId(id, title, isMovie)
                         }
                     ) {
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                             Icon(imageVector = Icons.Filled.PlayArrow, contentDescription = "play_icon")
                             Text(text = "Watch teaser")
                         }
                     }
 
                     Button(modifier = Modifier, onClick = { visible = !visible }) {
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                             Icon(imageVector = Icons.Default.Close, contentDescription = "close_icon")
                             Text(text = "Close")
                         }
@@ -175,6 +182,7 @@ fun TheatersItem(viewModel: TheatersViewModel, movie: MovieModel, onClick: () ->
             overview = movie.overview.toString(),
             poster = movie.poster.toString(),
             backdrop = movie.backdropPath.toString(),
+            isMovie = true,
             onClick = onClick
         )
     }
@@ -190,6 +198,7 @@ fun TheatersItem(viewModel: TheatersViewModel, tvShow: TvShowsModel, onClick: ()
             overview = tvShow.overview.toString(),
             poster = tvShow.poster.toString(),
             backdrop = tvShow.backdropPath.toString(),
+            isMovie = false,
             onClick = onClick
         )
     }

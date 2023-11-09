@@ -20,5 +20,8 @@ class RepositoryImpl(apiImpl: ApiImpl) : IRepository {
     override suspend fun getPopularTvShows(): TMDBTvShowsResponse = mApiImpl.getPopularTvShows()
 
     override suspend fun getMovies(): TMDBMovieResponse = mApiImpl.getMovies()
-    override suspend fun getVideos(movieID: Int): TMDBVideoResponse = mApiImpl.getVideos(movieID)
+
+    override suspend fun getMovieVideos(movieID: Int): TMDBVideoResponse? = mApiImpl.getMovieVideos(movieID)
+
+    override suspend fun getTvShowVideos(thShowID: Int): TMDBVideoResponse? = mApiImpl.getTvShowVideos(thShowID)
 }
