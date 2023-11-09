@@ -143,13 +143,14 @@ fun AsyncBitmapImageFromNetwork(url: String) = AsyncImage(
 
 @Composable
 @Preview
-fun AsyncBitmapImageFromNetwork(modifier: Modifier, url: String, contentScale: ContentScale = ContentScale.FillHeight) = AsyncImage(
-    load = { loadImageBitmap(url) },
-    painterFor = { remember { BitmapPainter(it) } },
-    contentDescription = "Sample",
-    modifier = modifier,
-    contentScale = contentScale
-)
+fun AsyncBitmapImageFromNetwork(modifier: Modifier, url: String, contentScale: ContentScale = ContentScale.FillHeight) =
+    AsyncImage(
+        load = { loadImageBitmap(url) },
+        painterFor = { remember { BitmapPainter(it) } },
+        contentDescription = "Sample",
+        modifier = modifier,
+        contentScale = contentScale
+    )
 
 @Composable
 @Preview
@@ -163,11 +164,21 @@ fun AsyncBitmapImageFromNetwork(modifier: Modifier, url: String) = AsyncImage(
 @Composable
 @Preview
 fun AsyncSvgImage(url: String, density: Density) = AsyncImage(
-    load = { loadSvgPainter("https://github.com/JetBrains/compose-jb/raw/master/artwork/idea-logo.svg", density) },
+    load = { loadSvgPainter(url, density) },
     painterFor = { it },
     contentDescription = "Idea logo",
     contentScale = ContentScale.FillWidth,
     modifier = Modifier.width(200.dp)
+)
+
+@Composable
+@Preview
+fun AsyncSvgImage(modifier: Modifier, url: String, density: Density) = AsyncImage(
+    load = { loadSvgPainter(url, density) },
+    painterFor = { it },
+    contentDescription = "Idea logo",
+    contentScale = ContentScale.FillWidth,
+    modifier = modifier
 )
 
 @Composable
@@ -178,6 +189,16 @@ fun AsyncImageVectorImage(xmlFileName: String, density: Density) = AsyncImage(
     contentDescription = "Compose logo",
     contentScale = ContentScale.FillWidth,
     modifier = Modifier.width(200.dp)
+)
+
+@Composable
+@Preview
+fun AsyncImageVectorImage(modifier: Modifier, xmlFileName: String, density: Density) = AsyncImage(
+    load = { loadXmlImageVector(File("compose-logo.xml"), density) },
+    painterFor = { rememberVectorPainter(it) },
+    contentDescription = "Compose logo",
+    contentScale = ContentScale.FillWidth,
+    modifier = modifier
 )
 
 @Composable

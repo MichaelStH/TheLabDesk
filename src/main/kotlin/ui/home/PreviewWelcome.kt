@@ -108,9 +108,95 @@ fun WelcomeContent() {
     }
 }
 
+@Preview
+@Composable
+fun WelcomeContent(modifier: Modifier) {
+    TheLabDeskTheme {
+        Card(
+            modifier = modifier,
+            shape = RoundedCornerShape(22.dp)
+        ) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+
+                // Gradient
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.horizontalGradient(
+                                colors = listOf(
+                                    Color.Black, Color.Black, Color.Black, Color.DarkGray, Color.Transparent
+                                )
+                            )
+                        )
+                        .align(Alignment.CenterStart)
+                )
+
+                // Background Image
+                Column(
+                    modifier = Modifier.fillMaxHeight().align(Alignment.CenterEnd).padding(end = 100.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically)
+                ) {
+                    Image(
+                        modifier = Modifier,
+                        painter = painterResource(resourcePath = "images/ic_lab_6_the.xml"),
+                        contentDescription = "the_image",
+                        colorFilter = ColorFilter.tint(Color.White, BlendMode.SrcIn)
+                    )
+                    Image(
+                        modifier = Modifier,
+                        painter = painterResource(resourcePath = "images/ic_lab_6_lab.xml"),
+                        contentDescription = "lab_image",
+                        colorFilter = ColorFilter.tint(Color.White, BlendMode.SrcIn)
+                    )
+                }
+
+                // Gradient
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.horizontalGradient(
+                                colors = listOf(
+                                    Color.Black, Color.Black, Color.Transparent
+                                )
+                            )
+                        )
+                        .align(Alignment.CenterStart)
+                )
+
+                // Welcome Text
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 50.dp)
+                        .align(Alignment.CenterStart),
+                    text = "Welcome to TheLab Desk",
+                    style = TextStyle(
+                        fontFamily = samsungSangFamily,
+                        fontWeight = FontWeight.W600,
+                        fontSize = 32.sp,
+                        letterSpacing = 1.4.sp,
+                        textAlign = TextAlign.Start,
+                        color = Color.LightGray
+                    ),
+                )
+            }
+        }
+    }
+}
+
 
 //////////////////////////////////////////////////
 //
 // PREVIEWS
 //
 //////////////////////////////////////////////////
+@Preview
+@Composable
+private fun PreviewWelcomeContent() {
+    TheLabDeskTheme {
+        WelcomeContent(modifier = Modifier.size(width = 500.dp, height = 300.dp))
+    }
+}

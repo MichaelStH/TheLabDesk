@@ -38,7 +38,7 @@ import kotlinx.coroutines.delay
 fun CarouselHeader(viewModel: HomeViewModel) {
     TheLabDeskTheme {
         Card(
-            modifier = Modifier.fillMaxWidth().heightIn(0.dp, 350.dp).padding(vertical = 16.dp),
+            modifier = Modifier.fillMaxWidth().height( 350.dp).padding(vertical = 16.dp),
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(containerColor = Color.Transparent)
         ) {
@@ -46,7 +46,23 @@ fun CarouselHeader(viewModel: HomeViewModel) {
                 modifier = Modifier.fillMaxSize(),
                 itemsCount = viewModel.carouselList.size,
                 itemContent = { index ->
-                    BoxWithConstraints(
+                        if(viewModel.carouselList[index].endsWith(".svg")) {
+                            AsyncSvgImage(
+                                modifier = Modifier.fillMaxSize(),
+                                url = viewModel.carouselList[index],
+                                density = LocalDensity.current
+                            )
+                        } else {
+                            AsyncBitmapImageFromNetwork(
+                                modifier = Modifier.fillMaxSize(),
+                                url = viewModel.carouselList[index],
+                                contentScale = ContentScale.FillBounds
+                            )
+                        }
+
+
+
+                    /*BoxWithConstraints(
                         modifier = Modifier.fillMaxSize().padding(0.dp),
                         contentAlignment = Alignment.Center
                     ) {
@@ -58,6 +74,7 @@ fun CarouselHeader(viewModel: HomeViewModel) {
 
                             1 -> {
                                 AsyncSvgImage(
+                                    modifier = Modifier.fillMaxSize(),
                                     url = viewModel.carouselList[index],
                                     density = LocalDensity.current
                                 )
@@ -65,6 +82,7 @@ fun CarouselHeader(viewModel: HomeViewModel) {
 
                             4 -> {
                                 AsyncSvgImage(
+                                    modifier = Modifier.fillMaxSize(),
                                     url = viewModel.carouselList[index],
                                     density = LocalDensity.current
                                 )
@@ -78,7 +96,7 @@ fun CarouselHeader(viewModel: HomeViewModel) {
                                 )
                             }
                         }
-                    }
+                    }*/
                 }
             )
         }
