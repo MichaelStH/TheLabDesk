@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Info
@@ -13,7 +14,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.ComposeWindow
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -130,9 +133,13 @@ fun NavigationContent(
                                     ) {
                                         TheLabDeskText(modifier = Modifier, text = Constants.PLACEHOLDER_PROVIDED_BY)
                                         Image(
-                                            modifier = Modifier.size(36.dp),
-                                            painter = painterResource(resourcePath = "images/ic_the_lab_12_logo_white.xml"),
-                                            contentDescription = "TMDB logo"
+                                            modifier = Modifier
+                                                .widthIn(36.dp, 72.dp)
+                                                .height(40.dp)
+                                                .clip(RoundedCornerShape(12.dp)),
+                                            painter = painterResource(resourcePath = "images/tmdb_logo.png"),
+                                            contentDescription = "TMDB logo",
+                                            contentScale = ContentScale.Crop
                                         )
                                     }
                                 },
@@ -161,12 +168,12 @@ fun NavigationContent(
                     }
 
                     is NavigationUiState.News -> {
-                        newsViewModel.fetchNews()
+                        // newsViewModel.fetchNews()
                         News(newsViewModel)
                     }
 
                     is NavigationUiState.Theaters -> {
-                        theatersViewModel.fetchTMDBData()
+                        // theatersViewModel.fetchTMDBData()
                         Theaters(theatersViewModel)
                     }
 
