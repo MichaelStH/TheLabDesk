@@ -1,17 +1,16 @@
-package core.compose.component
+package core.compose.component.toast
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import core.compose.component.TheLabDeskCard
 import core.compose.theme.TheLabDeskTheme
 import core.compose.theme.isSystemInDarkTheme
 import core.compose.theme.md_theme_dark_primaryContainer
@@ -40,19 +39,32 @@ fun Toast(
     Column(
         modifier = Modifier
             .fillMaxWidth(.7f)
-            .height(100.dp)
+            .height(150.dp)
             .padding(bottom = 72.dp)
             .background(Color.Transparent)
             .then(modifier),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AnimatedVisibility(
+            modifier = Modifier.wrapContentSize(),
             visible = animateContent,
             enter = fadeIn(tween(durationMillis = 300)) + slideInVertically { 150 },
             exit = slideOutVertically { 150 } + fadeOut(tween(durationMillis = 300))
         ) {
+            TheLabDeskCard(modifier = Modifier, color = color) {
+                Row(
+                    modifier = Modifier.padding(10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = message,
+                        color = if (!isSystemInDarkTheme()) Color.White else Color.Black
+                    )
+                }
+            }/*
             Row(
-                modifier = Modifier.background(color).clip(RoundedCornerShape(12.dp)),
+                modifier = Modifier.padding().background(color).clip(RoundedCornerShape(12.dp)),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -60,7 +72,7 @@ fun Toast(
                     text = message,
                     color = if (!isSystemInDarkTheme()) Color.White else Color.Black
                 )
-            }
+            }*/
         }
     }
 

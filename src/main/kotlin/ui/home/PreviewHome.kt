@@ -18,9 +18,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import core.compose.component.AutoSlidingCarousel
+import core.compose.component.carousel.AutoSlidingCarousel
 import core.compose.component.TheLabDeskText
-import core.compose.component.ToastViewModel
+import core.compose.component.toast.ToastViewModel
 import core.compose.theme.TheLabDeskTheme
 import core.compose.theme.Typography
 import core.compose.utils.AsyncBitmapImageFromNetwork
@@ -38,7 +38,7 @@ import kotlinx.coroutines.delay
 fun CarouselHeader(viewModel: HomeViewModel) {
     TheLabDeskTheme {
         Card(
-            modifier = Modifier.fillMaxWidth().height( 350.dp).padding(vertical = 16.dp),
+            modifier = Modifier.fillMaxWidth().height(350.dp).padding(vertical = 16.dp),
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(containerColor = Color.Transparent)
         ) {
@@ -46,57 +46,19 @@ fun CarouselHeader(viewModel: HomeViewModel) {
                 modifier = Modifier.fillMaxSize(),
                 itemsCount = viewModel.carouselList.size,
                 itemContent = { index ->
-                        if(viewModel.carouselList[index].endsWith(".svg")) {
-                            AsyncSvgImage(
-                                modifier = Modifier.fillMaxSize(),
-                                url = viewModel.carouselList[index],
-                                density = LocalDensity.current
-                            )
-                        } else {
-                            AsyncBitmapImageFromNetwork(
-                                modifier = Modifier.fillMaxSize(),
-                                url = viewModel.carouselList[index],
-                                contentScale = ContentScale.FillBounds
-                            )
-                        }
-
-
-
-                    /*BoxWithConstraints(
-                        modifier = Modifier.fillMaxSize().padding(0.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        when (index) {
-                            0 -> {
-                                // Load home screen image welcoming
-                                WelcomeContent()
-                            }
-
-                            1 -> {
-                                AsyncSvgImage(
-                                    modifier = Modifier.fillMaxSize(),
-                                    url = viewModel.carouselList[index],
-                                    density = LocalDensity.current
-                                )
-                            }
-
-                            4 -> {
-                                AsyncSvgImage(
-                                    modifier = Modifier.fillMaxSize(),
-                                    url = viewModel.carouselList[index],
-                                    density = LocalDensity.current
-                                )
-                            }
-
-                            else -> {
-                                AsyncBitmapImageFromNetwork(
-                                    modifier = Modifier.fillMaxWidth().height(this.maxHeight).padding(0.dp),
-                                    url = viewModel.carouselList[index],
-                                    contentScale = ContentScale.FillBounds
-                                )
-                            }
-                        }
-                    }*/
+                    if (viewModel.carouselList[index].endsWith(".svg")) {
+                        AsyncSvgImage(
+                            modifier = Modifier.fillMaxSize(),
+                            url = viewModel.carouselList[index],
+                            density = LocalDensity.current
+                        )
+                    } else {
+                        AsyncBitmapImageFromNetwork(
+                            modifier = Modifier.fillMaxSize(),
+                            url = viewModel.carouselList[index],
+                            contentScale = ContentScale.FillBounds
+                        )
+                    }
                 }
             )
         }

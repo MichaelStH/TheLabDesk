@@ -1,4 +1,4 @@
-package core.compose.component
+package core.compose.component.carousel
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import core.compose.component.IndicatorDot
 import core.compose.theme.currentTheme
 import core.compose.theme.isSystemInDarkTheme
 import core.compose.utils.getColorScheme

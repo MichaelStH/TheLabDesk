@@ -27,12 +27,12 @@ import com.sun.javafx.application.PlatformImpl
 import com.toxicbakery.logging.Arbor
 import com.toxicbakery.logging.Seedling
 import core.compose.component.*
+import core.compose.component.toast.Toast
+import core.compose.component.toast.ToastViewModel
 import core.compose.component.video.initializeMediaPlayerComponent
-import core.compose.theme.TheLabDeskTheme
-import core.compose.theme.isSystemInDarkTheme
-import core.compose.theme.md_theme_dark_primaryContainer
-import core.compose.theme.md_theme_light_primaryContainer
+import core.compose.theme.*
 import core.compose.utils.WindowDraggableArea
+import core.compose.utils.getColorScheme
 import core.log.Timber
 import core.utils.DisplayManager
 import core.utils.FileManager
@@ -294,12 +294,12 @@ fun main() {
                                             Timber.d("ScrollableWindowContent | show: $show")
                                             Toast(
                                                 modifier = Modifier
-                                                    .fillMaxHeight(.35f)
+                                                    .fillMaxHeight(.4f)
                                                     .align(Alignment.BottomCenter)
                                                     .zIndex(50f),
                                                 message = toast.toastMessage,
                                                 toastDelayTime = Toast.LENGTH_LONG,
-                                                color = if (!isSystemInDarkTheme()) md_theme_dark_primaryContainer else md_theme_light_primaryContainer
+                                                color =  if(!isSystemInDarkTheme()) currentTheme.second.getColorScheme().primaryContainer else currentTheme.first.getColorScheme().primaryContainer
                                             )
                                         }
                                     }

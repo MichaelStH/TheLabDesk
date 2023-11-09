@@ -1,4 +1,4 @@
-package core.compose.component
+package core.compose.component.toast
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,15 +19,15 @@ object ToastViewModel {
 
     fun show(message: String) {
         Timber.d("show() | shown: $showToast, message: $message")
-        this._show.value = true
-        this.showToast = true
-        this.toastMessage = message
+        _show.value = true
+        showToast = true
+        toastMessage = message
     }
 
     fun hide() {
         Timber.d("hide()")
-        this._show.value = false
-        this.showToast = false
-        this.toastMessage = ""
+        _show.value = false
+        showToast = false
+        toastMessage = ""
     }
 }

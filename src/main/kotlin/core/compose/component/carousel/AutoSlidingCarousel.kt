@@ -1,4 +1,4 @@
-package core.compose.component
+package core.compose.component.carousel
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
