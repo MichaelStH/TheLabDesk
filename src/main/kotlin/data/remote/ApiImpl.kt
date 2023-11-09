@@ -193,7 +193,8 @@ class ApiImpl : IApi {
             Timber.e("response is null")
             null
         } else {
-            Timber.d("total videos found: ${response.results.size}")
+            Timber.d("response: $response")
+            Timber.d("total videos found: ${response.results}")
             response
         }
     }

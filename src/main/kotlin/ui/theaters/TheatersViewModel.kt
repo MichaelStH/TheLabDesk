@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import base.BaseViewModel
 import core.log.Timber
+import core.utils.ToastManager
 import data.IRepository
 import data.local.model.compose.MoviesUiState
 import data.local.model.compose.TMDBViewState
@@ -214,7 +215,13 @@ class TheatersViewModel(private val repository: IRepository) : BaseViewModel() {
             delay(2_500)
 
             val video = if (isMovie) repository.getMovieVideos(movieID) else repository.getTvShowVideos(movieID)
-            val youtubeKey = video?.results?.find { it.type.contains("teaser", true) }
+
+            if (video?.results?.isEmpty() == true) {
+                updateShowTeaserVideo(false)
+                ToastManager.show("No video for $name item")
+            }
+
+            val youtubeKey = video?.results?.find { it.type.contains("teaser", true) || it.type.contains("trailer", true) }
 
             youtubeKey?.let {
                 // Youtube key found update value
