@@ -12,17 +12,11 @@ import java.util.*
 object SystemManager {
 
     /**
-     * @return operating system's name
-     */
-    fun getOperatingSystem(): String {
-        return System.getProperty("os.name")
-    }
-
-    /**
+     * @param defaultValue nullable
      * @return operating system's name using default value
      */
-    fun getOperatingSystem(defaultValue: String): String {
-        return System.getProperty("os.name", defaultValue)
+    fun getOperatingSystem(defaultValue: String? = null): String {
+        return if (null == defaultValue) System.getProperty("os.name") else System.getProperty("os.name", defaultValue)
     }
 
     /**
@@ -94,8 +88,8 @@ object SystemManager {
      */
     fun isMacOs(): Boolean = getOperatingSystem().lowercase(Locale.getDefault()).contains("mac")
     fun isMacOs(defaultValue: String): Boolean = getOperatingSystem(defaultValue)
-            .lowercase(Locale.ENGLISH)
-            .run { "mac" in this || "darwin" in this }
+        .lowercase(Locale.ENGLISH)
+        .run { "mac" in this || "darwin" in this }
 
 
     /**
