@@ -25,6 +25,7 @@ import core.compose.theme.TheLabDeskTheme
 import core.compose.theme.currentTheme
 import core.compose.theme.isSystemInDarkTheme
 import core.compose.utils.getColorScheme
+import core.log.Timber
 import core.utils.BarcodeManager
 import core.utils.DisplayManager
 import di.AppModule
@@ -47,6 +48,7 @@ fun About(viewModel: MainViewModel) {
     val cardHeight: Dp = (DisplayManager.getScreenHeight() - (DisplayManager.getScreenHeight() / 2)).dp
 
     scope.launch {
+        Timber.d("scope | ${scope.coroutineContext}")
         image = BarcodeManager.generateQrCodeBitmap(Constants.QR_CODE_DATA_THE_LAB_DESK_GITHUB)?.toComposeImageBitmap()
             ?: loadImageBitmap(
                 TheLabDeskApp.javaClass.getResourceAsStream("images/ic_lab.png")!!

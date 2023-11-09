@@ -6,6 +6,8 @@ import com.google.zxing.WriterException
 import com.google.zxing.client.j2se.MatrixToImageWriter
 import com.google.zxing.common.BitMatrix
 import core.log.Timber
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.jetbrains.skia.Image
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
@@ -24,13 +26,13 @@ object BarcodeManager {
     }
 
     @Throws(WriterException::class, IOException::class)
-    fun createQrCode(matrix: BitMatrix): Image {
+    suspend fun createQrCode(matrix: BitMatrix): Image = withContext(Dispatchers.IO) {
         val bufferedImage: BufferedImage = MatrixToImageWriter.toBufferedImage(matrix)
         val baos = ByteArrayOutputStream()
         ImageIO.write(bufferedImage, "bmp", baos)
         baos.flush()
         val bytes = baos.toByteArray()
         baos.close()
-        return Image.makeFromEncoded(bytes)
+        Image.makeFromEncoded(bytes)
     }
 }

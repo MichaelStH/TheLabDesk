@@ -48,9 +48,6 @@ class MainViewModel(private val repository: IRepository) : BaseViewModel() {
     var isLoadingFinished by mutableStateOf(false)
         private set
 
-    /*var isDarkMode by mutableStateOf(false)
-        private set*/
-
     private val _navigationOptions = NavigationUiState.values().toMutableStateList()
     val navigationOptions: List<NavigationUiState>
         get() = _navigationOptions
