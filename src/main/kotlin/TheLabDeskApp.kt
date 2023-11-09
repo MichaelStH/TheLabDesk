@@ -22,14 +22,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
+import androidx.compose.ui.zIndex
 import com.sun.javafx.application.PlatformImpl
 import com.toxicbakery.logging.Arbor
 import com.toxicbakery.logging.Seedling
-import core.compose.component.AppTitleBar
-import core.compose.component.ScrollableWindowContent
-import core.compose.component.TheLabDeskSurface
+import core.compose.component.*
 import core.compose.component.video.initializeMediaPlayerComponent
 import core.compose.theme.TheLabDeskTheme
+import core.compose.theme.isSystemInDarkTheme
+import core.compose.theme.md_theme_dark_primaryContainer
+import core.compose.theme.md_theme_light_primaryContainer
 import core.compose.utils.WindowDraggableArea
 import core.log.Timber
 import core.utils.DisplayManager
@@ -116,6 +118,8 @@ fun initTimber() {
 fun main() {
     initTimber()
     TheLabDeskApp.init()
+
+    val toast = ToastViewModel
 
     val viewModel = MainViewModel(AppModule.injectDependencies())
     val homeViewModel = HomeViewModel()
@@ -204,6 +208,7 @@ fun main() {
             val isFocus by interactionSource.collectIsFocusedAsState()
             val focusManager: FocusManager = LocalFocusManager.current
             val density = LocalDensity.current
+            val show by toast.show.collectAsState()
 
             TheLabDeskTheme(viewModel.isDarkMode) {
                 Box(modifier = Modifier.background(Color.Transparent)) {
@@ -262,8 +267,16 @@ fun main() {
                                             modifier = Modifier.blur(radius = if (viewModel.shouldShowAboutDialog || viewModel.shouldExitAppConfirmationDialog || theatersViewModel.showTheaterItemTeaserVideo) 25.dp else 0.dp)
                                         ) {
                                             // App Content
-                                            App(window, viewModel, homeViewModel, newsViewModel,browserViewModel, theatersViewModel)
+                                            App(
+                                                window,
+                                                viewModel,
+                                                homeViewModel,
+                                                newsViewModel,
+                                                browserViewModel,
+                                                theatersViewModel
+                                            )
                                         }
+
                                         if (viewModel.shouldShowAboutDialog) {
                                             About(viewModel)
                                         }
@@ -272,8 +285,22 @@ fun main() {
                                             Exit(viewModel)
                                         }
 
-                                        if(theatersViewModel.showTheaterItemTeaserVideo){
+                                        if (theatersViewModel.showTheaterItemTeaserVideo) {
                                             TheaterTeaserContent(theatersViewModel)
+                                        }
+
+                                        // Generic show toast triggered by any view model
+                                        if (show) {
+                                            Timber.d("ScrollableWindowContent | show: $show")
+                                            Toast(
+                                                modifier = Modifier
+                                                    .fillMaxHeight(.35f)
+                                                    .align(Alignment.BottomCenter)
+                                                    .zIndex(50f),
+                                                message = toast.toastMessage,
+                                                toastDelayTime = Toast.LENGTH_LONG,
+                                                color = if (!isSystemInDarkTheme()) md_theme_dark_primaryContainer else md_theme_light_primaryContainer
+                                            )
                                         }
                                     }
                                 }
