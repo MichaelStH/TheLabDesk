@@ -7,6 +7,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import core.compose.theme.TheLabDeskTheme
 import di.AppModule
 import ui.browser.BrowserViewModel
@@ -41,7 +42,7 @@ fun App(
                 Box(modifier = Modifier.width(100.dp).fillMaxHeight(), contentAlignment = Alignment.Center) {
                     NavigationBar(viewModel)
                 }
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
+                Box(modifier = Modifier.fillMaxWidth().zIndex(2f), contentAlignment = Alignment.CenterStart) {
                     NavigationContent(composeWindow, viewModel, homeViewModel, newsViewModel, browserViewModel,theatersViewModel)
                 }
             }

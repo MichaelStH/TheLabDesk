@@ -37,6 +37,7 @@ import core.log.Timber
 import core.utils.DisplayManager
 import core.utils.FileManager
 import core.utils.SystemManager
+import core.utils.ToastManager
 import data.local.bean.WindowTypes
 import di.AppModule
 import ui.About
@@ -119,7 +120,7 @@ fun main() {
     initTimber()
     TheLabDeskApp.init()
 
-    val toast = ToastViewModel
+    val toast = ToastManager
 
     val viewModel = MainViewModel(AppModule.injectDependencies())
     val homeViewModel = HomeViewModel()
@@ -191,6 +192,7 @@ fun main() {
 
         Window(
             state = windowState,
+            title = "TheLab Desk",
             icon = painterResource("images/ic_lab.png"),
             undecorated = true,
             transparent = false,

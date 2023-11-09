@@ -168,13 +168,11 @@ fun NavigationContent(
                     }
 
                     is NavigationUiState.News -> {
-                        // newsViewModel.fetchNews()
-                        News(newsViewModel)
+                        News(viewModel = newsViewModel)
                     }
 
                     is NavigationUiState.Theaters -> {
-                        // theatersViewModel.fetchTMDBData()
-                        Theaters(theatersViewModel)
+                        Theaters(viewModel = theatersViewModel)
                     }
 
                     is NavigationUiState.WebView -> {
@@ -182,7 +180,7 @@ fun NavigationContent(
                     }
 
                     is NavigationUiState.Settings -> {
-                        SettingsContent(viewModel)
+                        SettingsContent(viewModel = viewModel)
                     }
                 }
             }

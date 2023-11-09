@@ -112,7 +112,12 @@ fun BrowserContent(composeWindow: ComposeWindow, viewModel: BrowserViewModel) {
                 SearchWebView(viewModel)
             }
 
-            Browser(composeWindow = composeWindow, modifier = Modifier.fillMaxSize(), viewModel = viewModel , url = viewModel.currentUrl)
+            Browser(
+                composeWindow = composeWindow,
+                modifier = Modifier.fillMaxSize(),
+                viewModel = viewModel,
+                url = viewModel.currentUrl
+            )
         }
     }
 }

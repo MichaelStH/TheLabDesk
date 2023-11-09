@@ -18,14 +18,14 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import core.compose.component.carousel.AutoSlidingCarousel
 import core.compose.component.TheLabDeskText
-import core.compose.component.toast.ToastViewModel
+import core.compose.component.carousel.AutoSlidingCarousel
 import core.compose.theme.TheLabDeskTheme
 import core.compose.theme.Typography
 import core.compose.utils.AsyncBitmapImageFromNetwork
 import core.compose.utils.AsyncSvgImage
 import core.log.Timber
+import core.utils.ToastManager
 import kotlinx.coroutines.delay
 
 //////////////////////////////////////////////////
@@ -140,8 +140,8 @@ fun Home(viewModel: HomeViewModel) {
 
     LaunchedEffect(Unit) {
         Timber.d("LaunchedEffect | key = Unit | ${this.coroutineContext}")
-        delay(1_500L)
-        ToastViewModel.show("Toast test")
+        delay(500L)
+        ToastManager.show("Current Screen Home")
     }
 }
 

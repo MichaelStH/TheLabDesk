@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import core.compose.theme.TheLabDeskTheme
+import core.utils.ToastManager
 import data.local.bean.NavigationItemType
 import di.AppModule
 
@@ -48,6 +49,8 @@ fun NavigationBar(viewModel: MainViewModel) {
                         // and a callback to call when any selection is tapped by user on UI
                         if (item.navigationItemType == NavigationItemType.DEFAULT) {
                             NavigationBarItem(viewModel, item) {
+                                ToastManager.show("Current Screen ${item.javaClass.simpleName}")
+
                                 if (viewModel.isDynamicIslandVisible) {
                                     viewModel.updateIsDynamicIslandVisible(false)
                                 }
@@ -65,6 +68,7 @@ fun NavigationBar(viewModel: MainViewModel) {
                     val settingsItem =
                         viewModel.navigationOptions.find { it.navigationItemType == NavigationItemType.SETTINGS }!!
                     NavigationBarItem(viewModel, settingsItem) {
+                        ToastManager.show("Current Screen ${settingsItem.javaClass.simpleName}")
                         if (viewModel.isDynamicIslandVisible) {
                             viewModel.updateIsDynamicIslandVisible(false)
                         }

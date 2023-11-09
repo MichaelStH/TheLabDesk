@@ -17,6 +17,7 @@ import core.compose.theme.md_theme_dark_primaryContainer
 import core.compose.theme.md_theme_light_primaryContainer
 import core.compose.utils.Text
 import core.log.Timber
+import core.utils.ToastManager
 import di.AppModule
 import kotlinx.coroutines.delay
 import ui.main.MainViewModel
@@ -82,7 +83,7 @@ fun Toast(
         animateContent = false
 
         delay(5000L)
-        ToastViewModel.hide()
+        ToastManager.hide()
     }
 }
 
