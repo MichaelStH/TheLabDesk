@@ -1,6 +1,5 @@
 package ui.theaters
 
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,8 +7,10 @@ import base.BaseViewModel
 import core.log.Timber
 import data.IRepository
 import data.local.model.compose.MoviesUiState
+import data.local.model.compose.TMDBViewState
 import data.local.model.compose.TheatersUiState
 import data.local.model.tmdb.MovieModel
+import data.local.model.tmdb.TDMBTeaserModel
 import data.local.model.tmdb.TvShowsModel
 import data.remote.dto.tmdb.toModel
 import kotlinx.coroutines.*
@@ -34,8 +35,11 @@ class TheatersViewModel(private val repository: IRepository) : BaseViewModel() {
     //////////////////////////////
     // Composable States
     //////////////////////////////
-    private var _theatersUiState: MutableStateFlow<TheatersUiState> = MutableStateFlow(TheatersUiState.Movies)
+    private var _theatersUiState: MutableStateFlow<TheatersUiState> = MutableStateFlow(TheatersUiState.Loading)
     val theatersUiState: StateFlow<TheatersUiState> = _theatersUiState
+
+    private var _tmdbViewState: MutableStateFlow<TMDBViewState> = MutableStateFlow(TMDBViewState.Movies)
+    val tmdbViewState: StateFlow<TMDBViewState> = _tmdbViewState
 
     private var _movieUiState: MutableStateFlow<MoviesUiState> = MutableStateFlow(MoviesUiState.None)
     val movieUiState: StateFlow<MoviesUiState> = _movieUiState
@@ -43,12 +47,8 @@ class TheatersViewModel(private val repository: IRepository) : BaseViewModel() {
     private var _tvShowsUiState: MutableStateFlow<MoviesUiState> = MutableStateFlow(MoviesUiState.None)
     val tvShowsUiState: StateFlow<MoviesUiState> = _tvShowsUiState
 
-    var theaterItemIdSelected: Pair<Int, String> by mutableStateOf(-1 to "")
+    var tmdbTeaser: TDMBTeaserModel? by mutableStateOf(null)
         private set
-
-    val startTheaterItemTeaserVideo by derivedStateOf {
-        theaterItemIdSelected.first != -1 && theaterItemIdSelected.second.isNotEmpty()
-    }
     var showTheaterItemTeaserVideo: Boolean by mutableStateOf(false)
         private set
 
@@ -76,12 +76,30 @@ class TheatersViewModel(private val repository: IRepository) : BaseViewModel() {
         this._theatersUiState.value = newState
     }
 
+    fun updateTmdbTeaser(tmdbTeaser: TDMBTeaserModel?) {
+        this.tmdbTeaser = tmdbTeaser
+    }
+
     fun updateMoviesUiState(newState: MoviesUiState) {
         this._movieUiState.value = newState
+
+        if (newState is MoviesUiState.Success) {
+            updateTheatersUiState(TheatersUiState.Success)
+        }
+        if (newState is MoviesUiState.Error) {
+            updateTheatersUiState(TheatersUiState.Error(newState.message))
+        }
     }
 
     fun updateTvShowsUiState(newState: MoviesUiState) {
         this._tvShowsUiState.value = newState
+
+        if (newState is MoviesUiState.Success) {
+            updateTheatersUiState(TheatersUiState.Success)
+        }
+        if (newState is MoviesUiState.Error) {
+            updateTheatersUiState(TheatersUiState.Error(newState.message))
+        }
     }
 
     fun updatePopularMovieList(list: List<MovieModel>) {
@@ -107,17 +125,17 @@ class TheatersViewModel(private val repository: IRepository) : BaseViewModel() {
     fun updateTheaterTypeSelected(index: Int) {
         this.theaterTypeSelected = index
 
-        this._theatersUiState.value = when (index) {
+        this._tmdbViewState.value = when (index) {
             0 -> {
-                TheatersUiState.Movies
+                TMDBViewState.Movies
             }
 
             1 -> {
-                TheatersUiState.TvShows
+                TMDBViewState.TvShows
             }
 
             else -> {
-                TheatersUiState.Movies
+                TMDBViewState.Movies
             }
         }
     }
@@ -134,10 +152,6 @@ class TheatersViewModel(private val repository: IRepository) : BaseViewModel() {
 
     fun updateShowTeaserVideo(showTeaser: Boolean) {
         this.showTheaterItemTeaserVideo = showTeaser
-    }
-
-    fun updateTheaterItemIdSelected(tmdbItemIdKey: Pair<Int, String>) {
-        this.theaterItemIdSelected = tmdbItemIdKey
     }
 
     fun fetchTMDBData() {
@@ -193,10 +207,11 @@ class TheatersViewModel(private val repository: IRepository) : BaseViewModel() {
         updateTvShowsUiState(MoviesUiState.Success(result))
     }
 
-    fun getTMDBItemId(movieID: Int) {
+    fun getTMDBItemId(movieID: Int, name: String) {
         Timber.d("getTMDBItemId()")
 
         runBlocking(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
+            delay(2_500)
 
             val video = repository.getVideos(movieID)
             val youtubeKey = video.results.find { it.type.contains("teaser", true) }
@@ -204,8 +219,7 @@ class TheatersViewModel(private val repository: IRepository) : BaseViewModel() {
             youtubeKey?.let {
                 // Youtube key found update value
                 withContext(Dispatchers.Default) {
-                    delay(1_500)
-                    updateTheaterItemIdSelected(video.id to it.key)
+                    updateTmdbTeaser(TDMBTeaserModel(id = video.id, name = name, youtubeKey = it.key))
                 }
             } ?: run {
                 // Youtube key not found

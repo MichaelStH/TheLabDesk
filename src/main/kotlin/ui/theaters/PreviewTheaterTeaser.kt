@@ -24,33 +24,35 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import core.compose.component.TheLabDeskCard
 import core.compose.component.video.VideoPlayer
 import core.compose.component.video.rememberVideoPlayerState
 import core.compose.theme.TheLabDeskTheme
 import core.log.Timber
 import core.utils.DisplayManager
+import data.local.model.tmdb.TDMBTeaserModel.Companion.getTMDBTeaserMock
 import di.AppModule
-import utils.Constants
+
+private val width = 760.dp
+private val height = 692.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TheaterTeaserContent(viewModel: TheatersViewModel) {
-
-    val width = 760.dp
-    val height = 692.dp
-
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
 
     val videoState = rememberVideoPlayerState()
 
-    val url = "${Constants.VIDEO_YOUTUBE_WATCH_BASE_URL}${viewModel.theaterItemIdSelected.second}"
-    Timber.d("url: $url")
+    // val url = "${Constants.VIDEO_YOUTUBE_WATCH_BASE_URL}${viewModel.theaterItemIdSelected.second}"
+    Timber.d("url: ${viewModel.tmdbTeaser?.url}")
 
     // Calculate screen height to set height for card
+//    val cardHeight: Dp = 400.dp
     val cardHeight: Dp = (DisplayManager.getScreenHeight() - (DisplayManager.getScreenHeight() / 2)).dp
 
     TheLabDeskTheme {
@@ -67,19 +69,23 @@ fun TheaterTeaserContent(viewModel: TheatersViewModel) {
                 ) {
                     AnimatedContent(
                         modifier = Modifier.width(this.maxWidth).height(this.maxHeight),
-                        targetState = viewModel.startTheaterItemTeaserVideo
+                        targetState = null != viewModel.tmdbTeaser
                     ) { target ->
                         if (!target) {
-                            Box(modifier = Modifier.size(30.dp).align(Alignment.Center), contentAlignment = Alignment.Center) {
+                            Box(
+                                modifier = Modifier.size(30.dp).align(Alignment.Center).zIndex(10f),
+                                contentAlignment = Alignment.Center
+                            ) {
                                 CircularProgressIndicator(modifier = Modifier.size(24.dp).align(Alignment.Center))
                             }
                         } else {
                             BoxWithConstraints(
                                 modifier = Modifier.fillMaxSize().padding(vertical = 56.dp).background(Color.Black)
+                                    .zIndex(0f)
                             ) {
                                 VideoPlayer(
                                     modifier = Modifier.fillMaxSize(),
-                                    url = url,
+                                    url = viewModel.tmdbTeaser?.url!!,
                                     state = videoState,
                                     onFinish = videoState::stopPlayback
                                 )
@@ -90,6 +96,15 @@ fun TheaterTeaserContent(viewModel: TheatersViewModel) {
                     AnimatedVisibility(visible = isHovered, enter = fadeIn(), exit = fadeOut()) {
                         // Controls
                         Box(modifier = Modifier.fillMaxSize().background(Color.Transparent)) {
+                            Text(
+                                modifier = Modifier.fillMaxWidth(.95f).align(Alignment.TopStart)
+                                    .padding(top = 20.dp, start = 30.dp),
+                                text = "${viewModel.tmdbTeaser?.name} Teaser",
+                                color = Color.White,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+
                             Row(
                                 modifier = Modifier.fillMaxWidth().padding(10.dp).align(Alignment.BottomCenter),
                                 horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -104,7 +119,7 @@ fun TheaterTeaserContent(viewModel: TheatersViewModel) {
                                 }
 
                                 LinearProgressIndicator(
-                                    modifier = Modifier.fillMaxWidth().padding(end= 16.dp),
+                                    modifier = Modifier.fillMaxWidth().padding(end = 16.dp),
                                     progress = videoState.progress.value.fraction
                                 )
                             }
@@ -116,7 +131,7 @@ fun TheaterTeaserContent(viewModel: TheatersViewModel) {
                             .padding(10.dp)
                             .align(Alignment.TopEnd),
                         onClick = {
-                            viewModel.updateTheaterItemIdSelected(-1 to "")
+                            viewModel.updateTmdbTeaser(null)
                             viewModel.updateShowTeaserVideo(false)
                         },
                         colors = CardDefaults.cardColors(containerColor = Color.LightGray.copy(alpha = .8f)),
@@ -128,6 +143,19 @@ fun TheaterTeaserContent(viewModel: TheatersViewModel) {
                             contentDescription = null
                         )
                     }
+
+                    // Loading Prgoress Bar
+                    AnimatedVisibility(
+                        modifier = Modifier.align(Alignment.Center),
+                        visible = null == viewModel.tmdbTeaser
+                    ) {
+                        Box(
+                            modifier = Modifier.size(30.dp).align(Alignment.Center),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(modifier = Modifier.size(24.dp).align(Alignment.Center))
+                        }
+                    }
                 }
             }
         }
@@ -138,7 +166,5 @@ fun TheaterTeaserContent(viewModel: TheatersViewModel) {
 @Composable
 private fun PreviewTheaterTeaserContent() {
     val theatersViewModel = TheatersViewModel(AppModule.injectDependencies())
-    TheLabDeskTheme {
-        TheaterTeaserContent(theatersViewModel)
-    }
+    TheLabDeskTheme { TheaterTeaserContent(theatersViewModel) }
 }

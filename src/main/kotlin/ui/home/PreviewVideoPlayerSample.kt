@@ -39,7 +39,6 @@ fun VideoPlayerSample() {
                     .clip(shape = RoundedCornerShape(16.dp)),
                 contentAlignment = Alignment.Center
             ) {
-
                 AnimatedContent(targetState = TheLabDeskApp.isVlcFound) { vlcFound ->
                     if (!vlcFound) {
                         NoVideoPlayerFound()

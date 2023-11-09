@@ -144,7 +144,7 @@ fun TheatersItemContent(
                         modifier = Modifier,
                         onClick = {
                             viewModel.updateShowTeaserVideo(true)
-                            viewModel.getTMDBItemId(id)
+                            viewModel.getTMDBItemId(id,title)
                         }
                     ) {
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {

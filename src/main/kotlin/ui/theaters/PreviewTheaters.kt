@@ -1,10 +1,13 @@
 package ui.theaters
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -15,10 +18,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import core.compose.component.TheLabDeskCard
+import core.compose.component.TheLabDeskText
 import core.compose.theme.TheLabDeskTheme
 import core.compose.theme.Typography
 import core.compose.theme.isSystemInDarkTheme
 import core.compose.utils.AsyncBitmapImageFromNetwork
+import data.local.model.compose.TMDBViewState
 import data.local.model.compose.TheatersUiState
 import di.AppModule
 
@@ -94,22 +99,51 @@ fun TMDBHeader(
 @Composable
 fun Theaters(viewModel: TheatersViewModel) {
     val theatersUiState by viewModel.theatersUiState.collectAsState()
+    val tmdbViewState by viewModel.tmdbViewState.collectAsState()
 
     TheLabDeskTheme(viewModel.isDarkMode) {
         BoxWithConstraints(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            when (theatersUiState) {
-                is TheatersUiState.Movies -> {
-                    MoviesContent(viewModel)
-                }
+            AnimatedContent(
+                modifier = Modifier.fillMaxSize(),
+                targetState = theatersUiState,
+                contentAlignment = Alignment.Center
+            ) { targetState ->
 
-                is TheatersUiState.TvShows -> {
-                    TvShowsContent(viewModel)
+                when (targetState) {
+                    is TheatersUiState.Loading -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+
+                    is TheatersUiState.Success -> {
+                        when (tmdbViewState) {
+                            is TMDBViewState.Movies -> {
+                                MoviesContent(viewModel)
+                            }
+
+                            is TMDBViewState.TvShows -> {
+                                TvShowsContent(viewModel)
+                            }
+                        }
+                    }
+
+                    is TheatersUiState.Error -> {
+                        TheLabDeskText(modifier = Modifier, text = targetState.message)
+                    }
                 }
             }
         }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchTMDBData()
     }
 }
 

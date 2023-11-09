@@ -111,7 +111,7 @@ dependencies {
     /*
      * https://dev.to/tkuenneth/automatically-switch-to-dark-mode-and-back-in-compose-for-desktop-303l
      * As you can see, the color mode is stored in the Windows Registry and the macOS Defaults database.
-     * To access both in Java or Kotlin I have written a tiny open source library called Native Parameter Store Acess.
+     * To access both in Java or Kotlin I have written a tiny open source library called Native Parameter Store Access.
      */
     implementation(libs.native.parameters.store.access)
 

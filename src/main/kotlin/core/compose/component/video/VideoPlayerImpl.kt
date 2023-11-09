@@ -9,7 +9,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.ComposePanel
 import androidx.compose.ui.awt.SwingPanel
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.zIndex
 import core.log.Timber
+import core.utils.SystemManager
 import data.local.model.compose.Progress
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -35,66 +37,67 @@ fun VideoPlayerImpl(
     modifier: Modifier,
     onFinish: (() -> Unit)?
 ) {
-    if (null == initializeMediaPlayerComponent()) {
-        Timber.e("Unable to initialize Media Player Component")
-        return
-    }
 
-    val mediaPlayerComponent = remember { initializeMediaPlayerComponent() }
-    val mediaPlayer = remember { mediaPlayerComponent!!.mediaPlayer() }
-    mediaPlayer.emitProgressTo(progressState)
-    mediaPlayer.setupVideoFinishHandler(onFinish)
+    initializeMediaPlayerComponent()?.let {
+        val mediaPlayerComponent = remember { it }
+//        val mediaPlayerComponent = remember { initializeMediaPlayerComponent() }
+        val mediaPlayer = remember { mediaPlayerComponent.mediaPlayer() }
+        mediaPlayer.emitProgressTo(progressState)
+        mediaPlayer.setupVideoFinishHandler(onFinish)
 
-    val factory = remember { { mediaPlayerComponent!! } }
-    /* OR the following code and using SwingPanel(factory = { factory }, ...) */
+        val factory = remember { { mediaPlayerComponent } }
+        /* OR the following code and using SwingPanel(factory = { factory }, ...) */
 
-    // val factory by rememberUpdatedState(mediaPlayerComponent)
+        // val factory by rememberUpdatedState(mediaPlayerComponent)
 
-    /*OR .start*/
-    LaunchedEffect(url) { mediaPlayer.media().play(url) }
-    LaunchedEffect(seek) { mediaPlayer.controls().setPosition(seek) }
-    LaunchedEffect(speed) { mediaPlayer.controls().setRate(speed) }
-    LaunchedEffect(volume) { mediaPlayer.audio().setVolume(volume.toPercentage()) }
-    LaunchedEffect(isResumed) { mediaPlayer.controls().setPause(!isResumed) }
-    LaunchedEffect(isFullscreen) {
-        if (mediaPlayer is EmbeddedMediaPlayer) {
-            /*
-             * To be able to access window in the commented code below,
-             * extend the player composable function from WindowScope.
-             * See https://github.com/JetBrains/compose-jb/issues/176#issuecomment-812514936
-             * and its subsequent comments.
-             *
-             * We could also just fullscreen the whole window:
-             * `window.placement = WindowPlacement.Fullscreen`
-             * See https://github.com/JetBrains/compose-multiplatform/issues/1489
-             */
+        /*OR .start*/
+        LaunchedEffect(url) { mediaPlayer.media().play(url) }
+        LaunchedEffect(seek) { mediaPlayer.controls().setPosition(seek) }
+        LaunchedEffect(speed) { mediaPlayer.controls().setRate(speed) }
+        LaunchedEffect(volume) { mediaPlayer.audio().setVolume(volume.toPercentage()) }
+        LaunchedEffect(isResumed) { mediaPlayer.controls().setPause(!isResumed) }
+        LaunchedEffect(isFullscreen) {
+            if (mediaPlayer is EmbeddedMediaPlayer) {
+                /*
+                 * To be able to access window in the commented code below,
+                 * extend the player composable function from WindowScope.
+                 * See https://github.com/JetBrains/compose-jb/issues/176#issuecomment-812514936
+                 * and its subsequent comments.
+                 *
+                 * We could also just fullscreen the whole window:
+                 * `window.placement = WindowPlacement.Fullscreen`
+                 * See https://github.com/JetBrains/compose-multiplatform/issues/1489
+                 */
 
-            // mediaPlayer.fullScreen().strategy(ExclusiveModeFullScreenStrategy(window))
-            mediaPlayer.fullScreen().toggle()
+                // mediaPlayer.fullScreen().strategy(ExclusiveModeFullScreenStrategy(window))
+                mediaPlayer.fullScreen().toggle()
+            }
         }
-    }
 
-    DisposableEffect(Unit) { onDispose(mediaPlayer::release) }
-    SwingPanel( // <--- Swing panel as root for hierarchy where drawing over heavyweight components needed (Swing/Compose switching trick START)
-        modifier = Modifier.fillMaxSize().background(Color.Black),
-        factory = {
-            ComposePanel().apply { // <--- Switch back to Compose world for layout management purposes (Swing/Compose switching trick END)
-                setContent {
-                    Box(
-                        modifier = Modifier.fillMaxSize().background(Color.Black)
-                    ) { // <--- Here we use Box to make layering of SwingPanels
-                        SwingPanel(
-                            factory = factory,
-                            background = Color.Black,
-                            modifier = modifier
-                        ) {
-                            it.background = java.awt.Color.BLACK
-                            it.isVisible = true
+        DisposableEffect(Unit) { onDispose(mediaPlayer::release) }
+        SwingPanel( // <--- Swing panel as root for hierarchy where drawing over heavyweight components needed (Swing/Compose switching trick START)
+            modifier = Modifier.fillMaxSize().background(Color.Black).zIndex(0f),
+            factory = {
+                ComposePanel().apply { // <--- Switch back to Compose world for layout management purposes (Swing/Compose switching trick END)
+                    setContent {
+                        Box(
+                            modifier = Modifier.fillMaxSize().background(Color.Black)
+                        ) { // <--- Here we use Box to make layering of SwingPanels
+                            SwingPanel(
+                                factory = factory,
+                                background = Color.Black,
+                                modifier = modifier
+                            ) {
+                                it.background = java.awt.Color.BLACK
+                                it.isVisible = true
+                            }
                         }
                     }
                 }
-            }
-        })
+            })
+    } ?: run {
+        Timber.e("Unable to initialize Media Player Component")
+    }
 }
 
 
@@ -102,22 +105,19 @@ fun VideoPlayerImpl(
  * See https://github.com/caprica/vlcj/issues/887#issuecomment-503288294
  * for why we're using CallbackMediaPlayerComponent for macOS.
  */
-private fun initializeMediaPlayerComponent(): Component? {
+fun initializeMediaPlayerComponent(): Component? {
     Timber.d("initializeMediaPlayerComponent()")
 
     // Check if VLC library can be found on current system
-    val found = NativeDiscovery().discover()
-    Timber.d("Found: $found")
-
-    return if (!found) {
+    return if (!NativeDiscovery().discover()) {
         Timber.e("Unable to find VLC library file. Please make sure that VLC is installed on your system")
         TheLabDeskApp.updateVlcFoundLibrary(false)
         null
     } else {
-        TheLabDeskApp.updateVlcFoundLibrary(false)
-        Timber.d("LibVlc: ${LibVlc.libvlc_get_version()}")
+        TheLabDeskApp.updateVlcFoundLibrary(true)
+        Timber.d("LibVlc found with version: ${LibVlc.libvlc_get_version()}")
 
-        /*val mediaPlayerComponent : MediaPlayerComponent = if (SystemManager.isMacOs("generic")) {
+        /*val mediaPlayerComponent: Component = if (SystemManager.isMacOs("generic")) {
             Timber.e("isMacOs() | Call CallbackMediaPlayerComponent()")
             CallbackMediaPlayerComponent()
         } else {
@@ -125,6 +125,7 @@ private fun initializeMediaPlayerComponent(): Component? {
             EmbeddedMediaPlayerComponent()
         }*/
 
+        // return mediaPlayerComponent
         return EmbeddedMediaPlayerComponent()
     }
 }

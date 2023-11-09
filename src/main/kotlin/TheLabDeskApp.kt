@@ -28,6 +28,7 @@ import com.toxicbakery.logging.Seedling
 import core.compose.component.AppTitleBar
 import core.compose.component.ScrollableWindowContent
 import core.compose.component.TheLabDeskSurface
+import core.compose.component.video.initializeMediaPlayerComponent
 import core.compose.theme.TheLabDeskTheme
 import core.compose.utils.WindowDraggableArea
 import core.log.Timber
@@ -70,6 +71,9 @@ object TheLabDeskApp {
             }
 
         Timber.d("version: ${getVersion()}")
+
+        // Check if VLC Library is present
+        checkVlcLibrary()
     }
 
     /**
@@ -78,6 +82,11 @@ object TheLabDeskApp {
     fun initArbor() {
         Arbor.sow(Seedling())
         Timber.d("initArbor()")
+    }
+
+    private fun checkVlcLibrary() {
+        Timber.d("checkVlcLibrary()")
+        initializeMediaPlayerComponent()
     }
 
     fun updateVlcFoundLibrary(isVlcFound: Boolean) {
