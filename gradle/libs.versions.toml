@@ -7,11 +7,11 @@
 # Arbor
 arbor = "1.40.86"
 # Kotlin
-kotlin = "1.9.10"
+kotlin = "1.9.23"
 kotlinxCoroutines = "1.7.2"
 kotlinxSerializationJson = "1.5.1"
 # Compose
-compose = "1.5.3"
+compose = "1.6.2"
 # Json
 jakartaJson = "2.1.2"
 json = "20231013"

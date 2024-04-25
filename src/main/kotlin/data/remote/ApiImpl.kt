@@ -84,11 +84,7 @@ class ApiImpl : IApi {
 
         val response: TMDBMovieResponse = mClient.get(url).body<TMDBMovieResponse>()
 
-        if (null == response) {
-            Timber.e("response is null")
-        } else {
-            Timber.d("total count found: ${response.totalResults}")
-        }
+        Timber.d("total count found: ${response.totalResults}")
 
         return response
     }
@@ -99,11 +95,7 @@ class ApiImpl : IApi {
 
         val response: TMDBMovieResponse = mClient.get(url).body<TMDBMovieResponse>()
 
-        if (null == response) {
-            Timber.e("response is null")
-        } else {
-            Timber.d("total count found: ${response.totalResults}")
-        }
+        Timber.d("total count found: ${response.totalResults}")
 
         return response
     }
@@ -114,11 +106,7 @@ class ApiImpl : IApi {
 
         val response: TMDBMovieResponse = mClient.get(url).body<TMDBMovieResponse>()
 
-        if (null == response) {
-            Timber.e("response is null")
-        } else {
-            Timber.d("total count found: ${response.totalResults}")
-        }
+        Timber.d("total count found: ${response.totalResults}")
 
         return response
     }
@@ -129,11 +117,7 @@ class ApiImpl : IApi {
 
         val response: TMDBTvShowsResponse = mClient.get(url).body<TMDBTvShowsResponse>()
 
-        if (null == response) {
-            Timber.e("response is null")
-        } else {
-            Timber.d("total count found: ${response.totalResults}")
-        }
+        Timber.d("total count found: ${response.totalResults}")
 
         return response
     }
@@ -144,11 +128,7 @@ class ApiImpl : IApi {
 
         val response: TMDBTvShowsResponse = mClient.get(url).body<TMDBTvShowsResponse>()
 
-        if (null == response) {
-            Timber.e("response is null")
-        } else {
-            Timber.d("total count found: ${response.totalResults}")
-        }
+        Timber.d("total count found: ${response.totalResults}")
 
         return response
     }
@@ -159,11 +139,7 @@ class ApiImpl : IApi {
 
         val response: TMDBMovieResponse = mClient.get(url).body<TMDBMovieResponse>()
 
-        if (null == response) {
-            Timber.e("response is null")
-        } else {
-            Timber.d("total count found: ${response.totalResults}")
-        }
+        Timber.d("total count found: ${response.totalResults}")
 
         return response
     }
@@ -172,12 +148,9 @@ class ApiImpl : IApi {
         val url = "${Constants.BASE_URL_TMDB_ENDPOINT}/movie/$movieID/videos?api_key=${Constants.TMDB_API_KEY}"
         Timber.d("getMovieVideos() | url: $url")
 
-        val response: TMDBVideoResponse? = mClient.get(url).body<TMDBVideoResponse>()
+        val response: TMDBVideoResponse = mClient.get(url).body<TMDBVideoResponse>()
 
-        return if (null == response) {
-            Timber.e("response is null")
-            null
-        } else {
+        return run {
             Timber.d("total videos found: ${response.results.size}")
             response
         }
@@ -187,12 +160,9 @@ class ApiImpl : IApi {
         val url = "${Constants.BASE_URL_TMDB_ENDPOINT}/tv/$thShowID/videos?api_key=${Constants.TMDB_API_KEY}"
         Timber.d("getTvShowVideos() | url: $url")
 
-        val response: TMDBVideoResponse? = mClient.get(url).body<TMDBVideoResponse>()
+        val response: TMDBVideoResponse = mClient.get(url).body<TMDBVideoResponse>()
 
-        return if (null == response) {
-            Timber.e("response is null")
-            null
-        } else {
+        return run {
             Timber.d("response: $response")
             Timber.d("total videos found: ${response.results}")
             response

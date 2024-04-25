@@ -26,10 +26,8 @@ import core.compose.component.TheLabDeskIconTab
 import core.compose.component.TheLabDeskText
 import core.compose.theme.TheLabDeskTheme
 import core.compose.theme.isSystemInDarkTheme
-import core.utils.SystemManager
 import data.local.model.compose.NavigationUiState
 import di.AppModule
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ui.browser.BrowserContent
 import ui.browser.BrowserViewModel
@@ -109,24 +107,14 @@ fun NavigationContent(
 
 
                             // Tooltip
-                            val tooltipState = remember { RichTooltipState() }
+                            val tooltipState: TooltipState = rememberTooltipState()
                             val scope = rememberCoroutineScope()
 
-                            RichTooltipBox(
-                                title = { },
-                                action = {
-                                    TextButton(
-                                        onClick = {
-                                            SystemManager.openInBrowser(Constants.URL_TMDB_WEBSITE)
-
-                                            scope.launch {
-                                                delay(1_500)
-                                                tooltipState.dismiss()
-                                            }
-                                        }
-                                    ) { Text("Learn More") }
-                                },
-                                text = {
+                            TooltipBox(
+                                state = tooltipState,
+                                positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+                                enableUserInput = true,
+                                tooltip = {
                                     Row(
                                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                                         verticalAlignment = Alignment.CenterVertically
@@ -142,12 +130,10 @@ fun NavigationContent(
                                             contentScale = ContentScale.Crop
                                         )
                                     }
-                                },
-                                tooltipState = tooltipState
+                                }
                             ) {
                                 IconButton(
-                                    onClick = { scope.launch { tooltipState.show() } },
-                                    modifier = Modifier.tooltipAnchor()
+                                    onClick = { scope.launch { tooltipState.show() } }
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Info,

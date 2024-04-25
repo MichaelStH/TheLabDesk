@@ -55,7 +55,7 @@ import java.awt.event.MouseMotionAdapter
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.IOException
-import java.net.URL
+import java.net.URI
 
 
 //////////////////////////////////////////////////
@@ -244,13 +244,13 @@ fun loadXmlImageVector(file: File, density: Density): ImageVector =
 
 /* Loading from network with java.net API */
 fun loadImageBitmapFromJavaNetwork(url: String): ImageBitmap =
-    URL(url).openStream().buffered().use(::loadImageBitmap)
+    URI.create(url).toURL().openStream().buffered().use(::loadImageBitmap)
 
 fun loadSvgPainterFromJavaNetwork(url: String, density: Density): Painter =
-    URL(url).openStream().buffered().use { loadSvgPainter(it, density) }
+    URI.create(url).toURL().openStream().buffered().use { loadSvgPainter(it, density) }
 
 fun loadXmlImageVectorFromJavaNetwork(url: String, density: Density): ImageVector =
-    URL(url).openStream().buffered().use { loadXmlImageVector(InputSource(it), density) }
+    URI.create(url).toURL().openStream().buffered().use { loadXmlImageVector(InputSource(it), density) }
 
 /* Loading from network with Ktor client API (https://ktor.io/docs/client.html). */
 suspend fun loadImageBitmap(url: String): ImageBitmap = urlStream(url).use(::loadImageBitmap)
@@ -299,12 +299,7 @@ fun Text(
             color = textColor,
             fontSize = fontSize,
             fontWeight = fontWeight,
-            textAlign = textAlign,
-            lineHeight = lineHeight,
             fontFamily = fontFamily,
-            textDecoration = textDecoration,
-            fontStyle = fontStyle,
-            letterSpacing = letterSpacing
         )
     )
     BasicText(
