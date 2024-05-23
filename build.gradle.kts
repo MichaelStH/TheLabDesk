@@ -2,18 +2,16 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import java.util.*
 
 plugins {
-    kotlin("jvm")
-    id("org.jetbrains.compose")
-    kotlin("plugin.serialization")
-    // id("org.openjfx.javafxplugin")
-    alias(libs.plugins.java.fx)
+    alias(libs.plugins.jetbrains.kotlin.jvm)
+    alias(libs.plugins.jetbrains.compose)
     // Compose Compiler - introduced by Kotlin 2.0
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
+    alias(libs.plugins.java.fx)
 }
 
 group = "com.riders"
 version = "1.0-SNAPSHOT"
-
 
 val osName = System.getProperty("os.name")
 val targetOs = when {
@@ -37,6 +35,7 @@ propertiesFile.parentFile.mkdirs()
 val properties = Properties()
 properties.setProperty("version", rootProject.version.toString())
 propertiesFile.writer().use { properties.store(it, null) }
+
 
 sourceSets {
     main {
@@ -142,7 +141,7 @@ compose.desktop {
 
     application {
         // Requires package full name of main function class
-         mainClass = "com.riders.thelabdesk.TheLabDeskMainKt"
+        mainClass = "com.riders.thelabdesk.TheLabDeskMainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
