@@ -41,7 +41,8 @@ fun TheLabDeskTooltipPopup(
                     onClick = { scope.launch { tooltipState.dismiss() } }
                 ) { Text("Learn More") }
             }
-        }
+        },
+        enableUserInput = true
     ) {
         IconButton(
             modifier = Modifier,
