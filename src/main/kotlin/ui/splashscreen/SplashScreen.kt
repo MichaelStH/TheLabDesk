@@ -62,7 +62,7 @@ fun SplashScreen(viewModel: MainViewModel) {
                 )
                 LinearProgressIndicator(
                     modifier = Modifier.fillMaxWidth(.75f),
-                    progress = animateProgress,
+                    progress = { animateProgress },
                     strokeCap = StrokeCap.Round
                 )
             }

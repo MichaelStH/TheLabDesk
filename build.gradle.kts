@@ -5,11 +5,15 @@ plugins {
     kotlin("jvm")
     id("org.jetbrains.compose")
     kotlin("plugin.serialization")
-    id("org.openjfx.javafxplugin")
+    // id("org.openjfx.javafxplugin")
+    alias(libs.plugins.java.fx)
+    // Compose Compiler - introduced by Kotlin 2.0
+    alias(libs.plugins.compose.compiler)
 }
 
 group = "com.riders"
 version = "1.0-SNAPSHOT"
+
 
 val osName = System.getProperty("os.name")
 val targetOs = when {
@@ -48,12 +52,20 @@ kotlin {
     }
 }
 
+// Compose Compiler - introduced by Kotlin 2.0
+composeCompiler {
+    enableStrongSkippingMode = true
+
+    reportsDestination = layout.buildDirectory.dir("compose_compiler")
+//    stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf")
+}
+
 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 dependencies {
 
     // Kotlin
     implementation(platform(libs.kotlin.bom))
-    kotlin("reflect")
+    implementation(libs.kotlin.reflect)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.serialization.json)
 
@@ -120,7 +132,7 @@ dependencies {
 }
 
 tasks.wrapper {
-    this.gradleVersion = "8.4"
+    this.gradleVersion = "8.7"
     // You can either download the binary-only version of Gradle (BIN) or
     // the full version (with sources and documentation) of Gradle (ALL)
     distributionType = Wrapper.DistributionType.ALL
@@ -129,12 +141,17 @@ tasks.wrapper {
 compose.desktop {
 
     application {
-        mainClass = "TheLabDeskApp.kt"
+        // Requires package full name of main function class
+         mainClass = "com.riders.thelabdesk.TheLabDeskMainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "LabDesk"
             packageVersion = "1.0.0"
+            description = "TheLab Desk App"
+            copyright = "© 2023 TheLab. All rights reserved."
+            vendor = "TheLab Inc."
+
             macOS {
                 iconFile.set(project.file("$projectDir/src/main/resources/icons/thelab_desk.icns"))
             }

@@ -299,7 +299,7 @@ fun Text(
             color = textColor,
             fontSize = fontSize,
             fontWeight = fontWeight,
-            textAlign = textAlign,
+            // textAlign = textAlign,
             lineHeight = lineHeight,
             fontFamily = fontFamily,
             textDecoration = textDecoration,

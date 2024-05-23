@@ -7,15 +7,16 @@
 # Arbor
 arbor = "1.40.86"
 # Kotlin
-kotlin = "1.9.10"
+kotlin = "2.0.0"
 kotlinxCoroutines = "1.7.2"
 kotlinxSerializationJson = "1.5.1"
 # Compose
-compose = "1.5.3"
+compose = "1.6.10"
 # Json
 jakartaJson = "2.1.2"
 json = "20231013"
-jackson="2.15.3"
+jackson = "2.15.3"
+javafx="0.0.10"
 # Ktor
 ktor = "2.3.4"
 nativeParametersStoreAccess = "0.1.2"
@@ -37,6 +38,7 @@ compose-full = { group = "org.jetbrains.compose", name = "compose-full", version
 # Kotlin
 kotlin-bom = { group = "org.jetbrains.kotlin", name = "kotlin-bom", version.ref = "kotlin" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin" }
+kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 # Ktor
@@ -60,3 +62,12 @@ youtube-player = { group = "com.pierfrancescosoffritti.androidyoutubeplayer", na
 # zxing
 zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxing" }
 zxing-javase = { group = "com.google.zxing", name = "javase", version.ref = "zxing" }
+
+[plugins]
+java-fx = { id = "org.openjfx.javafxplugin", version.ref = "javafx" }
+jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+# Compose Compiler - introduced by Kotlin 2.0
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

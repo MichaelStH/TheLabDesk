@@ -34,7 +34,6 @@ import core.compose.component.video.rememberVideoPlayerState
 import core.compose.theme.TheLabDeskTheme
 import core.log.Timber
 import core.utils.DisplayManager
-import data.local.model.tmdb.TDMBTeaserModel.Companion.getTMDBTeaserMock
 import di.AppModule
 
 private val width = 760.dp
@@ -120,7 +119,7 @@ fun TheaterTeaserContent(viewModel: TheatersViewModel) {
 
                                 LinearProgressIndicator(
                                     modifier = Modifier.fillMaxWidth().padding(end = 16.dp),
-                                    progress = videoState.progress.value.fraction
+                                    progress = { videoState.progress.value.fraction }
                                 )
                             }
                         }

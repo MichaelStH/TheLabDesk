@@ -1,6 +1,6 @@
 package core.compose.component.video
 
-import TheLabDeskApp
+import com.riders.thelabdesk.TheLabDeskApp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,7 +11,6 @@ import androidx.compose.ui.awt.SwingPanel
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.zIndex
 import core.log.Timber
-import core.utils.SystemManager
 import data.local.model.compose.Progress
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive

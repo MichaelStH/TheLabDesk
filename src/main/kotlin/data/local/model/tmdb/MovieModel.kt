@@ -53,7 +53,7 @@ data class MovieModel(
         movieDto.genresID.toNotEmptySet().getOrThrow(),
         movieDto.originalLanguage.toNotBlankString().getOrThrow(),
         movieDto.originalTitle.toNotBlankString().getOrThrow(),
-        movieDto.overview.toNotBlankString().getOrThrow(),
+        movieDto.overview.toNotBlankString().getOrElse { "N/A".toNotBlankString().getOrThrow() },
         movieDto.popularity,
         movieDto.poster.toNotBlankString().getOrThrow(),
         movieDto.releaseDate.toNotBlankString().getOrThrow(),

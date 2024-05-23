@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
@@ -102,19 +103,43 @@ fun NavigationContent(
                             // Visibility mode
                             TheLabDeskIconTab(
                                 tabWidth = 42.dp,
-                                items = listOf(Icons.Filled.List, Icons.Filled.Dashboard),
+                                items = listOf(Icons.AutoMirrored.Filled.List, Icons.Filled.Dashboard),
                                 selectedItemIndex = theatersViewModel.tabIconSelected,
                                 onClick = { theatersViewModel.updateTabIconSelected(it) },
                             )
 
 
                             // Tooltip
-                            val tooltipState = remember { RichTooltipState() }
+                            val tooltipState = rememberTooltipState()
                             val scope = rememberCoroutineScope()
 
-                            RichTooltipBox(
-                                title = { },
-                                action = {
+                            TooltipBox(
+                                state = tooltipState,
+                                positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(),
+                                tooltip = {
+                                    Column {
+
+                                        Row(
+                                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            TheLabDeskText(
+                                                modifier = Modifier,
+                                                text = Constants.PLACEHOLDER_PROVIDED_BY
+                                            )
+                                            Image(
+                                                modifier = Modifier
+                                                    .widthIn(36.dp, 72.dp)
+                                                    .height(40.dp)
+                                                    .clip(RoundedCornerShape(12.dp)),
+                                                painter = painterResource(resourcePath = "images/tmdb_logo.png"),
+                                                contentDescription = "TMDB logo",
+                                                contentScale = ContentScale.Crop
+                                            )
+                                        }
+                                    }
+
+                                    // Android
                                     TextButton(
                                         onClick = {
                                             SystemManager.openInBrowser(Constants.URL_TMDB_WEBSITE)
@@ -125,29 +150,11 @@ fun NavigationContent(
                                             }
                                         }
                                     ) { Text("Learn More") }
-                                },
-                                text = {
-                                    Row(
-                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        TheLabDeskText(modifier = Modifier, text = Constants.PLACEHOLDER_PROVIDED_BY)
-                                        Image(
-                                            modifier = Modifier
-                                                .widthIn(36.dp, 72.dp)
-                                                .height(40.dp)
-                                                .clip(RoundedCornerShape(12.dp)),
-                                            painter = painterResource(resourcePath = "images/tmdb_logo.png"),
-                                            contentDescription = "TMDB logo",
-                                            contentScale = ContentScale.Crop
-                                        )
-                                    }
-                                },
-                                tooltipState = tooltipState
+                                }
                             ) {
                                 IconButton(
-                                    onClick = { scope.launch { tooltipState.show() } },
-                                    modifier = Modifier.tooltipAnchor()
+                                    modifier = Modifier,
+                                    onClick = { scope.launch { tooltipState.show() } }
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Info,

@@ -1,6 +1,6 @@
 package core.compose.component
 
-import TheLabDeskApp
+import com.riders.thelabdesk.TheLabDeskApp
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color

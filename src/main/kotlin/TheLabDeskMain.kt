@@ -1,13 +1,61 @@
 package com.riders.thelabdesk
 
-import com.toxicbakery.logging.Arbor
-import com.toxicbakery.logging.Seedling
-import core.compose.component.video.initializeMediaPlayerComponent
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.*
+import androidx.compose.ui.zIndex
+import com.sun.javafx.application.PlatformImpl
+import core.compose.component.AppTitleBar
+import core.compose.component.ScrollableWindowContent
+import core.compose.component.TheLabDeskSurface
+import core.compose.component.toast.Toast
+import core.compose.theme.TheLabDeskTheme
+import core.compose.theme.currentTheme
+import core.compose.theme.isSystemInDarkTheme
+import core.compose.utils.WindowDraggableArea
+import core.compose.utils.getColorScheme
 import core.log.Timber
+import core.utils.DisplayManager
+import core.utils.FileManager
 import core.utils.SystemManager
-import java.util.*
+import core.utils.ToastManager
+import data.local.bean.WindowTypes
+import di.AppModule
+import ui.About
+import ui.Exit
+import ui.browser.BrowserViewModel
+import ui.home.HomeViewModel
+import ui.main.App
+import ui.main.MainViewModel
+import ui.news.NewsViewModel
+import ui.splashscreen.SplashScreen
+import ui.theaters.TheaterTeaserContent
+import ui.theaters.TheatersViewModel
+import utils.Constants
+import java.awt.Dimension
 
-object TheLabDeskApp {
+/*object TheLabDeskApp {
 
     var isVlcFound: Boolean = false
 
@@ -32,9 +80,9 @@ object TheLabDeskApp {
         checkVlcLibrary()
     }
 
-    /**
-     * Source https://github.com/ToxicBakery/Arbor
-     */
+    *//**
+ * Source https://github.com/ToxicBakery/Arbor
+ *//*
     fun initArbor() {
         Arbor.sow(Seedling())
         Timber.d("initArbor()")
@@ -48,20 +96,20 @@ object TheLabDeskApp {
     fun updateVlcFoundLibrary(isVlcFound: Boolean) {
         TheLabDeskApp.isVlcFound = isVlcFound
     }
-}
+}*/
 
 //////////////////////////////////////////
 //
 // CLASS METHODS
 //
 //////////////////////////////////////////
-fun initTimber() {
+/*fun initTimber() {
     // Init Timber Logging
     TheLabDeskApp.initArbor()
     Timber.d("main() | applicationScope")
 
     SystemManager.getSystemInfo()
-}
+}*/
 
 
 //////////////////////////////////////////
@@ -69,7 +117,7 @@ fun initTimber() {
 // APP
 //
 //////////////////////////////////////////
-/*fun main() {
+fun main() {
     initTimber()
     TheLabDeskApp.init()
 
@@ -86,7 +134,7 @@ fun initTimber() {
 
     FileManager.createConfigFile()
 
-    *//*GlobalScope.launch {
+    /*GlobalScope.launch {
         while (isActive) {
             val newMode = isSystemInDarkTheme()
             if (viewModel.isDarkMode != newMode) {
@@ -94,7 +142,8 @@ fun initTimber() {
             }
             delay(1_000)
         }
-    }*//*
+    }*/
+
     application(exitProcessOnExit = true) {
         // Required to make sure the JavaFx event loop doesn't finish (can happen when java fx panels in app are shown/hidden)
         val finishListener = object : PlatformImpl.FinishListener {
@@ -254,7 +303,7 @@ fun initTimber() {
                                                     .zIndex(50f),
                                                 message = toast.toastMessage,
                                                 toastDelayTime = Toast.LENGTH_LONG,
-                                                color =  if(!isSystemInDarkTheme()) currentTheme.second.getColorScheme().primaryContainer else currentTheme.first.getColorScheme().primaryContainer
+                                                color = if (!isSystemInDarkTheme()) currentTheme.second.getColorScheme().primaryContainer else currentTheme.first.getColorScheme().primaryContainer
                                             )
                                         }
                                     }
@@ -278,4 +327,4 @@ fun initTimber() {
             FileManager.updateConfigFile(Pair(Constants.IS_DARK_MODE, viewModel.isDarkMode))
         }
     }
-}*/
+}

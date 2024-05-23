@@ -6,6 +6,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
@@ -41,7 +42,7 @@ fun PulsarFabWithClick(onClick: () -> Unit) {
             shape = FloatingActionButtonDefaults.largeShape,
             containerColor = MaterialTheme.colorScheme.primary,
             onClick = onClick,
-        ) { Icon(imageVector = Icons.Default.Send, contentDescription = "") }
+        ) { Icon(imageVector = Icons.AutoMirrored.Filled.Send, contentDescription = "fab_send_icon") }
     }
 }
 

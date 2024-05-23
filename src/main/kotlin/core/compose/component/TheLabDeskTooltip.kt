@@ -1,5 +1,6 @@
 package core.compose.component
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -7,20 +8,16 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.RichTooltipBox
-import androidx.compose.material3.RichTooltipState
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalViewConfiguration
 import kotlinx.coroutines.launch
 
-enum class TooltipAlignment {
-    BottomCenter,
-    TopCenter,
-}
+enum class TooltipAlignment { BottomCenter, TopCenter, }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TheLabDeskTooltipPopup(
@@ -28,24 +25,27 @@ fun TheLabDeskTooltipPopup(
     requesterView: @Composable (Modifier) -> Unit,
     tooltipContent: @Composable () -> Unit,
 ) {
-
-    val tooltipState = remember { RichTooltipState() }
+    val tooltipState = rememberTooltipState()
     val scope = rememberCoroutineScope()
 
-    RichTooltipBox(
+    TooltipBox(
         modifier = modifier,
-        title = { Text("Add others") },
-        action = {
-            TextButton(
-                onClick = { scope.launch { tooltipState.dismiss() } }
-            ) { Text("Learn More") }
-        },
-        text = { Text("Share this collection with friends...") },
-        tooltipState = tooltipState
+        state = tooltipState,
+        positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+        tooltip = {
+            Column {
+                Text("Add others")
+                Text("Share this collection with friends...")
+                // Action
+                TextButton(
+                    onClick = { scope.launch { tooltipState.dismiss() } }
+                ) { Text("Learn More") }
+            }
+        }
     ) {
         IconButton(
-            onClick = { /* Icon button's click event */ },
-            modifier = Modifier.tooltipAnchor()
+            modifier = Modifier,
+            onClick = { /* Icon button's click event */ }
         ) {
             Icon(
                 imageVector = Icons.Default.Info,

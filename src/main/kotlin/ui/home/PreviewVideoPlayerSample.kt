@@ -1,6 +1,6 @@
 package ui.home
 
-import TheLabDeskApp
+import com.riders.thelabdesk.TheLabDeskApp
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
