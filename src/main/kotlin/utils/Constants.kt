@@ -42,7 +42,7 @@ object Constants {
 
     const val TITLE_POPULAR_MOVIES = "Popular Movies"
     const val TITLE_TRENDING_MOVIES = "Trending Movies"
-    const val TITLE_UPCOMING_MOVIES = "Upcioming Movies"
+    const val TITLE_UPCOMING_MOVIES = "Upcoming Movies"
     const val TITLE_POPULAR_TV_SHOWS = "Popular Tv Shows"
     const val TITLE_TRENDING_TV_SHOWS = "Trending Tv Shows"
 
@@ -52,5 +52,4 @@ object Constants {
     // SETTINGS
     const val PLACEHOLDER_ENABLE_DARK_MODE = "Enable dark mode"
     const val PLACEHOLDER_DISABLE_DARK_MODE = "Disable dark mode"
-
 }
