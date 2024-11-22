@@ -1,4 +1,5 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
 import java.util.*
 
 plugins {
@@ -53,7 +54,7 @@ kotlin {
 
 // Compose Compiler - introduced by Kotlin 2.0
 composeCompiler {
-    enableStrongSkippingMode = true
+    featureFlags.addAll(ComposeFeatureFlag.StrongSkipping)
 
     reportsDestination = layout.buildDirectory.dir("compose_compiler")
 //    stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf")
@@ -131,7 +132,7 @@ dependencies {
 }
 
 tasks.wrapper {
-    this.gradleVersion = "8.10.2"
+    this.gradleVersion = "8.11.1"
     // You can either download the binary-only version of Gradle (BIN) or
     // the full version (with sources and documentation) of Gradle (ALL)
     distributionType = Wrapper.DistributionType.ALL
