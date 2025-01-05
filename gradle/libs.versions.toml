@@ -12,9 +12,9 @@ compose = "1.7.1"
 jakartaJson = "2.1.2"
 json = "20231013"
 jackson = "2.15.3"
-javafx="0.0.10"
+javafx = "0.0.10"
 # Kotlin
-kotlin = "2.0.21"
+kotlin = "2.1.0"
 kotlinxCoroutines = "1.7.2"
 kotlinxSerializationJson = "1.7.1"
 # Ktor

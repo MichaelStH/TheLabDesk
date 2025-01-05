@@ -132,7 +132,7 @@ dependencies {
 }
 
 tasks.wrapper {
-    this.gradleVersion = "8.11.1"
+    this.gradleVersion = "8.12"
     // You can either download the binary-only version of Gradle (BIN) or
     // the full version (with sources and documentation) of Gradle (ALL)
     distributionType = Wrapper.DistributionType.ALL
