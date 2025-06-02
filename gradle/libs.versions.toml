@@ -7,22 +7,22 @@
 # Arbor
 arbor = "1.40.86"
 # Compose
-compose = "1.7.1"
+compose = "1.8.1"
 # Json
 jakartaJson = "2.1.2"
 json = "20231013"
 jackson = "2.15.3"
 javafx = "0.0.10"
 # Kotlin
-kotlin = "2.1.0"
-kotlinxCoroutines = "1.7.2"
-kotlinxSerializationJson = "1.7.1"
+kotlin = "2.1.21"
+kotlinxCoroutines = "1.10.1"
+kotlinxSerializationJson = "1.8.1"
 # Ktor
 ktor = "3.0.1"
-logback = "1.4.14"
+logback = "1.5.18"
 nativeParametersStoreAccess = "0.1.2"
 # Kotools Types
-types = "4.3.1"
+types = "5.0.0"
 # Vlc PLayer
 vlcPlayer = "4.8.2"
 #YoutubePlayer
