@@ -25,6 +25,7 @@ import core.compose.theme.Typography
 import core.compose.utils.AsyncBitmapImageFromNetwork
 import core.compose.utils.AsyncSvgImage
 import core.log.Timber
+import core.utils.SystemManager
 import core.utils.ToastManager
 import kotlinx.coroutines.delay
 
@@ -130,7 +131,9 @@ fun Home(viewModel: HomeViewModel) {
         ) {
             item { CarouselHeader(viewModel) }
 
-            item { VideoPlayerSample() }
+            if (!SystemManager.isMacOs()) {
+                item { VideoPlayerSample() }
+            }
 
             item { BrowserSample() }
 
