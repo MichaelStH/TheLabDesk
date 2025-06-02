@@ -41,7 +41,7 @@ fun News(viewModel: NewsViewModel) {
                             items = (newsUiState as NewsUiState.Success).data,
                             key = { _, item -> item.id }
                         ) { index, item ->
-                            NewsDataItem(modifier = Modifier.animateItemPlacement(), item = item)
+                            NewsDataItem(modifier = Modifier.animateItem(), item = item)
                         }
                     }
                 }

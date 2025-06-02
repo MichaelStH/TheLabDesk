@@ -7,8 +7,11 @@ import data.remote.dto.tmdb.TMDBTvShowsResponse
 import data.remote.dto.tmdb.TMDBVideoResponse
 
 class RepositoryImpl(apiImpl: ApiImpl) : IRepository {
+
     private val mApiImpl: ApiImpl = apiImpl
+
     override suspend fun getNews(): List<NewsDto> = mApiImpl.getNews()
+
     override suspend fun getTrendingMovies(): TMDBMovieResponse = mApiImpl.getTrendingMovies()
 
     override suspend fun getPopularMovies(): TMDBMovieResponse = mApiImpl.getPopularMovies()

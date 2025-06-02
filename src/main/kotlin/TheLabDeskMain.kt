@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
@@ -20,11 +21,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import androidx.compose.ui.zIndex
+import com.riders.labdesk.generated.resources.Res
+import com.riders.labdesk.generated.resources.allDrawableResources
+import com.riders.thelabdesk.core.compose.utils.painterResource
 import com.sun.javafx.application.PlatformImpl
 import core.compose.component.AppTitleBar
 import core.compose.component.ScrollableWindowContent
@@ -42,6 +45,8 @@ import core.utils.SystemManager
 import core.utils.ToastManager
 import data.local.bean.WindowTypes
 import di.AppModule
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.ExperimentalResourceApi
 import ui.About
 import ui.Exit
 import ui.browser.BrowserViewModel
@@ -117,6 +122,7 @@ import java.awt.Dimension
 // APP
 //
 //////////////////////////////////////////
+@OptIn(ExperimentalResourceApi::class)
 fun main() {
     initTimber()
     TheLabDeskApp.init()
@@ -168,34 +174,43 @@ fun main() {
             val trayState = rememberTrayState()
             val notification = rememberNotification("Notification", "Message from MyApp!")
 
-            Tray(
-                state = trayState,
-                icon = painterResource(
-                    resourcePath = if (SystemManager.isMacOs()) "icons/thelab_desk.icns"
-                    else if (SystemManager.isLinux()) "icons/thelab_desk.png"
-                    else "icons/thelab_desk.ico"
-                ),
-                menu = {
-                    Item(
-                        "Send notification",
-                        onClick = {
-                            trayState.sendNotification(notification)
-                        }
-                    )
-                    Item(
-                        "Exit",
-                        onClick = {
-                            isOpen = false
-                        }
-                    )
-                }
-            )
+            Res.allDrawableResources["compose_multiplatform"]?.let { resource: DrawableResource ->
+                Image(
+                    painter = painterResource(resource.toString()),
+                    contentDescription = null
+                )
+            }
+
+            Res.allDrawableResources[
+                if (SystemManager.isMacOs()) "icons/thelab_desk.icns"
+                else if (SystemManager.isLinux()) "icons/thelab_desk.png"
+                else "icons/thelab_desk.ico"
+            ]?.let { resource: DrawableResource ->
+                Tray(
+                    state = trayState,
+                    icon = painterResource(resourcePath = resource.toString()),
+                    menu = {
+                        Item(
+                            "Send notification",
+                            onClick = {
+                                trayState.sendNotification(notification)
+                            }
+                        )
+                        Item(
+                            "Exit",
+                            onClick = {
+                                isOpen = false
+                            }
+                        )
+                    }
+                )
+            }
         }
 
         Window(
             state = windowState,
             title = "TheLab Desk",
-            icon = painterResource("images/ic_lab.png"),
+            icon = com.riders.thelabdesk.core.compose.utils.painterResource(resourcePath = "images/ic_lab.png"),
             undecorated = true,
             transparent = false,
             resizable = viewModel.windowType != WindowTypes.SPLASHSCREEN,
