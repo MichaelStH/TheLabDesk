@@ -28,6 +28,10 @@ object TheLabDeskApp {
 
         Timber.d("version: ${getVersion()}")
 
+        if (SystemManager.isMacOs()) {
+            System.setProperty("VLC_PLUGIN_PATH", "/Applications/VLC.app/Contents/MacOS/plugins")
+        }
+
         // Check if VLC Library is present
         checkVlcLibrary()
     }

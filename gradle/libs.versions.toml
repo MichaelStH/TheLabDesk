@@ -4,27 +4,35 @@
 #################
 
 [versions]
+# General dependncies versions
 # Arbor
-arbor = "1.40.86"
+arbor = "2.0.105"
 # Compose
-compose = "1.8.1"
+compose = "1.9.0-alpha03"
+composeHotReload = "1.0.0-beta04"
+jna = "5.17.0"
 # Json
 jakartaJson = "2.1.2"
 json = "20231013"
 jackson = "2.15.3"
 javafx = "0.0.10"
 # Kotlin
-kotlin = "2.1.21"
+kotlin = "2.2.0"
 kotlinxCoroutines = "1.10.1"
 kotlinxSerializationJson = "1.8.1"
 # Ktor
-ktor = "3.0.1"
+ktor = "3.2.2"
 logback = "1.5.18"
 nativeParametersStoreAccess = "0.1.2"
 # Kotools Types
-types = "5.0.0"
-# Vlc PLayer
-vlcPlayer = "4.8.2"
+types = "5.0.1"
+# VlcJ
+vlcJavaFX = "1.2.0"
+vlcInfo = "2.0.1"
+vlcNatives = "4.8.3"
+vlcOsx = "2.0.0"
+vlcPlayer = "4.11.0"
+#vlcPlayer = "5.0.0-M4"
 #YoutubePlayer
 youtubePlayer = "12.1.0"
 # Zxing
@@ -37,6 +45,9 @@ zxing = "3.5.2"
 arbor = { group = "com.ToxicBakery.logging", name = "arbor-jvm", version.ref = "arbor" }
 # Compose
 compose-full = { group = "org.jetbrains.compose", name = "compose-full", version.ref = "compose" }
+# JNA : (IMPORTANT) vlcj has a dependency on JNA.
+jna = { group = "net.java.dev.jna", name = "jna", version.ref = "jna" }
+jna-platform = { group = "net.java.dev.jna", name = "jna-platform", version.ref = "jna" }
 # Json
 jakarta-json = { group = "jakarta.json", name = "jakarta.json-api", version.ref = "jakartaJson" }
 org-json = { group = "org.json", name = "json", version.ref = "json" }
@@ -60,6 +71,10 @@ kotools-types = { group = "org.kotools", name = "types", version.ref = "types" }
 logback = { group = "ch.qos.logback", name = "logback-classic", version.ref = "logback" }
 # Vlc Player
 vlc-player = { group = "uk.co.caprica", name = "vlcj", version.ref = "vlcPlayer" }
+vlc-java-fx = { group = "uk.co.caprica", name = "vlcj-javafx", version.ref = "vlcJavaFX" }
+vlc-info = { group = "uk.co.caprica", name = "vlcj-info", version.ref = "vlcInfo" }
+vlc-natives = { group = "uk.co.caprica", name = "vlcj-natives", version.ref = "vlcNatives" }
+vlc-osx = { group = "uk.co.caprica", name = "vlcj-osx-stubs", version.ref = "vlcOsx" }
 # YoutubePlayer
 youtube-player = { group = "com.pierfrancescosoffritti.androidyoutubeplayer", name = "core", version.ref = "youtubePlayer" }
 # zxing
@@ -69,6 +84,7 @@ zxing-javase = { group = "com.google.zxing", name = "javase", version.ref = "zxi
 [plugins]
 java-fx = { id = "org.openjfx.javafxplugin", version.ref = "javafx" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+jetbrains-compose-hotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 # Compose Compiler - introduced by Kotlin 2.0

@@ -1,10 +1,12 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.compose.reload.gradle.ComposeHotRun
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
 import java.util.*
 
 plugins {
     alias(libs.plugins.jetbrains.kotlin.jvm)
     alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.jetbrains.compose.hotReload)
     // Compose Compiler - introduced by Kotlin 2.0
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.jetbrains.kotlin.serialization)
@@ -54,7 +56,7 @@ kotlin {
 
 // Compose Compiler - introduced by Kotlin 2.0
 composeCompiler {
-    featureFlags.addAll(ComposeFeatureFlag.StrongSkipping)
+    featureFlags.addAll(ComposeFeatureFlag.OptimizeNonSkippingGroups)
 
     reportsDestination = layout.buildDirectory.dir("compose_compiler")
 //    stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf")
@@ -97,6 +99,9 @@ dependencies {
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.client.serialization.kotlinx.json)
 
+    // JNA
+    implementation(libs.jna)
+    implementation(libs.jna.platform)
 
     // https://mvnrepository.com/artifact/jakarta.json/jakarta.json-api
     implementation(libs.jakarta.json)
@@ -109,6 +114,10 @@ dependencies {
 
     /* https://proandroiddev.com/unifying-video-players-compose-multiplatform-for-ios-android-desktop-aa920d29bbf3 */
     implementation(libs.vlc.player)
+    implementation(libs.vlc.java.fx)
+    implementation(libs.vlc.info)
+    implementation(libs.vlc.natives)
+    implementation(libs.vlc.osx)
 
     // Types
     implementation(libs.kotools.types)
@@ -132,7 +141,7 @@ dependencies {
 }
 
 tasks.wrapper {
-    this.gradleVersion = "8.12"
+    this.gradleVersion = "8.14.3"
     // You can either download the binary-only version of Gradle (BIN) or
     // the full version (with sources and documentation) of Gradle (ALL)
     distributionType = Wrapper.DistributionType.ALL
@@ -163,6 +172,11 @@ compose.desktop {
             }
         }
     }
+}
+
+
+tasks.withType<ComposeHotRun>().configureEach {
+    mainClass.set("com.riders.thelabdesk.TheLabDeskMainKt")
 }
 
 javafx {

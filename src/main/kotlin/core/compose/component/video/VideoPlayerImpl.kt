@@ -1,6 +1,5 @@
 package core.compose.component.video
 
-import com.riders.thelabdesk.TheLabDeskApp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,17 +9,24 @@ import androidx.compose.ui.awt.ComposePanel
 import androidx.compose.ui.awt.SwingPanel
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.zIndex
+import com.riders.thelabdesk.TheLabDeskApp
+import com.sun.jna.Native
+import com.sun.jna.NativeLibrary
 import core.log.Timber
+import core.utils.SystemManager
 import data.local.model.compose.Progress
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import uk.co.caprica.vlcj.binding.lib.LibC
 import uk.co.caprica.vlcj.binding.lib.LibVlc
+import uk.co.caprica.vlcj.binding.support.runtime.RuntimeUtil
 import uk.co.caprica.vlcj.factory.discovery.NativeDiscovery
 import uk.co.caprica.vlcj.player.base.MediaPlayer
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
 import uk.co.caprica.vlcj.player.component.CallbackMediaPlayerComponent
 import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer
+import uk.co.caprica.vlcj.support.version.LibVlcVersion
 import utils.toPercentage
 import java.awt.Component
 
@@ -107,25 +113,66 @@ fun VideoPlayerImpl(
 fun initializeMediaPlayerComponent(): Component? {
     Timber.d("initializeMediaPlayerComponent()")
 
+    // Check if VLC library can be found on the current system
+    val vlcFound = if (SystemManager.isMacOs()) {
+        runCatching {
+            LibC.INSTANCE.setenv(
+                "VLC_PLUGIN_PATH",
+                "/Applications/VLC.app/Contents/MacOS/plugins",
+                1
+            )
+
+            /*NativeLibrary.addSearchPath(
+                RuntimeUtil.getLibVlcLibraryName(),
+                System.getProperty("user.dir")+ "/src/main/resources/darwin/vlc"
+            )*/
+            NativeLibrary.addSearchPath(
+                RuntimeUtil.getLibVlcLibraryName(),
+                "/Applications/VLC.app/Contents/MacOS/lib"
+            )
+            NativeLibrary.addSearchPath(
+                RuntimeUtil.getLibVlcCoreLibraryName(),
+                "/Applications/VLC.app/Contents/MacOS/lib"
+            )
+
+            Native.load(RuntimeUtil.getLibVlcCoreLibraryName(), LibC::class.java)
+            Native.load(RuntimeUtil.getLibVlcLibraryName(), LibC::class.java)
+            true
+        }
+            .onFailure {
+                it.printStackTrace()
+                Timber.e("initializeMediaPlayerComponent() | onFailure | Error caught with message : ${it.message} (class : ${it.javaClass.canonicalName})")
+            }
+            .onSuccess {
+                Timber.d("initializeMediaPlayerComponent() | onSuccess")
+            }
+            .getOrElse { false }
+    } else {
+        if(!NativeDiscovery().discover()) {
+            false
+        } else {
+            Timber.d("LibVlc found with version: ${LibVlc.libvlc_get_version()}")
+            true
+        }
+    }
+
     // Check if VLC library can be found on current system
-    return if (!NativeDiscovery().discover()) {
+    return if (!vlcFound) {
         Timber.e("Unable to find VLC library file. Please make sure that VLC is installed on your system")
         TheLabDeskApp.updateVlcFoundLibrary(false)
         null
     } else {
         TheLabDeskApp.updateVlcFoundLibrary(true)
-        Timber.d("LibVlc found with version: ${LibVlc.libvlc_get_version()}")
 
-        /*val mediaPlayerComponent: Component = if (SystemManager.isMacOs("generic")) {
+        val mediaPlayerComponent: Component = if (SystemManager.isMacOs()) {
             Timber.e("isMacOs() | Call CallbackMediaPlayerComponent()")
             CallbackMediaPlayerComponent()
         } else {
             Timber.e("NOT isMacOs() | Call EmbeddedMediaPlayerComponent()")
             EmbeddedMediaPlayerComponent()
-        }*/
+        }
 
-        // return mediaPlayerComponent
-        return EmbeddedMediaPlayerComponent()
+        return mediaPlayerComponent
     }
 }
 
@@ -162,7 +209,7 @@ private fun MediaPlayer.emitProgressTo(state: MutableState<Progress>) {
         while (isActive) {
             val fraction = status().position()
             val time = status().time()
-            state.value = Progress(fraction, time)
+            state.value = Progress(fraction.toFloat(), time)
             delay(50)
         }
     }
