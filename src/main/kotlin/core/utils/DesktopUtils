@@ -1,0 +1,14 @@
+package com.riders.thelabdesk.core.utils
+
+object DesktopUtils {
+	fun openUrl(url: String) {
+		try
+{
+    val uri : URI= URI("http://google.com/");
+    val desk: Desktop = Desktop.getDesktop();
+    desk.browse(uri);
+}
+catch(Exception ex){}
+	} 
+
+} 
