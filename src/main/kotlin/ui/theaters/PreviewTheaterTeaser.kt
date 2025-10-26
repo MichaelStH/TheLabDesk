@@ -48,7 +48,8 @@ fun TheaterTeaserContent(viewModel: TheatersViewModel) {
     val videoState = rememberVideoPlayerState()
 
     // val url = "${Constants.VIDEO_YOUTUBE_WATCH_BASE_URL}${viewModel.theaterItemIdSelected.second}"
-    Timber.d("url: ${viewModel.tmdbTeaser?.url}")
+
+    Timber.tag("TheaterTeaserContent").d("Recomposition | url: ${viewModel.tmdbTeaser?.url}")
 
     // Calculate screen height to set height for card
 //    val cardHeight: Dp = 400.dp
@@ -79,7 +80,10 @@ fun TheaterTeaserContent(viewModel: TheatersViewModel) {
                             }
                         } else {
                             BoxWithConstraints(
-                                modifier = Modifier.fillMaxSize().padding(vertical = 56.dp).background(Color.Black)
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(vertical = 56.dp)
+                                    .background(Color.Black)
                                     .zIndex(0f)
                             ) {
                                 VideoPlayer(

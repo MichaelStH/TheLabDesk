@@ -22,7 +22,7 @@ class MainViewModel(private val repository: IRepository) : BaseViewModel() {
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { _, throwable ->
             throwable.printStackTrace()
-            Timber.e("${throwable.message}")
+            Timber.tag("MainViewModel").e("CoroutineExceptionHandler | Error caught with message : ${throwable.message}")
         }
 
 

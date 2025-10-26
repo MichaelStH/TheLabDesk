@@ -24,7 +24,8 @@ class TheatersViewModel(private val repository: IRepository) : BaseViewModel() {
     // Coroutine
     //////////////////////////////
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        Timber.e("Error caught: ${throwable.message}")
+        throwable.printStackTrace()
+        Timber.e("CoroutineExceptionHandler | Error caught with message : ${throwable.message}")
         throwable.message
             ?.let { MoviesUiState.Error(it) }
             ?.let { errorState ->

@@ -1,8 +1,8 @@
 package com.riders.thelabdesk
 
+import core.utils.VLCManager
 import com.toxicbakery.logging.Arbor
 import com.toxicbakery.logging.Seedling
-import core.compose.component.video.initializeMediaPlayerComponent
 import core.log.Timber
 import core.utils.SystemManager
 import java.util.*
@@ -46,7 +46,7 @@ object TheLabDeskApp {
 
     private fun checkVlcLibrary() {
         Timber.d("checkVlcLibrary()")
-        initializeMediaPlayerComponent()
+        VLCManager.initializeMediaPlayerComponent()
     }
 
     fun updateVlcFoundLibrary(isVlcFound: Boolean) {

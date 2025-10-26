@@ -14,7 +14,7 @@ class NewsViewModel(private val repository: IRepository) : BaseViewModel() {
     // Coroutine
     //////////////////////////////
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        Timber.e("Error caught: ${throwable.message}")
+        Timber.tag("NewsViewModel").e("Error caught: ${throwable.message}")
         throwable.message
             ?.let { NewsUiState.Error(it) }
             ?.let { errorState -> updateNewsUiState(errorState) }
