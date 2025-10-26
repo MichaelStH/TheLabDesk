@@ -9,24 +9,19 @@ import androidx.compose.ui.awt.ComposePanel
 import androidx.compose.ui.awt.SwingPanel
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.zIndex
-import com.riders.thelabdesk.TheLabDeskApp
-import com.sun.jna.Native
-import com.sun.jna.NativeLibrary
 import core.log.Timber
-import core.utils.SystemManager
+import core.utils.VLCManager
+import core.utils.emitProgressTo
+import core.utils.getVideoSurfaceComponent
+import core.utils.mediaPlayer
+import core.utils.setupVideoFinishHandler
 import data.local.model.compose.Progress
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import uk.co.caprica.vlcj.binding.lib.LibC
-import uk.co.caprica.vlcj.binding.lib.LibVlc
-import uk.co.caprica.vlcj.binding.support.runtime.RuntimeUtil
-import uk.co.caprica.vlcj.factory.discovery.NativeDiscovery
 import uk.co.caprica.vlcj.player.base.MediaPlayer
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
-import uk.co.caprica.vlcj.player.component.CallbackMediaPlayerComponent
-import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent
+import uk.co.caprica.vlcj.player.component.MediaPlayerComponent
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer
-import uk.co.caprica.vlcj.support.version.LibVlcVersion
+import uk.co.caprica.vlcj.player.list.MediaListPlayer
+import uk.co.caprica.vlcj.player.list.MediaListPlayerEventAdapter
 import utils.toPercentage
 import java.awt.Component
 
@@ -42,21 +37,62 @@ fun VideoPlayerImpl(
     modifier: Modifier,
     onFinish: (() -> Unit)?
 ) {
+    var isSwingPanelLoaded: Boolean by remember { mutableStateOf(false) }
 
-    initializeMediaPlayerComponent()?.let {
-        val mediaPlayerComponent = remember { it }
-//        val mediaPlayerComponent = remember { initializeMediaPlayerComponent() }
-        val mediaPlayer = remember { mediaPlayerComponent.mediaPlayer() }
+    val mediaPlayerEventListener = object : MediaPlayerEventAdapter() {
+        override fun playing(mediaPlayer: MediaPlayer?) {
+            super.playing(mediaPlayer)
+            Timber.tag("VideoPlayerImpl").d("MediaPlayerEventAdapter.playing()")
+        }
+    }
+
+    val mediaListPlayerEventListener = object : MediaListPlayerEventAdapter() {
+        override fun mediaListPlayerFinished(mediaListPlayer: MediaListPlayer?) {
+            super.mediaListPlayerFinished(mediaListPlayer)
+            Timber
+                .tag("VideoPlayerImpl")
+                .d("mediaListPlayerFinished() | media list : ${mediaListPlayer?.list()?.media()?.count()}")
+        }
+    }
+
+
+    val playerComponent: Component? = remember { VLCManager.mediaPlayerComponent }
+
+    playerComponent?.let { component ->
+
+        val videoSurface: Component = (component as MediaPlayerComponent).getVideoSurfaceComponent()
+        videoSurface.isVisible = true
+
+        val mediaPlayer: EmbeddedMediaPlayer = remember { component.mediaPlayer() }
+
         mediaPlayer.emitProgressTo(progressState)
         mediaPlayer.setupVideoFinishHandler(onFinish)
 
-        val factory = remember { { mediaPlayerComponent } }
+        LaunchedEffect(mediaPlayer) {
+            try {
+//                Timber.tag("VideoPlayerImpl").d("LaunchedEffect | mediaPlayer | add media list player events listener")
+               //  mediaPlayer.subitems().events().addMediaListPlayerEventListener(mediaListPlayerEventListener)
+            } catch (exception: Exception) {
+                exception.printStackTrace()
+            }
+        }
+
+        val factory = remember { { component } }
+
         /* OR the following code and using SwingPanel(factory = { factory }, ...) */
 
         // val factory by rememberUpdatedState(mediaPlayerComponent)
 
         /*OR .start*/
-        LaunchedEffect(url) { mediaPlayer.media().play(url) }
+        LaunchedEffect(isSwingPanelLoaded) {
+            if (!isSwingPanelLoaded) {
+                Timber.tag("VideoPlayerImpl").e("LaunchedEffect | Swing panel not loaded yet")
+                return@LaunchedEffect
+            }
+
+            Timber.tag("VideoPlayerImpl").i("LaunchedEffect | Attempting to play url: $url")
+            mediaPlayer.media().play(url)
+        }
         LaunchedEffect(seek) { mediaPlayer.controls().setPosition(seek) }
         LaunchedEffect(speed) { mediaPlayer.controls().setRate(speed) }
         LaunchedEffect(volume) { mediaPlayer.audio().setVolume(volume.toPercentage()) }
@@ -79,7 +115,15 @@ fun VideoPlayerImpl(
             }
         }
 
-        DisposableEffect(Unit) { onDispose(mediaPlayer::release) }
+
+        DisposableEffect(Unit) {
+            onDispose {
+                Thread.sleep(100)
+                Timber.tag("VideoPlayerImpl").e("DisposableEffect | onDispose | releasing media player....")
+                mediaPlayer.release()
+            }
+        }
+
         SwingPanel( // <--- Swing panel as root for hierarchy where drawing over heavyweight components needed (Swing/Compose switching trick START)
             modifier = Modifier.fillMaxSize().background(Color.Black).zIndex(0f),
             factory = {
@@ -92,136 +136,21 @@ fun VideoPlayerImpl(
                                 factory = factory,
                                 background = Color.Black,
                                 modifier = modifier
-                            ) {
-                                it.background = java.awt.Color.BLACK
-                                it.isVisible = true
+                            ) { panel ->
+                                Timber.tag("VideoPlayerImpl").d("Recomposition | Box.SwingPanel.update()")
+                                isSwingPanelLoaded = true
+
+                                panel.background = java.awt.Color.BLACK
+                                panel.isVisible = true
+                                panel.isFocusable = true
+
+                                panel.requestFocusInWindow()
                             }
                         }
                     }
                 }
             })
     } ?: run {
-        Timber.e("Unable to initialize Media Player Component")
+        Timber.tag("VideoPlayerImpl").e("Recomposition | Unable to initialize Media Player Component")
     }
-}
-
-
-/**
- * See https://github.com/caprica/vlcj/issues/887#issuecomment-503288294
- * for why we're using CallbackMediaPlayerComponent for macOS.
- */
-fun initializeMediaPlayerComponent(): Component? {
-    Timber.d("initializeMediaPlayerComponent()")
-
-    // Check if VLC library can be found on the current system
-    val vlcFound = if (SystemManager.isMacOs()) {
-        runCatching {
-            LibC.INSTANCE.setenv(
-                "VLC_PLUGIN_PATH",
-                "/Applications/VLC.app/Contents/MacOS/plugins",
-                1
-            )
-
-            /*NativeLibrary.addSearchPath(
-                RuntimeUtil.getLibVlcLibraryName(),
-                System.getProperty("user.dir")+ "/src/main/resources/darwin/vlc"
-            )*/
-            NativeLibrary.addSearchPath(
-                RuntimeUtil.getLibVlcLibraryName(),
-                "/Applications/VLC.app/Contents/MacOS/lib"
-            )
-            NativeLibrary.addSearchPath(
-                RuntimeUtil.getLibVlcCoreLibraryName(),
-                "/Applications/VLC.app/Contents/MacOS/lib"
-            )
-
-            Native.load(RuntimeUtil.getLibVlcCoreLibraryName(), LibC::class.java)
-            Native.load(RuntimeUtil.getLibVlcLibraryName(), LibC::class.java)
-            true
-        }
-            .onFailure {
-                it.printStackTrace()
-                Timber.e("initializeMediaPlayerComponent() | onFailure | Error caught with message : ${it.message} (class : ${it.javaClass.canonicalName})")
-            }
-            .onSuccess {
-                Timber.d("initializeMediaPlayerComponent() | onSuccess")
-            }
-            .getOrElse { false }
-    } else {
-        if(!NativeDiscovery().discover()) {
-            false
-        } else {
-            Timber.d("LibVlc found with version: ${LibVlc.libvlc_get_version()}")
-            true
-        }
-    }
-
-    // Check if VLC library can be found on current system
-    return if (!vlcFound) {
-        Timber.e("Unable to find VLC library file. Please make sure that VLC is installed on your system")
-        TheLabDeskApp.updateVlcFoundLibrary(false)
-        null
-    } else {
-        TheLabDeskApp.updateVlcFoundLibrary(true)
-
-        val mediaPlayerComponent: Component = if (SystemManager.isMacOs()) {
-            Timber.e("isMacOs() | Call CallbackMediaPlayerComponent()")
-            CallbackMediaPlayerComponent()
-        } else {
-            Timber.e("NOT isMacOs() | Call EmbeddedMediaPlayerComponent()")
-            EmbeddedMediaPlayerComponent()
-        }
-
-        return mediaPlayerComponent
-    }
-}
-
-/**
- * We play the video again on finish (so the player is kind of idempotent),
- * unless the [onFinish] callback stops the playback.
- * Using `mediaPlayer.controls().repeat = true` did not work as expected.
- */
-@Composable
-private fun MediaPlayer.setupVideoFinishHandler(onFinish: (() -> Unit)?) {
-    DisposableEffect(onFinish) {
-        val listener = object : MediaPlayerEventAdapter() {
-            override fun stopped(mediaPlayer: MediaPlayer) {
-                onFinish?.invoke()
-                mediaPlayer.controls().play()
-            }
-        }
-        events().addMediaPlayerEventListener(listener)
-        onDispose { events().removeMediaPlayerEventListener(listener) }
-    }
-}
-
-/**
- * Checks for and emits video progress every 50 milliseconds.
- * Note that it seems vlcj updates the progress only every 250 milliseconds or so.
- *
- * Instead of using `Unit` as the `key1` for [LaunchedEffect],
- * we could use `media().info()?.mrl()` if it's needed to re-launch
- * the effect (for whatever reason) when the url (aka video) changes.
- */
-@Composable
-private fun MediaPlayer.emitProgressTo(state: MutableState<Progress>) {
-    LaunchedEffect(key1 = Unit) {
-        while (isActive) {
-            val fraction = status().position()
-            val time = status().time()
-            state.value = Progress(fraction.toFloat(), time)
-            delay(50)
-        }
-    }
-}
-
-/**
- * Returns [MediaPlayer] from player components.
- * The method names are the same, but they don't share the same parent/interface.
- * That's why we need this method.
- */
-private fun Component.mediaPlayer() = when (this) {
-    is CallbackMediaPlayerComponent -> mediaPlayer()
-    is EmbeddedMediaPlayerComponent -> mediaPlayer()
-    else -> error("mediaPlayer() can only be called on vlcj player components")
 }
