@@ -1,3 +1,6 @@
+@file:OptIn(ExperimentalComposeLibrary::class)
+
+import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.compose.reload.gradle.ComposeHotRun
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
@@ -59,16 +62,17 @@ composeCompiler {
     featureFlags.addAll(ComposeFeatureFlag.OptimizeNonSkippingGroups)
 
     reportsDestination = layout.buildDirectory.dir("compose_compiler")
-//    stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf")
 }
 
-@OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 dependencies {
 
     // Kotlin
     implementation(platform(libs.kotlin.bom))
     implementation(libs.kotlin.reflect)
+    implementation(libs.kotlin.stdlib)
+    implementation(platform(libs.kotlinx.coroutines.bom))
     implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.swing)
     implementation(libs.kotlinx.serialization.json)
 
     // Note, if you develop a library, you should use compose.desktop.common.
@@ -93,11 +97,19 @@ dependencies {
 
 
     // Ktor
+    implementation(platform(libs.ktor.bom))
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.logging)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.client.serialization.kotlinx.json)
+
+    // JavaFX
+    implementation(libs.javafx.web)
+
+    // Jetbrains
+    // JCEF
+    implementation(libs.jetbrains.jcef.skiko)
 
     // JNA
     implementation(libs.jna)
@@ -135,9 +147,6 @@ dependencies {
      * To access both in Java or Kotlin I have written a tiny open source library called Native Parameter Store Access.
      */
     implementation(libs.native.parameters.store.access)
-
-    implementation("org.openjfx:javafx-web:21")
-    implementation("org.jetbrains.jcef:jcef-skiko:0.1")
 }
 
 tasks.wrapper {
