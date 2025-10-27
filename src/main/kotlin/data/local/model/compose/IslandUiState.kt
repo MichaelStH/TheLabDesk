@@ -1,9 +1,11 @@
 package data.local.model.compose
 
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 
+@Stable
 sealed class IslandUiState(
     val contentSize: DpSize = DpSize(150.dp, 50.dp),
     val hasMainContent: Boolean = false,
@@ -19,20 +21,24 @@ sealed class IslandUiState(
 ) {
     val fullWidth = contentSize.width + leadingContentSize + trailingContentSize
 
+    @Stable
     class DefaultState : IslandUiState()
 
+    @Stable
     class WelcomeState : IslandUiState(
         contentSize = DpSize(
             300.dp, 50.dp
         ),
     )
 
+    @Stable
     class SearchState : IslandUiState(
         contentSize = DpSize(
             350.dp, 70.dp
         ),
     )
 
+    @Stable
     class FaceUnlockState : IslandUiState(
         contentSize = DpSize(
             150.dp, 150.dp
@@ -40,6 +46,7 @@ sealed class IslandUiState(
         hasMainContent = true,
     )
 
+    @Stable
     class CallState : IslandUiState(
         leadingContentSize = 65.dp,
         trailingContentSize = 55.dp,
@@ -47,6 +54,7 @@ sealed class IslandUiState(
         hasTrailingContent = true,
     )
 
+    @Stable
     class CallTimerState : IslandUiState(
         leadingContentSize = 50.dp,
         hasLeadingContent = true,

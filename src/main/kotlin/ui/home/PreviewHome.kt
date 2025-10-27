@@ -131,9 +131,9 @@ fun Home(viewModel: HomeViewModel) {
         ) {
             item { CarouselHeader(viewModel) }
 
-            if (!SystemManager.isMacOs()) {
+            /*if (!SystemManager.isMacOs()) {
                 item { VideoPlayerSample() }
-            }
+            }*/
 
             item { BrowserSample() }
 

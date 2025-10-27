@@ -2,6 +2,7 @@ package data.local.model.compose
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,6 +12,7 @@ import data.local.bean.NavigationItemType
 // First lets create a class which will contain an icon, a type and a boolean initialSelectedValue,
 // and its exposing a selected state variable which is mutableState of initialSelectedValue,
 // this will enable to update individual rows in recomposition
+@Stable
 sealed class NavigationUiState(
     val icon: ImageVector,
     var initialSelectedValue: Boolean,
@@ -18,10 +20,19 @@ sealed class NavigationUiState(
 ) {
     var selected by mutableStateOf(initialSelectedValue)
 
+    @Stable
     data object Home : NavigationUiState(Icons.Filled.Home, false, NavigationItemType.DEFAULT)
+
+    @Stable
     data object News : NavigationUiState(Icons.Filled.Newspaper, false, NavigationItemType.DEFAULT)
+
+    @Stable
     data object Theaters : NavigationUiState(Icons.Filled.Movie, false, NavigationItemType.DEFAULT)
+
+    @Stable
     data object WebView : NavigationUiState(Icons.Default.AlternateEmail, false, NavigationItemType.DEFAULT)
+
+    @Stable
     data object Settings : NavigationUiState(Icons.Filled.Settings, false, NavigationItemType.SETTINGS)
 
     companion object {
@@ -37,7 +48,7 @@ sealed class NavigationUiState(
                     }
                 }
 
-        fun values(): List<NavigationUiState> = listOf(Home, News, Theaters,WebView, Settings)
+        fun values(): List<NavigationUiState> = listOf(Home, News, Theaters, WebView, Settings)
 
         fun valuesIndexed(): List<NavigationUiState> =
             NavigationUiState::class.sealedSubclasses.mapIndexed { _, kClass -> kClass.objectInstance as NavigationUiState }
