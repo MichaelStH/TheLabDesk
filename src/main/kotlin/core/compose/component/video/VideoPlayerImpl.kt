@@ -11,10 +11,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.zIndex
 import core.log.Timber
 import core.utils.VLCManager
-import core.utils.emitProgressTo
-import core.utils.getVideoSurfaceComponent
-import core.utils.mediaPlayer
-import core.utils.setupVideoFinishHandler
+import core.utils.VLCManager.emitProgressTo
+import core.utils.VLCManager.getVideoSurfaceComponent
+import core.utils.VLCManager.mediaPlayer
+import core.utils.VLCManager.setupVideoFinishHandler
 import data.local.model.compose.Progress
 import uk.co.caprica.vlcj.player.base.MediaPlayer
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
@@ -39,6 +39,8 @@ fun VideoPlayerImpl(
 ) {
     var isSwingPanelLoaded: Boolean by remember { mutableStateOf(false) }
 
+    val isVideoPlaying: Boolean by VLCManager.isVideoPlaying.collectAsState()
+
     val mediaPlayerEventListener = object : MediaPlayerEventAdapter() {
         override fun playing(mediaPlayer: MediaPlayer?) {
             super.playing(mediaPlayer)
@@ -59,34 +61,45 @@ fun VideoPlayerImpl(
     val playerComponent: Component? = remember { VLCManager.mediaPlayerComponent }
 
     playerComponent?.let { component ->
-
-        val videoSurface: Component = (component as MediaPlayerComponent).getVideoSurfaceComponent()
-        videoSurface.isVisible = true
-
         val mediaPlayer: EmbeddedMediaPlayer = remember { component.mediaPlayer() }
 
         mediaPlayer.emitProgressTo(progressState)
         mediaPlayer.setupVideoFinishHandler(onFinish)
 
-        LaunchedEffect(mediaPlayer) {
-            try {
-//                Timber.tag("VideoPlayerImpl").d("LaunchedEffect | mediaPlayer | add media list player events listener")
-               //  mediaPlayer.subitems().events().addMediaListPlayerEventListener(mediaListPlayerEventListener)
-            } catch (exception: Exception) {
-                exception.printStackTrace()
+        val factory = remember {
+            {
+                component
+
+                // This factory is called once to create the Swing component
+//                VLCManager.getJPanel()
             }
         }
-
-        val factory = remember { { component } }
 
         /* OR the following code and using SwingPanel(factory = { factory }, ...) */
 
         // val factory by rememberUpdatedState(mediaPlayerComponent)
 
+        val videoSurface: Component = (component as MediaPlayerComponent).getVideoSurfaceComponent()
+        videoSurface.isVisible = true
+
+        LaunchedEffect(mediaPlayer) {
+            try {
+//                Timber.tag("VideoPlayerImpl").d("LaunchedEffect | mediaPlayer | add media list player events listener")
+                //  mediaPlayer.subitems().events().addMediaListPlayerEventListener(mediaListPlayerEventListener)
+            } catch (exception: Exception) {
+                exception.printStackTrace()
+            }
+        }
+
         /*OR .start*/
         LaunchedEffect(isSwingPanelLoaded) {
             if (!isSwingPanelLoaded) {
                 Timber.tag("VideoPlayerImpl").e("LaunchedEffect | Swing panel not loaded yet")
+                return@LaunchedEffect
+            }
+
+            if (isVideoPlaying) {
+                Timber.tag("VideoPlayerImpl").e("LaunchedEffect | Video is already playing")
                 return@LaunchedEffect
             }
 
@@ -123,6 +136,7 @@ fun VideoPlayerImpl(
                 mediaPlayer.release()
             }
         }
+
 
         SwingPanel( // <--- Swing panel as root for hierarchy where drawing over heavyweight components needed (Swing/Compose switching trick START)
             modifier = Modifier.fillMaxSize().background(Color.Black).zIndex(0f),
