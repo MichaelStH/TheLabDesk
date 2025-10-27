@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.awt.SwingPanel
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusManager
@@ -45,6 +46,7 @@ import core.utils.SystemManager
 import core.utils.ToastManager
 import data.local.bean.WindowTypes
 import di.AppModule
+import javafx.scene.web.WebView
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import ui.About
@@ -153,8 +155,12 @@ fun main() {
     application(exitProcessOnExit = true) {
         // Required to make sure the JavaFx event loop doesn't finish (can happen when java fx panels in app are shown/hidden)
         val finishListener = object : PlatformImpl.FinishListener {
-            override fun idle(implicitExit: Boolean) {}
-            override fun exitCalled() {}
+            override fun idle(implicitExit: Boolean) {
+                // Timber.d("idle() | implicitExit: $implicitExit")
+            }
+            override fun exitCalled() {
+                Timber.w("exitCalled()")
+            }
         }
         PlatformImpl.addListener(finishListener)
 

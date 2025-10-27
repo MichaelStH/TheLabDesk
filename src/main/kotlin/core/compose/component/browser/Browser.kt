@@ -3,17 +3,12 @@ package core.compose.component.browser
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.awt.ComposePanel
 import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.awt.SwingPanel
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.round
+import com.riders.thelabdesk.core.compose.component.browser.ComposeJFXPanel
+import core.log.Timber
 import javafx.application.Platform
 import javafx.concurrent.Worker
 import javafx.embed.swing.JFXPanel
@@ -22,7 +17,6 @@ import javafx.scene.web.WebEngine
 import javafx.scene.web.WebView
 import netscape.javascript.JSObject
 import ui.browser.BrowserViewModel
-import java.awt.BorderLayout
 import javax.swing.JPanel
 
 @Composable
@@ -57,7 +51,10 @@ fun Browser(composeWindow: ComposeWindow, modifier: Modifier, url: String) {
                         println("page load error : $newError")
                     }
                     jfxPanel.scene = scene
-                    engine.load(url) // can be a html document from resources ..
+
+                    // can be a html document from resources ...
+                    engine.load(url)
+
                     engine.setOnError { error -> println("onError : $error") }
                 }
             }, onDestroy = {
@@ -71,7 +68,12 @@ fun Browser(composeWindow: ComposeWindow, modifier: Modifier, url: String) {
 }
 
 @Composable
-fun Browser(composeWindow: ComposeWindow, viewModel: BrowserViewModel, modifier: Modifier, url: String) {
+fun Browser(
+    composeWindow: ComposeWindow,
+    viewModel: BrowserViewModel,
+    url: String,
+    modifier: Modifier = Modifier
+) {
     val jfxPanel = remember { JFXPanel() }
     var jsObject = remember<JSObject?> { null }
 
@@ -81,8 +83,11 @@ fun Browser(composeWindow: ComposeWindow, viewModel: BrowserViewModel, modifier:
             jfxPanel = jfxPanel,
             onCreate = {
                 Platform.runLater {
+                    Timber.tag("Browser").d("ComposeJFXPanel.onCreate()")
+
                     viewModel.updateWebView(WebView())
                     viewModel.updateWebEngine()
+
                     val scene = Scene(viewModel.webView)
 
                     viewModel.engine?.let {
@@ -104,58 +109,23 @@ fun Browser(composeWindow: ComposeWindow, viewModel: BrowserViewModel, modifier:
                             println("page load error : $newError")
                         }
                         jfxPanel.scene = scene
-                        it.load(url) // can be a html document from resources ..
-                        it.setOnError { error -> println("onError : $error") }
-                    }
 
-                        // viewModel.updateJavaThread(Platform)
+                        // can be a html document from resources ...
+                        it.load(url)
+
+                        it.setOnError { error -> println("onError : $error") }
+                    } ?: run {
+                        Timber.tag("Browser").e("ComposeJFXPanel.onCreate() | engine is null")
+                    }
                 }
             }, onDestroy = {
+                Timber.tag("Browser").e("ComposeJFXPanel.onDestroy()")
                 Platform.runLater {
                     jsObject?.let { jsObj ->
                         // clean up code for more complex implementations i.e. removing javascript callbacks etc..
                     }
                 }
             })
-    }
-}
-
-@Composable
-fun ComposeJFXPanel(
-    composeWindow: ComposeWindow,
-    jfxPanel: JFXPanel,
-    onCreate: () -> Unit,
-    onDestroy: () -> Unit = {}
-) {
-    val jPanel = remember { JPanel() }
-    val density = LocalDensity.current.density
-
-    Layout(
-        content = {},
-        modifier = Modifier.onGloballyPositioned { childCoordinates ->
-            val coordinates = childCoordinates.parentCoordinates!!
-            val location = coordinates.localToWindow(Offset.Zero).round()
-            val size = coordinates.size
-            jPanel.setBounds(
-                (location.x / density).toInt(),
-                (location.y / density).toInt(),
-                (size.width / density).toInt(),
-                (size.height / density).toInt()
-            )
-            jPanel.validate()
-            jPanel.repaint()
-        },
-        measurePolicy = { _, _ -> layout(0, 0) {} })
-
-    DisposableEffect(jPanel) {
-        composeWindow.add(jPanel)
-        jPanel.layout = BorderLayout(0, 0)
-        jPanel.add(jfxPanel)
-        onCreate()
-        onDispose {
-            onDestroy()
-            composeWindow.remove(jPanel)
-        }
     }
 }
 
@@ -193,20 +163,6 @@ private fun JFXPanel.buildWebView(url: String) {
 
         // Load the YouTube video using the embed URL
         webEngine.load(url)
-        val scene = Scene(webView)
-        setScene(scene)
-    }
-}
-
-class JFXWebView : JFXPanel() {
-    init {
-        Platform.runLater(::initialiseJavaFXScene)
-    }
-
-    private fun initialiseJavaFXScene() {
-        val webView = WebView()
-        val webEngine = webView.engine
-        webEngine.load("https://html5test.com/")
         val scene = Scene(webView)
         setScene(scene)
     }

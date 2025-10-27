@@ -24,6 +24,7 @@ object Constants {
     // HOME
     const val VIDEO_BUNNY_URL = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
     const val VIDEO_YOUTUBE_BASE_URL = "http://www.youtube.com/v/"
+    const val VIDEO_YOUTUBE_EMBED_BASE_URL = "https://www.youtube.com/embed/"
     const val VIDEO_YOUTUBE_WATCH_BASE_URL = "https://www.youtube.com/watch?v="
     const val VIDEO_YOUTUBE_SHORT_BASE_URL = "https://youtu.be/"
     const val IMAGE_INTELLI_J_LOGO_URL =
@@ -47,7 +48,7 @@ object Constants {
     const val TITLE_TRENDING_TV_SHOWS = "Trending Tv Shows"
 
     // BROWSER
-    const val URL_GOOGLE = "http://www.google.com"
+    const val URL_GOOGLE = "https://www.google.com"
 
     // SETTINGS
     const val PLACEHOLDER_ENABLE_DARK_MODE = "Enable dark mode"
