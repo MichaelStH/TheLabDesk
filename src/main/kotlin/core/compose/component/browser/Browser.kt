@@ -17,6 +17,7 @@ import javafx.scene.web.WebEngine
 import javafx.scene.web.WebView
 import netscape.javascript.JSObject
 import ui.browser.BrowserViewModel
+import java.awt.Dimension
 import javax.swing.JPanel
 
 @Composable
@@ -74,13 +75,24 @@ fun Browser(
     url: String,
     modifier: Modifier = Modifier
 ) {
-    val jfxPanel = remember { JFXPanel() }
-    var jsObject = remember<JSObject?> { null }
 
     BoxWithConstraints(modifier = modifier) {
-        ComposeJFXPanel(
+        val jfxPanel = remember {
+            JFXPanel().apply {
+                size = Dimension(
+                    this@BoxWithConstraints.maxWidth.value.toInt(),
+                    this@BoxWithConstraints.maxHeight.value.toInt()
+                )
+                isVisible = true
+            }
+        }
+        var jsObject = remember<JSObject?> { null }
+
+        com.riders.thelabdesk.core.compose.component.browser.WebView(
+            modifier = Modifier.matchParentSize(),
             composeWindow = composeWindow,
             jfxPanel = jfxPanel,
+            url = url,
             onCreate = {
                 Platform.runLater {
                     Timber.tag("Browser").d("ComposeJFXPanel.onCreate()")

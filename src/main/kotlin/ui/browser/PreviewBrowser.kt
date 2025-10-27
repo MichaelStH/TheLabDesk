@@ -26,6 +26,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import core.compose.component.TheLabDeskSurface
 import core.compose.component.browser.Browser
 import core.compose.theme.TheLabDeskTheme
@@ -102,6 +103,7 @@ fun SearchWebView(viewModel: BrowserViewModel) {
 @Preview
 @Composable
 fun BrowserContent(composeWindow: ComposeWindow, viewModel: BrowserViewModel) {
+
     TheLabDeskTheme {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -114,7 +116,7 @@ fun BrowserContent(composeWindow: ComposeWindow, viewModel: BrowserViewModel) {
 
             Browser(
                 composeWindow = composeWindow,
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize().zIndex(5f),
                 viewModel = viewModel,
                 url = viewModel.currentUrl
             )
