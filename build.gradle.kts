@@ -4,6 +4,7 @@ import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.compose.reload.gradle.ComposeHotRun
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.*
 
 plugins {
@@ -50,6 +51,12 @@ sourceSets {
 }
 
 kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_24
+    }
+
+    jvmToolchain(24)
+
     sourceSets.all {
         languageSettings {
             languageVersion = "2.0"
@@ -150,7 +157,7 @@ dependencies {
 }
 
 tasks.wrapper {
-    this.gradleVersion = "8.14.3"
+    this.gradleVersion = "9.0.0"
     // You can either download the binary-only version of Gradle (BIN) or
     // the full version (with sources and documentation) of Gradle (ALL)
     distributionType = Wrapper.DistributionType.ALL
@@ -189,7 +196,7 @@ tasks.withType<ComposeHotRun>().configureEach {
 }
 
 javafx {
-    version = "21"
+    version = "24"
     modules = listOf("javafx.controls", "javafx.swing", "javafx.web", "javafx.graphics")
 }
 

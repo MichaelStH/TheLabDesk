@@ -18,7 +18,7 @@ jakartaJson = "2.1.2"
 json = "20231013"
 jackson = "2.15.3"
 # JavaFx
-javafxWeb = "21"
+javafxWeb = "24"
 jetbrainsJcef = "0.1"
 # Kotlin
 kotlin = "2.2.21"
@@ -38,7 +38,7 @@ vlcOsx = "2.0.0"
 vlcPlayer = "4.11.0"
 #vlcPlayer = "5.0.0-M4"
 #YoutubePlayer
-youtubePlayer = "12.1.0"
+youtubePlayer = "13.0.0"
 # Zxing
 zxing = "3.5.2"
 
@@ -65,8 +65,8 @@ jackson-dataformat = { group = "com.fasterxml.jackson.dataformat", name = "jacks
 native-parameters-store-access = { group = "com.github.tkuenneth", name = "nativeparameterstoreaccess", version.ref = "nativeParametersStoreAccess" }
 # Kotlin
 kotlin-bom = { group = "org.jetbrains.kotlin", name = "kotlin-bom", version.ref = "kotlin" }
-kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin" }
-kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib" }
+kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect" }
 kotlinx-coroutines-bom = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-bom", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core" }
 kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing" }
