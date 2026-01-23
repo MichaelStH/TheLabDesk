@@ -1,4 +1,4 @@
-package com.riders.thelabdesk.core.utils
+package com.riders.thelabdesk.core.common.utils
 
 import java.awt.Desktop
 import java.net.URI

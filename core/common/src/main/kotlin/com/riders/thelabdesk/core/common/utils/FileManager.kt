@@ -1,13 +1,11 @@
-package core.utils
+package com.riders.thelabdesk.core.common.utils
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
-import core.log.Timber
-import data.remote.dto.Config
-import kotlinx.serialization.encodeToString
+import com.riders.thelabdesk.core.common.data.local.model.Config
+import com.riders.thelabdesk.core.common.log.Timber
 import kotlinx.serialization.json.Json
 import org.json.JSONObject
-import utils.Constants
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
@@ -158,7 +156,7 @@ object FileManager {
         Timber.d("updateConfigFile()")
         Timber.d("check operation running: $isOperationRunning")
 
-        if(isOperationRunning) {
+        if (isOperationRunning) {
             Timber.e("Operation is already running")
             return
         }

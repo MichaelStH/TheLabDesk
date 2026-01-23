@@ -1,9 +1,8 @@
-package core.utils
+package com.riders.thelabdesk.core.common.utils
 
 import com.github.tkuenneth.nativeparameterstoreaccess.MacOSDefaults
 import com.github.tkuenneth.nativeparameterstoreaccess.WindowsRegistry
-import core.log.Timber
-import utils.Constants
+import com.riders.thelabdesk.core.common.log.Timber
 import java.awt.Desktop
 import java.io.File
 import java.net.URI
