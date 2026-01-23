@@ -1,6 +1,5 @@
-package core.compose.component
+package com.riders.thelabdesk.core.ui.compose.component
 
-import com.riders.thelabdesk.TheLabDeskApp
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -8,16 +7,18 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.loadImageBitmap
-import core.log.Timber
-import core.utils.SystemManager
+import com.riders.thelabdesk.core.common.log.Timber
+import com.riders.thelabdesk.core.common.utils.SystemManager
+import com.riders.thelabdesk.core.ui.compose.utils.ResourceLoader
 
-object TheLabDeskIcon : Painter() {
+
+class TheLabDeskIcon : Painter() {
     override val intrinsicSize = Size(256f, 256f)
 
     override fun DrawScope.onDraw() {
         val imageBitmap: ImageBitmap? =
             runCatching {
-                TheLabDeskApp.javaClass.getResourceAsStream(
+                ResourceLoader.javaClass.classLoader.getResourceAsStream(
                     if (SystemManager.isMacOs()) "icons/thelab_desk.icns"
                     else if (SystemManager.isLinux()) "icons/thelab_desk.png"
                     else "icons/thelab_desk.ico"
