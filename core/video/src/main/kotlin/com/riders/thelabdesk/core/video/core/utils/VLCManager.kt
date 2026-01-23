@@ -1,14 +1,16 @@
-package core.utils
+package com.riders.thelabdesk.core.video.core.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import com.riders.thelabdesk.TheLabDeskApp
+import com.riders.thelabdesk.core.common.log.Timber
+import com.riders.thelabdesk.core.common.utils.SystemManager
+import com.riders.thelabdesk.core.video.core.utils.VLCManager.hasVLCLibrary
+import com.riders.thelabdesk.core.video.core.utils.VLCManager.initializeMediaPlayerComponent
+import com.riders.thelabdesk.core.video.data.local.compose.VideoProgress
 import com.sun.jna.Native
 import com.sun.jna.NativeLibrary
-import core.log.Timber
-import data.local.model.compose.Progress
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,7 +27,6 @@ import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent
 import uk.co.caprica.vlcj.player.component.MediaPlayerComponent
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer
 import java.awt.Component
-import javax.swing.JPanel
 
 /**
  * Manages VLC player initialization and component creation.
@@ -38,7 +39,7 @@ import javax.swing.JPanel
 object VLCManager {
 
     /**
-     * Lazily initializes and provides a media player [Component].
+     * Lazily initializes and provides a media player [java.awt.Component].
      *
      * The component is created by [initializeMediaPlayerComponent] only when first accessed.
      * It will be `null` if the VLC library is not found.
@@ -51,8 +52,8 @@ object VLCManager {
     // the native video surface, making it easy to embed in SwingPanel.
     val embeddedMediaPlayer: EmbeddedMediaPlayer? by lazy { mediaPlayerComponent?.mediaPlayer() }
 
-    var _isVideoPlaying : MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val isVideoPlaying :  StateFlow<Boolean> = _isVideoPlaying
+    var _isVideoPlaying: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isVideoPlaying: StateFlow<Boolean> = _isVideoPlaying
 
     init {
         // --- IMPORTANT NATIVE LIBRARY SETUP ---
@@ -70,7 +71,7 @@ object VLCManager {
         try {
             // Initialization of the component
             if (null == mediaPlayerComponent) {
-                mediaPlayerComponent = initializeMediaPlayerComponent() as EmbeddedMediaPlayerComponent
+                mediaPlayerComponent = initializeMediaPlayerComponent() {} as EmbeddedMediaPlayerComponent
             }
             println("vlcj component initialized successfully.")
         } catch (e: UnsatisfiedLinkError) {
@@ -88,7 +89,7 @@ object VLCManager {
      *
      * For macOS, it manually sets environment variables and search paths for the default
      * VLC installation location (`/Applications/VLC.app`).
-     * For other operating systems, it uses [NativeDiscovery] to find the library.
+     * For other operating systems, it uses [uk.co.caprica.vlcj.factory.discovery.NativeDiscovery] to find the library.
      *
      * @return `true` if the VLC library is found, `false` otherwise.
      */
@@ -139,32 +140,33 @@ object VLCManager {
      * If the VLC library is not found via [hasVLCLibrary], this function will return `null`
      * and update the application state accordingly.
      *
-     * For macOS, it uses [CallbackMediaPlayerComponent] due to issues with the
+     * For macOS, it uses [uk.co.caprica.vlcj.player.component.CallbackMediaPlayerComponent] due to issues with the
      * heavyweight `EmbeddedMediaPlayerComponent`.
      * See https://github.com/caprica/vlcj/issues/887#issuecomment-503288294
      * for more context. For other systems, it uses [EmbeddedMediaPlayerComponent].
      *
-     * @return A media player [Component] if VLC is found, otherwise `null`.
+     * @return A media player [java.awt.Component] if VLC is found, otherwise `null`.
      */
-    fun initializeMediaPlayerComponent(): Component? {
+    fun initializeMediaPlayerComponent(onUpdateIsVlcLibraryFound: (Boolean) -> Unit): Component? {
         Timber.d("initializeMediaPlayerComponent()")
 
         return if (!hasVLCLibrary()) {
             Timber.e("Unable to find VLC library file. Please make sure that VLC is installed on your system")
-            TheLabDeskApp.updateVlcFoundLibrary(false)
+            onUpdateIsVlcLibraryFound.invoke(false)
             null
         } else {
-            TheLabDeskApp.updateVlcFoundLibrary(true)
+            onUpdateIsVlcLibraryFound.invoke(true)
 
             val mediaPlayerComponent: Component = if (SystemManager.isMacOs()) {
                 Timber.e("isMacOs() | Call CallbackMediaPlayerComponent()")
-                CallbackMediaPlayerComponent()
+                //CallbackMediaPlayerComponent()
+                EmbeddedMediaPlayerComponent()
             } else {
                 Timber.e("NOT isMacOs() | Call EmbeddedMediaPlayerComponent()")
                 EmbeddedMediaPlayerComponent()
             }
 
-            return mediaPlayerComponent
+            mediaPlayerComponent
         }
     }
 
@@ -175,12 +177,11 @@ object VLCManager {
     }
 
 
-
-////////////////////////////////////////////////////////////
-//
-// EXTENSIONS
-//
-////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////
+    //
+    // EXTENSIONS
+    //
+    ////////////////////////////////////////////////////////////
     /**
      * A Composable effect that sets up a listener to handle the video finishing.
      *
@@ -196,7 +197,7 @@ object VLCManager {
             val listener = object : MediaPlayerEventAdapter() {
                 override fun playing(mediaPlayer: MediaPlayer?) {
 
-                    if(!this@VLCManager._isVideoPlaying.value) {
+                    if (!this@VLCManager._isVideoPlaying.value) {
                         Timber.d("MediaPlayerEventAdapter.playing()")
                         this@VLCManager._isVideoPlaying.update { true }
                     }
@@ -221,22 +222,22 @@ object VLCManager {
     }
 
     /**
-     * A Composable effect that periodically emits the media player's progress to a [MutableState].
+     * A Composable effect that periodically emits the media player's progress to a [androidx.compose.runtime.MutableState].
      *
      * The progress is checked every 50 milliseconds. Note that vlcj itself might update
      * the progress less frequently (e.g., every ~250ms).
      *
-     * @param state The [MutableState] of [Progress] to update with the current playback
+     * @param state The [androidx.compose.runtime.MutableState] of [com.riders.thelabdesk.core.video.data.local.compose.VideoProgress] to update with the current playback
      * position and time.
      */
     @Composable
-    fun MediaPlayer.emitProgressTo(state: MutableState<Progress>) {
+    fun MediaPlayer.emitProgressTo(state: MutableState<VideoProgress>) {
         LaunchedEffect(key1 = Unit) {
             while (isActive) {
                 try {
                     val fraction = status().position()
                     val time = status().time()
-                    state.value = Progress(fraction.toFloat(), time)
+                    state.value = VideoProgress(fraction.toFloat(), time)
                     delay(50)
                 } catch (exception: Exception) {
                     exception.printStackTrace()
@@ -246,7 +247,7 @@ object VLCManager {
     }
 
     /**
-     * Extension function to get the video surface component from a [MediaPlayerComponent].
+     * Extension function to get the video surface component from a [uk.co.caprica.vlcj.player.component.MediaPlayerComponent].
      *
      * @return The underlying video surface [Component].
      * @throws IllegalStateException if called on a type that is not a known vlcj player component.
@@ -283,5 +284,4 @@ object VLCManager {
                 }
         }
     }
-
 }

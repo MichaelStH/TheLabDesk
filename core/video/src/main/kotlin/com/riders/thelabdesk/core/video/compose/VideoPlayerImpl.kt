@@ -1,4 +1,4 @@
-package core.compose.component.video
+package com.riders.thelabdesk.core.video.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -9,20 +9,20 @@ import androidx.compose.ui.awt.ComposePanel
 import androidx.compose.ui.awt.SwingPanel
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.zIndex
-import core.log.Timber
-import core.utils.VLCManager
-import core.utils.VLCManager.emitProgressTo
-import core.utils.VLCManager.getVideoSurfaceComponent
-import core.utils.VLCManager.mediaPlayer
-import core.utils.VLCManager.setupVideoFinishHandler
-import data.local.model.compose.Progress
+import com.riders.thelabdesk.core.common.log.Timber
+import com.riders.thelabdesk.core.common.utils.toPercentage
+import com.riders.thelabdesk.core.video.core.utils.VLCManager
+import com.riders.thelabdesk.core.video.core.utils.VLCManager.emitProgressTo
+import com.riders.thelabdesk.core.video.core.utils.VLCManager.getVideoSurfaceComponent
+import com.riders.thelabdesk.core.video.core.utils.VLCManager.mediaPlayer
+import com.riders.thelabdesk.core.video.core.utils.VLCManager.setupVideoFinishHandler
+import com.riders.thelabdesk.core.video.data.local.compose.VideoProgress
 import uk.co.caprica.vlcj.player.base.MediaPlayer
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
 import uk.co.caprica.vlcj.player.component.MediaPlayerComponent
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer
 import uk.co.caprica.vlcj.player.list.MediaListPlayer
 import uk.co.caprica.vlcj.player.list.MediaListPlayerEventAdapter
-import utils.toPercentage
 import java.awt.Component
 
 @Composable
@@ -33,7 +33,7 @@ fun VideoPlayerImpl(
     speed: Float,
     seek: Float,
     isFullscreen: Boolean,
-    progressState: MutableState<Progress>,
+    progressState: MutableState<VideoProgress>,
     modifier: Modifier,
     onFinish: (() -> Unit)?
 ) {

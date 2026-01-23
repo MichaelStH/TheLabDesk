@@ -1,11 +1,8 @@
-package data.local.model.compose
+package com.riders.thelabdesk.core.video.data.local.compose
 
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.listSaver
-import androidx.compose.runtime.setValue
+import com.riders.thelabdesk.core.video.data.local.compose.VideoPlayerState.Companion.Saver
 
 @Stable
 class VideoPlayerState(
@@ -14,7 +11,7 @@ class VideoPlayerState(
     volume: Float = 1f,
     isResumed: Boolean = true,
     isFullscreen: Boolean = false,
-    progress: Progress
+    progress: VideoProgress
 ) {
     var seek by mutableStateOf(seek)
     var speed by mutableStateOf(speed)
@@ -22,7 +19,7 @@ class VideoPlayerState(
     var isResumed by mutableStateOf(isResumed)
     var isFullscreen by mutableStateOf(isFullscreen)
     internal val _progress = mutableStateOf(progress)
-    val progress: State<Progress> = _progress
+    val progress: State<VideoProgress> = _progress
 
     fun toggleResume() {
         isResumed = !isResumed
@@ -58,7 +55,7 @@ class VideoPlayerState(
                     volume = it[2] as Float,
                     isResumed = it[3] as Boolean,
                     isFullscreen = it[4] as Boolean,
-                    progress = it[5] as Progress,
+                    progress = it[5] as VideoProgress,
                 )
             }
         )

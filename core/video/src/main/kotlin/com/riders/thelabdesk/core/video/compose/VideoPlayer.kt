@@ -1,7 +1,7 @@
-package core.compose.component.video
+package com.riders.thelabdesk.core.video.compose
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.NoPhotography
@@ -13,11 +13,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import core.compose.component.TheLabDeskText
-import core.compose.theme.isSystemInDarkTheme
-import data.local.model.compose.Progress
-import data.local.model.compose.VideoPlayerState
+import com.riders.thelabdesk.core.ui.compose.component.TheLabDeskText
+import com.riders.thelabdesk.core.video.data.local.compose.VideoPlayerState
+import com.riders.thelabdesk.core.video.data.local.compose.VideoProgress
 
 ////////////////////////////////////////////////////////
 //
@@ -38,7 +38,7 @@ fun rememberVideoPlayerState(
         volume,
         isResumed,
         isFullscreen,
-        Progress(0f, 0)
+        VideoProgress(0f, 0)
     )
 }
 
