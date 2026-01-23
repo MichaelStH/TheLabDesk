@@ -52,10 +52,10 @@ sourceSets {
 
 kotlin {
     compilerOptions {
-        jvmTarget = JvmTarget.JVM_24
+        jvmTarget = JvmTarget.JVM_21
     }
 
-    jvmToolchain(24)
+    jvmToolchain(21)
 
     sourceSets.all {
         languageSettings {
