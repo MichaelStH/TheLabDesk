@@ -1,6 +1,5 @@
-package ui.home
+package com.riders.thelabdesk.feature.home.ui
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,16 +16,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import core.compose.component.TheLabDeskText
-import core.compose.component.carousel.AutoSlidingCarousel
-import core.compose.theme.TheLabDeskTheme
-import core.compose.theme.Typography
-import core.compose.utils.AsyncBitmapImageFromNetwork
-import core.compose.utils.AsyncSvgImage
-import core.log.Timber
-import core.utils.SystemManager
-import core.utils.ToastManager
+import com.riders.thelabdesk.core.common.log.Timber
+import com.riders.thelabdesk.core.ui.compose.component.TheLabDeskText
+import com.riders.thelabdesk.core.ui.compose.component.carousel.AutoSlidingCarousel
+import com.riders.thelabdesk.core.ui.compose.theme.TheLabDeskTheme
+import com.riders.thelabdesk.core.ui.compose.theme.Typography
+import com.riders.thelabdesk.core.ui.compose.utils.AsyncBitmapImageFromNetwork
+import com.riders.thelabdesk.core.ui.compose.utils.AsyncSvgImage
+import com.riders.thelabdesk.core.ui.utils.ToastManager
 import kotlinx.coroutines.delay
 
 //////////////////////////////////////////////////

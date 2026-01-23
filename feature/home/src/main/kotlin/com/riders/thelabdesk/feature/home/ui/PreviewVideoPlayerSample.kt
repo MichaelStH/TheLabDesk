@@ -1,8 +1,6 @@
-package ui.home
+package com.riders.thelabdesk.feature.home.ui
 
-import com.riders.thelabdesk.TheLabDeskApp
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,10 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import core.compose.component.video.NoVideoPlayerFound
-import core.compose.component.video.VideoPlayer
-import core.compose.component.video.rememberVideoPlayerState
-import utils.Constants
+import com.riders.thelabdesk.core.video.compose.NoVideoPlayerFound
+import com.riders.thelabdesk.core.video.compose.VideoPlayer
+import com.riders.thelabdesk.core.video.compose.rememberVideoPlayerState
+import com.riders.thelabdesk.feature.home.utils.Constants
 
 
 //////////////////////////////////////////////////
@@ -24,9 +22,8 @@ import utils.Constants
 // COMPOSE
 //
 //////////////////////////////////////////////////
-@Preview
 @Composable
-fun VideoPlayerSample() {
+fun VideoPlayerSample(isVlcFound: Boolean) {
     val title = "Video Player"
     val desc = "Implementation of a video player.\n\nHere's a preview of the video player use for theater item previews"
 
@@ -39,7 +36,7 @@ fun VideoPlayerSample() {
                     .clip(shape = RoundedCornerShape(16.dp)),
                 contentAlignment = Alignment.Center
             ) {
-                AnimatedContent(targetState = TheLabDeskApp.isVlcFound) { vlcFound ->
+                AnimatedContent(targetState = isVlcFound) { vlcFound ->
                     if (!vlcFound) {
                         NoVideoPlayerFound()
                     } else {

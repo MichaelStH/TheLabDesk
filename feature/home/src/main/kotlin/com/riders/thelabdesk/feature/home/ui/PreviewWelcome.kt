@@ -1,6 +1,5 @@
-package ui.home
+package com.riders.thelabdesk.feature.home.ui
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -17,11 +16,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import core.compose.theme.TheLabDeskTheme
-import core.compose.theme.samsungSangFamily
-import core.compose.utils.Text
+import com.riders.thelabdesk.core.ui.compose.theme.TheLabDeskTheme
+import com.riders.thelabdesk.core.ui.compose.theme.samsungSangFamily
+import com.riders.thelabdesk.core.ui.compose.utils.Text
 
 
 //////////////////////////////////////////////////
@@ -110,7 +110,7 @@ fun WelcomeContent() {
 
 @Preview
 @Composable
-fun WelcomeContent(modifier: Modifier) {
+fun WelcomeContent(modifier: Modifier = Modifier) {
     TheLabDeskTheme {
         Card(
             modifier = modifier,

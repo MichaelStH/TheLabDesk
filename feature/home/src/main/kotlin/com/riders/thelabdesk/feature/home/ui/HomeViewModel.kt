@@ -1,11 +1,11 @@
-package ui.home
+package com.riders.thelabdesk.feature.home.ui
 
-import base.BaseViewModel
-import utils.Constants
+import com.riders.thelabdesk.core.ui.base.BaseViewModel
+import com.riders.thelabdesk.feature.home.utils.Constants
 
 class HomeViewModel : BaseViewModel() {
 
-    val carouselList:List<String> = listOf(
+    val carouselList: List<String> = listOf(
         /*"N/A",
         Constants.IMAGE_INTELLI_J_LOGO_URL,*/
         "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg",
