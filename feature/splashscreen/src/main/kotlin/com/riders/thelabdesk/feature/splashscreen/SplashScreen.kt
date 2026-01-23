@@ -1,7 +1,6 @@
 package com.riders.thelabdesk.feature.splashscreen
 
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.LinearProgressIndicator
@@ -15,16 +14,15 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import core.compose.component.CardWithAnimatedBorder
-import core.compose.component.TheLabDeskLogo
-import core.compose.theme.TheLabDeskTheme
-import core.compose.theme.samsungSangFamily
-import di.AppModule
+import com.riders.thelabdesk.core.ui.compose.component.CardWithAnimatedBorder
+import com.riders.thelabdesk.core.ui.compose.component.TheLabDeskLogo
+import com.riders.thelabdesk.core.ui.compose.theme.TheLabDeskTheme
+import com.riders.thelabdesk.core.ui.compose.theme.samsungSangFamily
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import ui.main.MainViewModel
 import kotlin.random.Random
 
 //////////////////////////////////////////////////
@@ -33,7 +31,7 @@ import kotlin.random.Random
 //
 //////////////////////////////////////////////////
 @Composable
-fun SplashScreen(viewModel: MainViewModel) {
+fun SplashScreen(viewModel: SplashScreenViewModel) {
     val scope = rememberCoroutineScope()
     var progress by remember { mutableFloatStateOf(0f) }
 
@@ -50,6 +48,7 @@ fun SplashScreen(viewModel: MainViewModel) {
                 verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically)
             ) {
                 TheLabDeskLogo(modifier = Modifier.size(120.dp))
+
                 Text(
                     text = "Loading...", style = TextStyle(
                         fontFamily = samsungSangFamily,
@@ -89,8 +88,7 @@ fun SplashScreen(viewModel: MainViewModel) {
 @Preview
 @Composable
 private fun PreviewSplashScreen() {
-    val viewModel: MainViewModel = MainViewModel(AppModule.injectDependencies())
     TheLabDeskTheme {
-        SplashScreen(viewModel)
+        SplashScreen(viewModel = SplashScreenViewModel())
     }
 }
