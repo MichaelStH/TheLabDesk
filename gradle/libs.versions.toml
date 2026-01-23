@@ -10,8 +10,8 @@ javafxPlugin = "0.1.0"
 # Arbor
 arbor = "2.0.105"
 # Compose
-compose = "1.9.1"
-composeHotReload = "1.0.0-rc02"
+compose = "1.10.0"
+composeHotReload = "1.0.0"
 jna = "5.17.0"
 # Json
 jakartaJson = "2.1.2"
@@ -21,11 +21,11 @@ jackson = "2.15.3"
 javafxWeb = "24"
 jetbrainsJcef = "0.1"
 # Kotlin
-kotlin = "2.2.21"
+kotlin = "2.3.0"
 kotlinxCoroutines = "1.10.1"
 kotlinxSerializationJson = "1.8.1"
 # Ktor
-ktor = "3.3.1"
+ktor = "3.4.0"
 logback = "1.5.18"
 nativeParametersStoreAccess = "0.1.3"
 # Kotools Types
@@ -93,6 +93,12 @@ youtube-player = { group = "com.pierfrancescosoffritti.androidyoutubeplayer", na
 zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxing" }
 zxing-javase = { group = "com.google.zxing", name = "javase", version.ref = "zxing" }
 
+
+# Build-logic's gradle plugin dependencies
+jetbrains-compose-gradlePlugin = { group = "org.jetbrains.compose", name = "org.jetbrains.compose.gradle.plugin", version.ref = "compose" }
+ktor-gradlePlugin = { group = "io.ktor.plugin", name = "io.ktor.plugin.gradle.plugin", version.ref = "ktor" }
+
+
 [plugins]
 java-fx = { id = "org.openjfx.javafxplugin", version.ref = "javafxPlugin" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose" }
@@ -102,3 +108,12 @@ jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serializati
 # Compose Compiler - introduced by Kotlin 2.0
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
+
+# Build-logic plugins
+thelabdesk-application-compose = { id = "com.riders.thelabdesk.application.jvm.compose", version = "unspecified" }
+thelabdesk-application = { id = "com.riders.thelabdesk.application.jvm", version = "unspecified" }
+thelabdesk-compose-desktop = { id = "com.riders.thelabdesk.compose.desktop", version = "unspecified" }
+thelabdesk-feature = { id = "com.riders.thelabdesk.feature", version = "unspecified" }
+thelabdesk-feature-compose = { id = "com.riders.thelabdesk.feature.compose", version = "unspecified" }
+thelabdesk-javafx = { id = "com.riders.thelabdesk.javafx", version = "unspecified" }
+thelabdesk-library = { id = "com.riders.thelabdesk.library", version = "unspecified" }
