@@ -1,15 +1,14 @@
-package ui.browser
+package com.riders.thelabdesk.feature.browser
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import base.BaseViewModel
+import com.riders.thelabdesk.core.common.log.Timber
+import com.riders.thelabdesk.core.ui.base.BaseViewModel
 import com.sun.javafx.application.PlatformImpl
-import core.log.Timber
 import javafx.application.Platform
 import javafx.scene.web.WebEngine
 import javafx.scene.web.WebView
-import utils.Constants
 
 class BrowserViewModel : BaseViewModel() {
 

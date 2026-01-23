@@ -1,4 +1,4 @@
-package core.compose.component.browser
+package com.riders.thelabdesk.feature.browser
 
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.runtime.Composable
@@ -7,8 +7,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.awt.SwingPanel
-import com.riders.thelabdesk.core.compose.component.browser.ComposeJFXPanel
-import core.log.Timber
+import com.riders.thelabdesk.core.common.log.Timber
+import com.riders.thelabdesk.core.ui.compose.component.browser.ComposeJFXPanel
+import com.riders.thelabdesk.core.ui.compose.component.browser.WebView
 import javafx.application.Platform
 import javafx.concurrent.Worker
 import javafx.embed.swing.JFXPanel
@@ -16,7 +17,6 @@ import javafx.scene.Scene
 import javafx.scene.web.WebEngine
 import javafx.scene.web.WebView
 import netscape.javascript.JSObject
-import ui.browser.BrowserViewModel
 import java.awt.Dimension
 import javax.swing.JPanel
 
@@ -88,7 +88,7 @@ fun Browser(
         }
         var jsObject = remember<JSObject?> { null }
 
-        com.riders.thelabdesk.core.compose.component.browser.WebView(
+        WebView(
             modifier = Modifier.matchParentSize(),
             composeWindow = composeWindow,
             jfxPanel = jfxPanel,

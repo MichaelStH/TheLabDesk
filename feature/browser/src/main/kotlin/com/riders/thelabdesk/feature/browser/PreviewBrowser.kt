@@ -1,6 +1,6 @@
-package ui.browser
+package com.riders.thelabdesk.feature.browser
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -27,10 +27,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import core.compose.component.TheLabDeskSurface
-import core.compose.component.browser.Browser
-import core.compose.theme.TheLabDeskTheme
-import core.compose.theme.md_theme_dark_primary
+import com.riders.thelabdesk.core.ui.compose.component.TheLabDeskSurface
+import com.riders.thelabdesk.core.ui.compose.theme.TheLabDeskTheme
+import com.riders.thelabdesk.core.ui.compose.theme.md_theme_dark_primary
 
 
 //////////////////////////////////////////////////
@@ -100,7 +99,6 @@ fun SearchWebView(viewModel: BrowserViewModel) {
     }
 }
 
-@Preview
 @Composable
 fun BrowserContent(composeWindow: ComposeWindow, viewModel: BrowserViewModel) {
 
