@@ -182,7 +182,7 @@ fun main() {
             TheLabDeskTheme(viewModel.isDarkMode) {
                 Box(modifier = Modifier.background(Color.Transparent)) {
                     AnimatedContent(
-                        targetState = viewModel.isLoadingFinished,
+                        targetState = splashScreenViewModel.isLoadingFinished,
                         transitionSpec = { fadeIn() togetherWith fadeOut() }
                     ) { target ->
                         if (!target) {

@@ -27,6 +27,4 @@ class SplashScreenViewModel : BaseViewModel() {
             updateWindowType(WindowTypes.MAIN)
         }
     }
-
-
 }
