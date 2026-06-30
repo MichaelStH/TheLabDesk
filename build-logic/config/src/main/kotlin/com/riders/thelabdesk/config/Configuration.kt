@@ -7,7 +7,7 @@ object Configuration {
     const val PACKAGE_NAME = "$GROUP.thelabdesk"
     const val APP_NAME = "TheLabDesk"
 
-    val version = Version(versionMajor = 1, versionMinor = 0, versionPatch = 0, isSnapshot = true)
+    val version = Version(versionMajor = 1, versionMinor = 1, versionPatch = 0, isSnapshot = true)
 }
 
 data class Version(
