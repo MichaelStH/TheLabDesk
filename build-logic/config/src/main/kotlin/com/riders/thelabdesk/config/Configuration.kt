@@ -5,6 +5,7 @@ object Configuration {
 
     const val PACKAGE_NAME_BUILD_LOGIC = "$GROUP.thelabdesk.buildlogic"
     const val PACKAGE_NAME = "$GROUP.thelabdesk"
+    const val APP_NAME = "TheLabDesk"
 
     val version = Version(versionMajor = 1, versionMinor = 0, versionPatch = 0, isSnapshot = true)
 }

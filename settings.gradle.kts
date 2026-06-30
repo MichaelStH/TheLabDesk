@@ -27,12 +27,13 @@ pluginManagement {
 
     plugins {
         kotlin("jvm").version(extra["kotlin.version"] as String)
-        id("org.jetbrains.compose").version(extra["compose.version"] as String)
         kotlin("plugin.serialization").version(extra["kotlin.version"] as String)
-        id("org.openjfx.javafxplugin") version "0.0.10"
+        id("org.jetbrains.compose").version(extra["compose.version"] as String)
+        id("org.openjfx.javafxplugin") version "0.1.0"
         id("org.jetbrains.kotlin.plugin.compose").version(extra["kotlin.version"] as String)
     }
 }
+
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
 }
@@ -68,5 +69,10 @@ include(":core:common")
 include(":core:data")
 include(":core:domain")
 include(":core:ui")
+include(":core:video")
+include(":feature:browser")
 include(":feature:home")
+include(":feature:news")
+include(":feature:theaters")
 include(":feature:splashscreen")
+include(":feature:settings")
