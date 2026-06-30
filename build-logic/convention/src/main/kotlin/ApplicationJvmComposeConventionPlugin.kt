@@ -1,3 +1,4 @@
+import com.riders.thelabdesk.config.Configuration
 import com.riders.thelabdesk.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -19,12 +20,12 @@ class ApplicationJvmComposeConventionPlugin : Plugin<Project> {
         extensions.configure<ComposeExtension>("compose") {
             configure<DesktopExtension> {
                 application {
-                    mainClass = "com.riders.thelabdesk.TheLabDeskMainKt"
+                    mainClass = "${Configuration.PACKAGE_NAME}.TheLabDeskMainKt"
 
                     nativeDistributions {
                         targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-                        packageName = "LabDesk"
-                        packageVersion = "1.0.0"
+                        packageName = Configuration.APP_NAME
+                        packageVersion = Configuration.version.toString()
                         description = "TheLab Desk App"
                         copyright = "© 2023 TheLab. All rights reserved."
                         vendor = "TheLab Inc."
