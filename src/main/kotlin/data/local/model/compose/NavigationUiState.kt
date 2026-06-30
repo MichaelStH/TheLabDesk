@@ -7,7 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
-import data.local.bean.NavigationItemType
+import com.riders.thelabdesk.core.ui.data.local.bean.NavigationItemType
 
 // First lets create a class which will contain an icon, a type and a boolean initialSelectedValue,
 // and its exposing a selected state variable which is mutableState of initialSelectedValue,

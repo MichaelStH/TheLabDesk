@@ -1,13 +1,19 @@
 package com.riders.thelabdesk
 
-import core.utils.VLCManager
+import com.riders.thelabdesk.core.common.log.Timber
+import com.riders.thelabdesk.core.common.utils.SystemManager
+import com.riders.thelabdesk.core.ui.base.Application
+import com.riders.thelabdesk.core.video.core.utils.VLCManager
 import com.toxicbakery.logging.Arbor
 import com.toxicbakery.logging.Seedling
-import core.log.Timber
-import core.utils.SystemManager
+import com.riders.thelabdesk.di.AppContainer
+import com.riders.thelabdesk.di.AppContainerImpl
 import java.util.*
 
-object TheLabDeskApp {
+class TheLabDeskApp private constructor() : Application() {
+
+    lateinit var container: AppContainer
+        private set
 
     var isVlcFound: Boolean = false
 
@@ -16,6 +22,10 @@ object TheLabDeskApp {
 
     fun init() {
         Timber.d("init()")
+        container = AppContainerImpl()
+
+        initTimber()
+
         runCatching {
             versionProperties.load(this.javaClass.getResourceAsStream("generated-version/version.properties"))
         }
@@ -36,250 +46,33 @@ object TheLabDeskApp {
         checkVlcLibrary()
     }
 
-    /**
-     * Source https://github.com/ToxicBakery/Arbor
-     */
-    fun initArbor() {
+    fun initTimber() {
+        // Init Timber Logging. Source https://github.com/ToxicBakery/Arbor
         Arbor.sow(Seedling())
         Timber.d("initArbor()")
+        Timber.d("main() | applicationScope")
+
+        SystemManager.getSystemInfo()
     }
 
     private fun checkVlcLibrary() {
         Timber.d("checkVlcLibrary()")
-        VLCManager.initializeMediaPlayerComponent()
+        VLCManager.initializeMediaPlayerComponent { found ->
+            updateVlcFoundLibrary(found)
+        }
     }
 
     fun updateVlcFoundLibrary(isVlcFound: Boolean) {
-        TheLabDeskApp.isVlcFound = isVlcFound
+        this.isVlcFound = isVlcFound
+    }
+
+    companion object {
+        @Volatile
+        private var instance: TheLabDeskApp? = null
+
+        @Synchronized
+        fun getInstance(): TheLabDeskApp = instance ?: synchronized(this) {
+            instance ?: TheLabDeskApp().also { instance = it }
+        }
     }
 }
-
-//////////////////////////////////////////
-//
-// CLASS METHODS
-//
-//////////////////////////////////////////
-fun initTimber() {
-    // Init Timber Logging
-    TheLabDeskApp.initArbor()
-    Timber.d("main() | applicationScope")
-
-    SystemManager.getSystemInfo()
-}
-
-
-//////////////////////////////////////////
-//
-// APP
-//
-//////////////////////////////////////////
-/*fun main() {
-    initTimber()
-    TheLabDeskApp.init()
-
-    val toast = ToastManager
-
-    val viewModel = MainViewModel(AppModule.injectDependencies())
-    val homeViewModel = HomeViewModel()
-    val newsViewModel = NewsViewModel(AppModule.injectDependencies())
-    val browserViewModel = BrowserViewModel()
-    val theatersViewModel = TheatersViewModel(AppModule.injectDependencies())
-
-    // viewModel.getTime()
-    viewModel.updateDarkMode(true)
-
-    FileManager.createConfigFile()
-
-    *//*GlobalScope.launch {
-        while (isActive) {
-            val newMode = isSystemInDarkTheme()
-            if (viewModel.isDarkMode != newMode) {
-                viewModel.updateDarkMode(newMode)
-            }
-            delay(1_000)
-        }
-    }*//*
-    application(exitProcessOnExit = true) {
-        // Required to make sure the JavaFx event loop doesn't finish (can happen when java fx panels in app are shown/hidden)
-        val finishListener = object : PlatformImpl.FinishListener {
-            override fun idle(implicitExit: Boolean) {}
-            override fun exitCalled() {}
-        }
-        PlatformImpl.addListener(finishListener)
-
-        val screenWidth: Int = DisplayManager.getScreenWidth()
-        val screenHeight: Int = DisplayManager.getScreenHeight()
-
-        Timber.d("application | java.awt.Toolkit.getDefaultToolkit().screenSize | width: ${screenWidth}, height: $screenHeight")
-
-        val windowState: WindowState = rememberWindowState(
-            width = 500.dp,
-            height = 350.dp
-        )
-
-        var isOpen by remember { mutableStateOf(true) }
-
-        if (isOpen) {
-            val trayState = rememberTrayState()
-            val notification = rememberNotification("Notification", "Message from MyApp!")
-
-            Tray(
-                state = trayState,
-                icon = painterResource(
-                    resourcePath = if (SystemManager.isMacOs()) "icons/thelab_desk.icns"
-                    else if (SystemManager.isLinux()) "icons/thelab_desk.png"
-                    else "icons/thelab_desk.ico"
-                ),
-                menu = {
-                    Item(
-                        "Send notification",
-                        onClick = {
-                            trayState.sendNotification(notification)
-                        }
-                    )
-                    Item(
-                        "Exit",
-                        onClick = {
-                            isOpen = false
-                        }
-                    )
-                }
-            )
-        }
-
-        Window(
-            state = windowState,
-            title = "TheLab Desk",
-            icon = painterResource("images/ic_lab.png"),
-            undecorated = true,
-            transparent = false,
-            resizable = viewModel.windowType != WindowTypes.SPLASHSCREEN,
-            onCloseRequest = {
-                PlatformImpl.removeListener(finishListener)
-                exitApplication()
-            }
-        ) {
-
-            // Declaring Coroutine scope
-            val scope = rememberCoroutineScope()
-            val interactionSource = remember { MutableInteractionSource() }
-            val isPressed by interactionSource.collectIsPressedAsState()
-            val isFocus by interactionSource.collectIsFocusedAsState()
-            val focusManager: FocusManager = LocalFocusManager.current
-            val density = LocalDensity.current
-            val show by toast.show.collectAsState()
-
-            TheLabDeskTheme(viewModel.isDarkMode) {
-                Box(modifier = Modifier.background(Color.Transparent)) {
-                    AnimatedContent(
-                        targetState = viewModel.isLoadingFinished,
-                        transitionSpec = { fadeIn() togetherWith fadeOut() }
-                    ) { target ->
-                        if (!target) {
-                            windowState.position = WindowPosition(x = (screenWidth / 3).dp, y = (screenHeight / 3).dp)
-                            windowState.size = DpSize(width = 400.dp, height = 200.dp)
-
-                            BoxWithConstraints(
-                                modifier = Modifier
-                                    .size(width = screenWidth.dp, height = screenHeight.dp)
-                                    .background(Color.Transparent),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Timber.d("Window size | width: ${this.maxWidth}, height: ${this.maxHeight}")
-                                SplashScreen(viewModel)
-                            }
-                        } else {
-                            window.minimumSize = Dimension(1000, 800)
-                            windowState.position = WindowPosition(x = (screenWidth / 6).dp, y = (screenHeight / 6).dp)
-                            windowState.size = DpSize(width = 1200.dp, height = 800.dp)
-
-                            // A surface container using the 'background' color from the theme
-                            TheLabDeskSurface(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .clip(
-                                        shape = if (!SystemManager.isWindows11()) RoundedCornerShape(0.dp) else RoundedCornerShape(
-                                            12.dp
-                                        )
-                                    )
-                            ) {
-                                Column(modifier = Modifier.fillMaxSize()) {
-                                    // Custom title toolbar
-                                    WindowDraggableArea(modifier = Modifier.fillMaxWidth()) {
-                                        AppTitleBar(
-                                            viewModel = viewModel,
-                                            windowState = windowState
-                                        ) {
-                                            exitApplication()
-                                        }
-                                    }
-
-                                    Box(
-                                        modifier = Modifier.fillMaxSize().pointerInput(isPressed) {
-                                            if (viewModel.isDynamicIslandVisible) {
-                                                viewModel.updateIsDynamicIslandVisible(false)
-                                            }
-                                        },
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        ScrollableWindowContent(
-                                            modifier = Modifier.blur(radius = if (viewModel.shouldShowAboutDialog || viewModel.shouldExitAppConfirmationDialog || theatersViewModel.showTheaterItemTeaserVideo) 25.dp else 0.dp)
-                                        ) {
-                                            // App Content
-                                            App(
-                                                window,
-                                                viewModel,
-                                                homeViewModel,
-                                                newsViewModel,
-                                                browserViewModel,
-                                                theatersViewModel
-                                            )
-                                        }
-
-                                        if (viewModel.shouldShowAboutDialog) {
-                                            About(viewModel)
-                                        }
-
-                                        if (viewModel.shouldExitAppConfirmationDialog) {
-                                            Exit(viewModel)
-                                        }
-
-                                        if (theatersViewModel.showTheaterItemTeaserVideo) {
-                                            TheaterTeaserContent(theatersViewModel)
-                                        }
-
-                                        // Generic show toast triggered by any view model
-                                        if (show) {
-                                            Timber.d("ScrollableWindowContent | show: $show")
-                                            Toast(
-                                                modifier = Modifier
-                                                    .fillMaxHeight(.4f)
-                                                    .align(Alignment.BottomCenter)
-                                                    .zIndex(50f),
-                                                message = toast.toastMessage,
-                                                toastDelayTime = Toast.LENGTH_LONG,
-                                                color =  if(!isSystemInDarkTheme()) currentTheme.second.getColorScheme().primaryContainer else currentTheme.first.getColorScheme().primaryContainer
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        LaunchedEffect(viewModel.shouldExitApp) {
-            Timber.d("LaunchedEffect | viewModel.shouldExitApp | value: ${viewModel.shouldExitApp}")
-            if (viewModel.shouldExitApp) {
-                exitApplication()
-            }
-        }
-
-        LaunchedEffect(viewModel.isDarkMode) {
-            Timber.d("LaunchedEffect | viewModel.isDarkMode | value: ${viewModel.isDarkMode}")
-            FileManager.updateConfigFile(Pair(Constants.IS_DARK_MODE, viewModel.isDarkMode))
-        }
-    }
-}*/

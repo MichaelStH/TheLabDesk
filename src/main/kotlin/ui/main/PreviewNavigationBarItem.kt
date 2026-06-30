@@ -3,8 +3,8 @@ package ui.main
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -12,15 +12,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import core.compose.theme.TheLabDeskTheme
-import core.compose.theme.Typography
-import core.compose.theme.currentTheme
-import core.compose.theme.isSystemInDarkTheme
-import core.compose.utils.getColorScheme
+import com.riders.thelabdesk.core.domain.repository.PreviewRepository
+import com.riders.thelabdesk.core.ui.compose.theme.TheLabDeskTheme
+import com.riders.thelabdesk.core.ui.compose.theme.Typography
+import com.riders.thelabdesk.core.ui.compose.theme.currentTheme
+import com.riders.thelabdesk.core.ui.compose.utils.getColorScheme
+import com.riders.thelabdesk.ui.TheLabDeskViewModel
 import data.local.model.compose.NavigationUiState
-import di.AppModule
 
 
 //////////////////////////////////////////////////
@@ -31,7 +32,7 @@ import di.AppModule
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavigationBarItem(
-    viewModel: MainViewModel,
+    viewModel: TheLabDeskViewModel,
     item: NavigationUiState,
     onNavigationClicked: (NavigationUiState) -> Unit
 ) {
@@ -101,7 +102,7 @@ fun NavigationBarItem(
 @Preview
 @Composable
 private fun PreviewNavigationBarItem() {
-    val viewModel = MainViewModel(AppModule.injectDependencies())
+    val viewModel = TheLabDeskViewModel(PreviewRepository)
     MaterialTheme {
         NavigationBarItem(
             viewModel = viewModel,

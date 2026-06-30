@@ -9,12 +9,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.awt.SwingPanel
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusManager
@@ -22,102 +22,43 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import androidx.compose.ui.zIndex
 import com.riders.labdesk.generated.resources.Res
 import com.riders.labdesk.generated.resources.allDrawableResources
-import com.riders.thelabdesk.core.compose.utils.painterResource
+import com.riders.thelabdesk.core.common.log.Timber
+import com.riders.thelabdesk.core.common.utils.FileManager
+import com.riders.thelabdesk.core.common.utils.SystemManager
+import com.riders.thelabdesk.core.ui.compose.component.ScrollableWindowContent
+import com.riders.thelabdesk.core.ui.compose.component.TheLabDeskSurface
+import com.riders.thelabdesk.core.ui.compose.component.toast.Toast
+import com.riders.thelabdesk.core.ui.compose.theme.TheLabDeskTheme
+import com.riders.thelabdesk.core.ui.compose.theme.currentTheme
+import com.riders.thelabdesk.core.ui.compose.utils.WindowDraggableArea
+import com.riders.thelabdesk.core.ui.compose.utils.getColorScheme
+import com.riders.thelabdesk.core.ui.data.local.bean.WindowTypes
+import com.riders.thelabdesk.core.ui.utils.DisplayManager
+import com.riders.thelabdesk.core.ui.utils.ToastManager
+import com.riders.thelabdesk.feature.browser.BrowserViewModel
+import com.riders.thelabdesk.feature.home.ui.HomeViewModel
+import com.riders.thelabdesk.feature.news.ui.NewsViewModel
+import com.riders.thelabdesk.feature.splashscreen.SplashScreen
+import com.riders.thelabdesk.feature.splashscreen.SplashScreenViewModel
+import com.riders.thelabdesk.feature.theaters.ui.TheaterTeaserContent
+import com.riders.thelabdesk.feature.theaters.ui.TheatersViewModel
+import com.riders.thelabdesk.ui.AppTitleBar
+import com.riders.thelabdesk.ui.TheLabDeskViewModel
 import com.sun.javafx.application.PlatformImpl
-import core.compose.component.AppTitleBar
-import core.compose.component.ScrollableWindowContent
-import core.compose.component.TheLabDeskSurface
-import core.compose.component.toast.Toast
-import core.compose.theme.TheLabDeskTheme
-import core.compose.theme.currentTheme
-import core.compose.theme.isSystemInDarkTheme
-import core.compose.utils.WindowDraggableArea
-import core.compose.utils.getColorScheme
-import core.log.Timber
-import core.utils.DisplayManager
-import core.utils.FileManager
-import core.utils.SystemManager
-import core.utils.ToastManager
-import data.local.bean.WindowTypes
-import di.AppModule
-import javafx.scene.web.WebView
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import ui.About
 import ui.Exit
-import ui.browser.BrowserViewModel
-import ui.home.HomeViewModel
 import ui.main.App
-import ui.main.MainViewModel
-import ui.news.NewsViewModel
-import ui.splashscreen.SplashScreen
-import ui.theaters.TheaterTeaserContent
-import ui.theaters.TheatersViewModel
 import utils.Constants
 import java.awt.Dimension
-
-/*object TheLabDeskApp {
-
-    var isVlcFound: Boolean = false
-
-    private val versionProperties = Properties()
-    fun getVersion(): String = versionProperties.getProperty("version") ?: "no version"
-
-    fun init() {
-        Timber.d("init()")
-        runCatching {
-            versionProperties.load(this.javaClass.getResourceAsStream("generated-version/version.properties"))
-        }
-            .onFailure {
-                Timber.e("init | runCatching | onFailure: ${it.message}")
-            }
-            .onSuccess {
-                Timber.d("init | runCatching | onSuccess")
-            }
-
-        Timber.d("version: ${getVersion()}")
-
-        // Check if VLC Library is present
-        checkVlcLibrary()
-    }
-
-    *//**
- * Source https://github.com/ToxicBakery/Arbor
- *//*
-    fun initArbor() {
-        Arbor.sow(Seedling())
-        Timber.d("initArbor()")
-    }
-
-    private fun checkVlcLibrary() {
-        Timber.d("checkVlcLibrary()")
-        initializeMediaPlayerComponent()
-    }
-
-    fun updateVlcFoundLibrary(isVlcFound: Boolean) {
-        TheLabDeskApp.isVlcFound = isVlcFound
-    }
-}*/
-
-//////////////////////////////////////////
-//
-// CLASS METHODS
-//
-//////////////////////////////////////////
-/*fun initTimber() {
-    // Init Timber Logging
-    TheLabDeskApp.initArbor()
-    Timber.d("main() | applicationScope")
-
-    SystemManager.getSystemInfo()
-}*/
-
 
 //////////////////////////////////////////
 //
@@ -126,16 +67,18 @@ import java.awt.Dimension
 //////////////////////////////////////////
 @OptIn(ExperimentalResourceApi::class)
 fun main() {
-    initTimber()
-    TheLabDeskApp.init()
+
+    TheLabDeskApp.getInstance().init()
 
     val toast = ToastManager
 
-    val viewModel = MainViewModel(AppModule.injectDependencies())
-    val homeViewModel = HomeViewModel()
-    val newsViewModel = NewsViewModel(AppModule.injectDependencies())
-    val browserViewModel = BrowserViewModel()
-    val theatersViewModel = TheatersViewModel(AppModule.injectDependencies())
+    val container = TheLabDeskApp.getInstance().container
+    val viewModel = container.mainViewModel
+    val splashScreenViewModel = container.splashScreenViewModel
+    val homeViewModel = container.homeViewModel
+    val newsViewModel = container.newsViewModel
+    val browserViewModel = container.browserViewModel
+    val theatersViewModel = container.theatersViewModel
 
     // viewModel.getTime()
     viewModel.updateDarkMode(true)
@@ -158,6 +101,7 @@ fun main() {
             override fun idle(implicitExit: Boolean) {
                 // Timber.d("idle() | implicitExit: $implicitExit")
             }
+
             override fun exitCalled() {
                 Timber.w("exitCalled()")
             }
@@ -216,7 +160,7 @@ fun main() {
         Window(
             state = windowState,
             title = "TheLab Desk",
-            icon = com.riders.thelabdesk.core.compose.utils.painterResource(resourcePath = "images/ic_lab.png"),
+            icon = painterResource(resourcePath = "images/ic_lab.png"),
             undecorated = true,
             transparent = false,
             resizable = viewModel.windowType != WindowTypes.SPLASHSCREEN,
@@ -252,7 +196,7 @@ fun main() {
                                 contentAlignment = Alignment.Center
                             ) {
                                 Timber.d("Window size | width: ${this.maxWidth}, height: ${this.maxHeight}")
-                                SplashScreen(viewModel)
+                                SplashScreen(viewModel = splashScreenViewModel)
                             }
                         } else {
                             window.minimumSize = Dimension(1000, 800)
@@ -303,7 +247,7 @@ fun main() {
                                         }
 
                                         if (viewModel.shouldShowAboutDialog) {
-                                            About(viewModel)
+                                            About(viewModel::onEvent)
                                         }
 
                                         if (viewModel.shouldExitAppConfirmationDialog) {

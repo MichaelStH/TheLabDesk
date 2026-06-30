@@ -1,19 +1,21 @@
 package ui.main
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.ComposeWindow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import core.compose.theme.TheLabDeskTheme
-import di.AppModule
-import ui.browser.BrowserViewModel
-import ui.home.HomeViewModel
-import ui.news.NewsViewModel
-import ui.theaters.TheatersViewModel
+import com.riders.thelabdesk.core.ui.compose.theme.TheLabDeskTheme
+import com.riders.thelabdesk.feature.browser.BrowserViewModel
+import com.riders.thelabdesk.feature.home.ui.HomeViewModel
+import com.riders.thelabdesk.feature.news.ui.NewsViewModel
+import com.riders.thelabdesk.ui.TheLabDeskViewModel
+import com.riders.thelabdesk.feature.theaters.ui.TheatersViewModel
+import com.riders.thelabdesk.core.domain.repository.PreviewRepository
+import com.riders.thelabdesk.core.domain.usecase.NewsUseCase
 
 
 //////////////////////////////////////////////////
@@ -22,13 +24,12 @@ import ui.theaters.TheatersViewModel
 //
 //////////////////////////////////////////////////
 @Composable
-@Preview
 fun App(
     composeWindow: ComposeWindow,
-    viewModel: MainViewModel,
+    viewModel: TheLabDeskViewModel,
     homeViewModel: HomeViewModel,
     newsViewModel: NewsViewModel,
-    browserViewModel:BrowserViewModel,
+    browserViewModel: BrowserViewModel,
     theatersViewModel: TheatersViewModel
 ) {
     TheLabDeskTheme(viewModel.isDarkMode) {
@@ -43,7 +44,14 @@ fun App(
                     NavigationBar(viewModel)
                 }
                 Box(modifier = Modifier.fillMaxWidth().zIndex(2f), contentAlignment = Alignment.CenterStart) {
-                    NavigationContent(composeWindow, viewModel, homeViewModel, newsViewModel, browserViewModel,theatersViewModel)
+                    NavigationContent(
+                        composeWindow,
+                        viewModel,
+                        homeViewModel,
+                        newsViewModel,
+                        browserViewModel,
+                        theatersViewModel
+                    )
                 }
             }
         }
@@ -59,12 +67,12 @@ fun App(
 @Preview
 @Composable
 private fun PreviewApp() {
-    val viewModel = MainViewModel(AppModule.injectDependencies())
+    val viewModel = TheLabDeskViewModel(PreviewRepository)
     val homeViewModel = HomeViewModel()
-    val newsViewModel = NewsViewModel(AppModule.injectDependencies())
-    val theatersViewModel = TheatersViewModel(AppModule.injectDependencies())
+    val newsViewModel = NewsViewModel(NewsUseCase(PreviewRepository))
+    val theatersViewModel = TheatersViewModel(PreviewRepository)
 
     TheLabDeskTheme {
-        // App(viewModel, homeViewModel, newsViewModel, theatersViewModel)
+        //App(viewModel, homeViewModel, newsViewModel, theatersViewModel)
     }
 }

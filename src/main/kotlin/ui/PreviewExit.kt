@@ -1,6 +1,5 @@
 package ui
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -12,11 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import core.compose.theme.TheLabDeskTheme
-import di.AppModule
-import ui.main.MainViewModel
+import com.riders.thelabdesk.core.ui.compose.theme.TheLabDeskTheme
+import com.riders.thelabdesk.ui.TheLabDeskViewModel
+import com.riders.thelabdesk.core.domain.repository.PreviewRepository
 
 
 //////////////////////////////////////////////////
@@ -25,7 +25,7 @@ import ui.main.MainViewModel
 //
 //////////////////////////////////////////////////
 @Composable
-fun Exit(viewModel: MainViewModel) {
+fun Exit(viewModel: TheLabDeskViewModel) {
     TheLabDeskTheme {
         Card(colors = CardDefaults.cardColors(containerColor = Color.LightGray), shape = RoundedCornerShape(35.dp)) {
             Column(
@@ -73,8 +73,7 @@ fun Exit(viewModel: MainViewModel) {
 @Preview
 @Composable
 private fun PreviewExit() {
-    val viewModel: MainViewModel = MainViewModel(AppModule.injectDependencies())
     TheLabDeskTheme {
-        Exit(viewModel = viewModel)
+        Exit(viewModel = TheLabDeskViewModel(PreviewRepository))
     }
 }

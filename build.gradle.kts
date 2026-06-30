@@ -66,12 +66,21 @@ kotlin {
 
 // Compose Compiler - introduced by Kotlin 2.0
 composeCompiler {
-    featureFlags.addAll(ComposeFeatureFlag.OptimizeNonSkippingGroups)
-
     reportsDestination = layout.buildDirectory.dir("compose_compiler")
 }
 
 dependencies {
+    implementation(project(":core:common"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:data"))
+    implementation(project(":core:ui"))
+    implementation(project(":core:video"))
+    implementation(project(":feature:splashscreen"))
+    implementation(project(":feature:home"))
+    implementation(project(":feature:browser"))
+    implementation(project(":feature:news"))
+    implementation(project(":feature:theaters"))
+    implementation(project(":feature:settings"))
 
     // Kotlin
     implementation(platform(libs.kotlin.bom))
@@ -157,7 +166,7 @@ dependencies {
 }
 
 tasks.wrapper {
-    this.gradleVersion = "9.0.0"
+    this.gradleVersion = "9.6.0"
     // You can either download the binary-only version of Gradle (BIN) or
     // the full version (with sources and documentation) of Gradle (ALL)
     distributionType = Wrapper.DistributionType.ALL
@@ -196,7 +205,7 @@ tasks.withType<ComposeHotRun>().configureEach {
 }
 
 javafx {
-    version = "24"
+    version = "21"
     modules = listOf("javafx.controls", "javafx.swing", "javafx.web", "javafx.graphics")
 }
 

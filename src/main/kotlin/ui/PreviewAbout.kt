@@ -1,9 +1,8 @@
 package ui
 
-import com.riders.thelabdesk.TheLabDeskApp
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -17,20 +16,20 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.res.loadImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import core.compose.component.TheLabDeskCard
-import core.compose.theme.TheLabDeskTheme
-import core.compose.theme.currentTheme
-import core.compose.theme.isSystemInDarkTheme
-import core.compose.utils.getColorScheme
-import core.log.Timber
-import core.utils.BarcodeManager
-import core.utils.DisplayManager
-import di.AppModule
+import com.riders.thelabdesk.TheLabDeskApp
+import com.riders.thelabdesk.core.common.log.Timber
+import com.riders.thelabdesk.core.ui.compose.component.TheLabDeskCard
+import com.riders.thelabdesk.core.ui.compose.theme.TheLabDeskTheme
+import com.riders.thelabdesk.core.ui.compose.theme.currentTheme
+import com.riders.thelabdesk.core.ui.compose.utils.getColorScheme
+import com.riders.thelabdesk.core.ui.utils.DisplayManager
+import com.riders.thelabdesk.ui.UiEvent
+import com.riders.thelabdesk.core.ui.utils.BarcodeManager
 import kotlinx.coroutines.launch
-import ui.main.MainViewModel
 import utils.Constants
 
 
@@ -40,7 +39,7 @@ import utils.Constants
 //
 //////////////////////////////////////////////////
 @Composable
-fun About(viewModel: MainViewModel) {
+fun About(uiEvent: (UiEvent) -> Unit) {
     val scope = rememberCoroutineScope()
     var image: ImageBitmap? by remember { mutableStateOf(null) }
 
@@ -115,7 +114,7 @@ fun About(viewModel: MainViewModel) {
                         )
 
                         //Version
-                        Text(text = TheLabDeskApp.getVersion())
+                        Text(text = TheLabDeskApp.getInstance().getVersion())
 
                         //Link
                         Text(text = "You can find this project on Github by scanning the QR Code below")
@@ -142,7 +141,7 @@ fun About(viewModel: MainViewModel) {
                     // Close button
                     Button(
                         modifier = Modifier.widthIn(50.dp, 150.dp),
-                        onClick = { viewModel.updateShouldShowAboutDialog(false) }) {
+                        onClick = { uiEvent.invoke(UiEvent.OnShowAboutDialog(false)) }) {
                         Text(text = Constants.PLACEHOLDER_OK)
                     }
                 }
@@ -159,9 +158,7 @@ fun About(viewModel: MainViewModel) {
 @Preview
 @Composable
 private fun About() {
-    val viewModel = MainViewModel(AppModule.injectDependencies())
-
     TheLabDeskTheme {
-        About(viewModel)
+        About()
     }
 }

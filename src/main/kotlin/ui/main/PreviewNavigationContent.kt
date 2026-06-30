@@ -1,17 +1,19 @@
 package ui.main
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.ComposeWindow
@@ -21,27 +23,30 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import core.compose.component.TheLabDeskIconTab
-import core.compose.component.TheLabDeskText
-import core.compose.theme.TheLabDeskTheme
-import core.compose.theme.isSystemInDarkTheme
-import core.utils.SystemManager
+import com.riders.thelabdesk.core.common.utils.SystemManager
+import com.riders.thelabdesk.core.ui.base.UiEvent
+import com.riders.thelabdesk.core.ui.compose.component.TheLabDeskIconTab
+import com.riders.thelabdesk.core.ui.compose.component.TheLabDeskText
+import com.riders.thelabdesk.core.ui.compose.theme.TheLabDeskTheme
+import com.riders.thelabdesk.feature.browser.BrowserContent
+import com.riders.thelabdesk.feature.browser.BrowserViewModel
+import com.riders.thelabdesk.feature.home.ui.Home
+import com.riders.thelabdesk.feature.home.ui.HomeViewModel
+import com.riders.thelabdesk.feature.news.ui.News
+import com.riders.thelabdesk.feature.news.ui.NewsViewModel
+import com.riders.thelabdesk.feature.settings.SettingsContent
+import com.riders.thelabdesk.feature.theaters.ui.TheaterTab
+import com.riders.thelabdesk.feature.theaters.ui.Theaters
+import com.riders.thelabdesk.ui.TheLabDeskViewModel
+import com.riders.thelabdesk.feature.theaters.ui.TheatersViewModel
+import com.riders.thelabdesk.core.domain.repository.PreviewRepository
+import com.riders.thelabdesk.core.domain.usecase.NewsUseCase
 import data.local.model.compose.NavigationUiState
-import di.AppModule
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import ui.browser.BrowserContent
-import ui.browser.BrowserViewModel
-import ui.home.Home
-import ui.home.HomeViewModel
-import ui.news.News
-import ui.news.NewsViewModel
-import ui.settings.SettingsContent
-import ui.theaters.TheaterTab
-import ui.theaters.Theaters
-import ui.theaters.TheatersViewModel
 import utils.Constants
 
 
@@ -54,7 +59,7 @@ import utils.Constants
 @Composable
 fun NavigationContent(
     composeWindow: ComposeWindow,
-    viewModel: MainViewModel,
+    viewModel: TheLabDeskViewModel,
     homeViewModel: HomeViewModel,
     newsViewModel: NewsViewModel,
     browserViewModel: BrowserViewModel,
@@ -187,7 +192,12 @@ fun NavigationContent(
                     }
 
                     is NavigationUiState.Settings -> {
-                        SettingsContent(viewModel = viewModel)
+                        SettingsContent(isDarkMode = viewModel.isDarkMode, uiEvent = { event ->
+                            when (event) {
+                                is UiEvent.OnUpdateDarkMode -> viewModel.updateDarkMode(event.isDarkMode)
+                                else -> {}
+                            }
+                        })
                     }
                 }
             }
@@ -203,10 +213,10 @@ fun NavigationContent(
 @Preview
 @Composable
 private fun PreviewNavigationContent() {
-    val viewModel = MainViewModel(AppModule.injectDependencies())
+    val viewModel = TheLabDeskViewModel(PreviewRepository)
     val homeViewModel = HomeViewModel()
-    val newsViewModel = NewsViewModel(AppModule.injectDependencies())
-    val theatersViewModel = TheatersViewModel(AppModule.injectDependencies())
+    val newsViewModel = NewsViewModel(NewsUseCase(PreviewRepository))
+    val theatersViewModel = TheatersViewModel(PreviewRepository)
 
     viewModel.updateCurrentNavigationUiState(NavigationUiState.Settings)
 

@@ -1,29 +1,23 @@
-package ui.main
+package com.riders.thelabdesk.ui
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
-import base.BaseViewModel
-import core.log.Timber
-import data.IRepository
-import data.local.bean.WindowTypes
-import data.local.model.compose.IslandUiState
+import com.riders.thelabdesk.core.common.log.Timber
+import com.riders.thelabdesk.core.domain.repository.IRepository
+import com.riders.thelabdesk.core.ui.base.BaseViewModel
+import com.riders.thelabdesk.core.ui.data.local.bean.WindowTypes
+import com.riders.thelabdesk.core.ui.data.local.compose.IslandUiState
 import data.local.model.compose.NavigationUiState
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import java.util.*
 
-class MainViewModel(private val repository: IRepository) : BaseViewModel() {
-
-    //////////////////////////////////////////
-    // Coroutines
-    //////////////////////////////////////////
-    private val coroutineExceptionHandler =
-        CoroutineExceptionHandler { _, throwable ->
-            throwable.printStackTrace()
-            Timber.tag("MainViewModel").e("CoroutineExceptionHandler | Error caught with message : ${throwable.message}")
-        }
+class TheLabDeskViewModel(
+    private val repository: IRepository
+) : BaseViewModel() {
 
 
     //////////////////////////////////////////
@@ -57,6 +51,20 @@ class MainViewModel(private val repository: IRepository) : BaseViewModel() {
     val currentNavigationUiState: StateFlow<NavigationUiState> = _currentNavigationUiState
 
 
+    var currentIndex by mutableStateOf(0)
+    var previousIndex by mutableStateOf(0)
+    var text by mutableStateOf("Hello, World!")
+        private set
+    var search by mutableStateOf("")
+        private set
+
+    var shouldShowAboutDialog by mutableStateOf(false)
+        private set
+    var shouldExitAppConfirmationDialog by mutableStateOf(false)
+        private set
+    var shouldExitApp by mutableStateOf(false)
+        private set
+
     var menuOptions: Set<Pair<String, Set<Pair<String, () -> Unit>>>> = buildSet {
         add(
             Pair(
@@ -88,19 +96,6 @@ class MainViewModel(private val repository: IRepository) : BaseViewModel() {
                 })
         )
     }
-
-    var currentIndex by mutableStateOf(0)
-    var previousIndex by mutableStateOf(0)
-    var text by mutableStateOf("Hello, World!")
-        private set
-    var search by mutableStateOf("")
-        private set
-    var shouldShowAboutDialog by mutableStateOf(false)
-        private set
-    var shouldExitAppConfirmationDialog by mutableStateOf(false)
-        private set
-    var shouldExitApp by mutableStateOf(false)
-        private set
 
     fun updateWindowType(newType: WindowTypes) {
         this.windowType = newType
@@ -149,6 +144,23 @@ class MainViewModel(private val repository: IRepository) : BaseViewModel() {
         this.search = newSearchText
     }
 
+
+    fun updateKeyboardVisible(isVisible: Boolean) {
+        keyboardVisible = isVisible
+    }
+
+    fun updateIsDynamicIslandVisible(visible: Boolean) {
+        isDynamicIslandVisible = visible
+    }
+
+    fun updateSearchApp(requestedAppName: String) {
+        searchedAppRequest = requestedAppName
+    }
+
+    fun updateIsSearchFocused(focused: Boolean) {
+        isSearchFocused = focused
+    }
+
     fun updateShouldShowAboutDialog(showAboutDialog: Boolean) {
         this.shouldShowAboutDialog = showAboutDialog
     }
@@ -161,30 +173,58 @@ class MainViewModel(private val repository: IRepository) : BaseViewModel() {
         this.shouldExitApp = exitApp
     }
 
-    fun updateKeyboardVisible(isVisible: Boolean) {
-        keyboardVisible = isVisible
-    }
+    //////////////////////////////////////////
+    // Coroutines
+    //////////////////////////////////////////
+    private val coroutineExceptionHandler =
+        CoroutineExceptionHandler { _, throwable ->
+            throwable.printStackTrace()
+            Timber.tag("MainViewModel")
+                .e("CoroutineExceptionHandler | Error caught with message : ${throwable.message}")
+        }
 
-    fun updateIsDynamicIslandVisible(visible: Boolean) {
-        isDynamicIslandVisible = visible
-    }
 
-    fun updateIsSearchFocused(focused: Boolean) {
-        isSearchFocused = focused
-    }
-
+    /////////////////////////////////////////////////////
+    //
+    // OVERRIDE METHODS
+    //
+    /////////////////////////////////////////////////////
     init {
         Timber.d("Init ViewModel")
 
         updateNavigationItemSelected(NavigationUiState.Home)
     }
 
-    //////////////////////////////////
+    /////////////////////////////////////////////////////
     //
     // CLASS METHODS
     //
-    //////////////////////////////////
-    fun searchApp(requestedAppName: String) {
-        searchedAppRequest = requestedAppName
+    /////////////////////////////////////////////////////
+    fun onBaseEvent(baseEvent: com.riders.thelabdesk.core.ui.base.UiEvent) {
+        when (baseEvent) {
+            else -> {
+                Timber.e("onEvent() | Unhandled base event : $baseEvent")
+            }
+        }
+    }
+
+    fun onEvent(event: UiEvent) {
+        when (event) {
+            else -> {
+                Timber.e("onEvent() | Unhandled event : $event")
+            }
+        }
+    }
+
+
+    /** Get Time in order to force dark mode or not */
+    fun getTime() {
+        val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+        Timber.d("getTime() | hour: ${hour.toString()}")
+
+        if (hour !in 8..17) {
+            Timber.d("hour NOT in range should force dark mode")
+            updateDarkMode(true)
+        }
     }
 }

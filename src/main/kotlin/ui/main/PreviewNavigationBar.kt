@@ -1,6 +1,5 @@
 package ui.main
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,11 +12,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import core.compose.theme.TheLabDeskTheme
-import core.utils.ToastManager
-import data.local.bean.NavigationItemType
-import di.AppModule
+import com.riders.thelabdesk.core.ui.compose.theme.TheLabDeskTheme
+import com.riders.thelabdesk.core.ui.data.local.bean.NavigationItemType
+import com.riders.thelabdesk.core.ui.utils.ToastManager
+import com.riders.thelabdesk.ui.TheLabDeskViewModel
+import com.riders.thelabdesk.core.domain.repository.PreviewRepository
 
 
 //////////////////////////////////////////////////
@@ -26,7 +27,7 @@ import di.AppModule
 //
 //////////////////////////////////////////////////
 @Composable
-fun NavigationBar(viewModel: MainViewModel) {
+fun NavigationBar(viewModel: TheLabDeskViewModel) {
     val state = rememberLazyListState()
 
     TheLabDeskTheme(viewModel.isDarkMode) {
@@ -88,9 +89,7 @@ fun NavigationBar(viewModel: MainViewModel) {
 @Preview
 @Composable
 private fun PreviewNavigationBar() {
-    val viewModel: MainViewModel = MainViewModel(AppModule.injectDependencies())
-    viewModel.updateDarkMode(true)
     TheLabDeskTheme(true) {
-        NavigationBar(viewModel = viewModel)
+        NavigationBar(viewModel = TheLabDeskViewModel(PreviewRepository))
     }
 }

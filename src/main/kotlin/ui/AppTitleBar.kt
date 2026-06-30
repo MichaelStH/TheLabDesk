@@ -1,9 +1,10 @@
-package core.compose.component
+package com.riders.thelabdesk.ui
+
+import com.riders.thelabdesk.core.domain.repository.PreviewRepository
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
@@ -32,20 +33,21 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowScope
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.zIndex
-import core.compose.component.dynamicisland.DynamicIsland
-import core.compose.theme.TheLabDeskTheme
-import core.compose.theme.md_theme_dark_primaryContainer
-import core.compose.utils.Text
-import core.compose.utils.WindowDraggableArea
-import core.log.Timber
-import di.AppModule
-import ui.main.MainViewModel
+import com.riders.thelabdesk.core.common.log.Timber
+import com.riders.thelabdesk.core.ui.compose.component.TheLabDeskSurface
+import com.riders.thelabdesk.core.ui.compose.component.TheLabDeskText
+import com.riders.thelabdesk.core.ui.compose.component.dynamicisland.DynamicIsland
+import com.riders.thelabdesk.core.ui.compose.theme.TheLabDeskTheme
+import com.riders.thelabdesk.core.ui.compose.theme.md_theme_dark_primaryContainer
+import com.riders.thelabdesk.core.ui.compose.utils.Text
+import com.riders.thelabdesk.core.ui.compose.utils.WindowDraggableArea
 import java.awt.Toolkit
 
 
@@ -54,7 +56,7 @@ val toolbarFocusedColor = Color(80, 80, 80)
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun LogoAndMenu(viewModel: MainViewModel, modifier: Modifier) {
+fun LogoAndMenu(viewModel: TheLabDeskViewModel, modifier: Modifier) {
     Box(modifier = modifier) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             Image(
@@ -100,7 +102,15 @@ fun LogoAndMenu(viewModel: MainViewModel, modifier: Modifier) {
                         ) {
                             repeat(viewModel.menuOptions.elementAt(index).second.size) {
                                 DropdownMenuItem(
-                                    text = { Text(viewModel.menuOptions.elementAt(index).second.elementAt(it).first) },
+                                    text = {
+                                        Text(
+                                            viewModel.menuOptions
+                                                .elementAt(index)
+                                                .second
+                                                .elementAt(it)
+                                                .first
+                                        )
+                                    },
                                     onClick = {
                                         viewModel.menuOptions.elementAt(index).second.elementAt(it).second.invoke()
                                         expanded = false
@@ -117,9 +127,8 @@ fun LogoAndMenu(viewModel: MainViewModel, modifier: Modifier) {
 
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
-fun SearchBar(viewModel: MainViewModel, modifier: Modifier) {
+fun SearchBar(viewModel: TheLabDeskViewModel, modifier: Modifier) {
     // Declaring Coroutine scope
     val scope = rememberCoroutineScope()
     val interactionSource = remember { MutableInteractionSource() }
@@ -197,7 +206,6 @@ fun SearchBar(viewModel: MainViewModel, modifier: Modifier) {
             } + fadeOut()
         ) {
             DynamicIsland(
-                viewModel = viewModel,
                 modifier = Modifier.fillMaxSize().clip(shape = RoundedCornerShape(22.dp)),
                 islandUiState = viewModel.dynamicIslandState.value
             )
@@ -206,7 +214,6 @@ fun SearchBar(viewModel: MainViewModel, modifier: Modifier) {
 }
 
 
-@Preview
 @Composable
 fun WindowActions(
     modifier: Modifier,
@@ -290,7 +297,7 @@ fun WindowActions(
 
 @Composable
 fun WindowScope.AppTitleBar(
-    viewModel: MainViewModel,
+    viewModel: TheLabDeskViewModel,
     windowState: WindowState,
     onClose: () -> Unit
 ) {
@@ -300,7 +307,10 @@ fun WindowScope.AppTitleBar(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            LogoAndMenu(viewModel = viewModel, modifier = Modifier.weight(.7f))
+            LogoAndMenu(
+                viewModel = viewModel,
+                modifier = Modifier.weight(.7f)
+            )
             SearchBar(viewModel = viewModel, modifier = Modifier.weight(2f))
             WindowActions(
                 modifier = Modifier.weight(.7f),
@@ -320,7 +330,7 @@ fun WindowScope.AppTitleBar(
 @Preview
 @Composable
 private fun PreviewAppTitleBar() {
-    val viewModel = MainViewModel(AppModule.injectDependencies())
+    val viewModel = TheLabDeskViewModel(PreviewRepository)
     viewModel.updateDarkMode(true)
 
     TheLabDeskTheme {
