@@ -1,6 +1,8 @@
 package com.riders.thelabdesk.core.ui.base
 
 sealed interface UiEvent {
+    data class OnUpdateDarkMode(val isDarkMode: Boolean) : UiEvent
+    data class OnUpdateIsDynamicIslandVisible(val isVisible: Boolean) : UiEvent
 
 
     // Dynamic Island
