@@ -1,10 +1,8 @@
-package data.remote.dto
+package com.riders.thelabdesk.core.data.remote.dto.news
 
-import androidx.compose.runtime.Stable
 import kotlinx.serialization.SerialName
 import java.io.Serializable
 
-@Stable
 @kotlinx.serialization.Serializable
 data class NewsDto(
     @SerialName("title")

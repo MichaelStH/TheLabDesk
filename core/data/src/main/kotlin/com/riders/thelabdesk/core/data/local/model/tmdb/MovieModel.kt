@@ -1,7 +1,6 @@
-package data.local.model.tmdb
+package com.riders.thelabdesk.core.data.local.model.tmdb
 
-import androidx.compose.runtime.Stable
-import data.remote.dto.tmdb.MovieDto
+import com.riders.thelabdesk.core.data.remote.dto.tmdb.MovieDto
 import kotools.types.collection.NotEmptySet
 import kotools.types.collection.notEmptySetOf
 import kotools.types.collection.toNotEmptySet
@@ -10,7 +9,7 @@ import kotools.types.number.toPositiveInt
 import kotools.types.text.NotBlankString
 import kotools.types.text.toNotBlankString
 
-@Stable
+
 data class MovieModel(
     val id: PositiveInt,
     val title: NotBlankString,

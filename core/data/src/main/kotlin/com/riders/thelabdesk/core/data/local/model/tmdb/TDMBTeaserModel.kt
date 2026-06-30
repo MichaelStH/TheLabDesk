@@ -1,11 +1,7 @@
-package data.local.model.tmdb
+package com.riders.thelabdesk.core.data.local.model.tmdb
 
-import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Stable
-import utils.Constants
+import com.riders.thelabdesk.core.data.utils.Constants
 
-@Stable
-@Immutable
 data class TDMBTeaserModel(
     val id: Int,
     val name: String,

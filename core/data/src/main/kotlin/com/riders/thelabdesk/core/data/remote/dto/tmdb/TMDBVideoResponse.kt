@@ -1,4 +1,4 @@
-package data.remote.dto.tmdb
+package com.riders.thelabdesk.core.data.remote.dto.tmdb
 
 import kotlinx.serialization.SerialName
 import java.io.Serializable

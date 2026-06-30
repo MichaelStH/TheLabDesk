@@ -1,6 +1,6 @@
-package data.remote.dto.tmdb
+package com.riders.thelabdesk.core.data.remote.dto.tmdb
 
-import data.local.model.tmdb.TvShowsModel
+import com.riders.thelabdesk.core.data.local.model.tmdb.TvShowsModel
 import kotlinx.serialization.SerialName
 import java.io.Serializable
 
